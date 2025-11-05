@@ -1,7 +1,8 @@
 #Pattern Used: Hash Map + String Traversal (Greedy Pattern)
 #Why this pattern?: We need to map Roman numeral characters to their integer values
 # and traverse the string to compute the total value based on Roman numeral rules.
-
+# Time Complexity: O(n) where n is the length of the input string s. We traverse the string once.
+# Space Complexity: O(1) as the size of the hash map is constant and does
 class Solution:
     def romanToInt(self, s: str) -> int:
 

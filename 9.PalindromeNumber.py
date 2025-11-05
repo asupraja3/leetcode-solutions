@@ -1,7 +1,9 @@
 #Pattern Used: Two Pointers / Math Reverse Pattern
 #Why this pattern?: We need to reverse the digits of the number and compare it with the 
 # original number.
-
+# Time Complexity: O(log10(n)) where n is the input number. This is because we are processing
+# each digit of the number once. Constants are ignored in Big O notation. so /2 is ignored.
+# Space Complexity: O(1) as we are using only a constant amount of space.
 class Solution:
     def isPalindrome(self, x: int) -> bool:
         if x<0 or (x!=0 and x%10==0):
