@@ -1,5 +1,7 @@
-
-
+#Pattern: String Manipulation
+#Time Complexity: O(n) - The time complexity is O(n) because we may need to traverse the 
+# entire string in the worst case, where n is the length of the input string. Each
+# character is processed at most once.
 class Solution:
     def myAtoi(self, s: str) -> int:
         # Define 32-bit signed integer limits
