@@ -32,3 +32,7 @@ class Solution:
         
         # Return the length of the longest substring without repeating characters
         return max_length
+    
+    sol = Solution()
+    print(sol.lengthOfLongestSubstring("abcabcbb"))  # expected 3
+    print(sol.lengthOfLongestSubstring("bbbbb"))     # expected 1
