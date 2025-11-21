@@ -6,17 +6,29 @@
 # Space Complexity: O(1) as we are using only a constant amount of space.
 class Solution:
     def longestCommonPrefix(self, strs: List[str]) -> str:
-        if not strs:
-            return ""
+    # If the list is empty, no common prefix exists
+    if not strs:
+        return ""
 
-        prefix = strs[0]
-        for s in strs[1:]:
-            while not s.startswith(prefix):
-                prefix = prefix[:-1]
-                if not prefix:
-                    return ""
-        
-        return prefix
+    # Start by assuming the entire first string is the common prefix
+    prefix = strs[0]
+
+    # Compare the current prefix with each of the remaining strings
+    for s in strs[1:]:
+
+        # Reduce the prefix until the current string starts with it
+        # Example: prefix = "flower", s = "flow" → trims to "flow"
+        while not s.startswith(prefix):
+            # Remove the last character from prefix
+            prefix = prefix[:-1]
+
+            # If prefix becomes empty, no common prefix exists
+            if not prefix:
+                return ""
+
+    # Return the final prefix after checking all strings
+    return prefix
+
 
 #calls to the function can be made as follows:
 sol = Solution()
