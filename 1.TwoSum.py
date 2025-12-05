@@ -12,3 +12,8 @@ class Solution:
                 return [seen[complement], i]
             seen[num] = i
 
+        return []
+    
+#calls to the function can be made as follows:
+sol = Solution()
+print(sol.twoSum([2,7,11,15], 9))  # [0, 1]
