@@ -62,3 +62,7 @@ class Solution:
 
         # Return all unique triplets that sum to zero
         return result
+
+# Example usage:
+solution = Solution()
+print(solution.threeSum([-1, 0, 1, 2, -1, -4]))  # Output: [[-1, -1, 2], [-1, 0, 1]]
