@@ -21,17 +21,23 @@ def list_to_linkedlist(arr):
 
 class Solution:
     def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+# Initialize a dummy node to help with the merged list
         dummy = ListNode()
+# Use a pointer to track the current end of the merged list
         current = dummy
         while list1 and list2:
             if list1.val < list2.val:
+# Attach the smaller node to the merged list and move the pointer forward
                 current.next = list1
                 list1 = list1.next
             else:
+# Attach the smaller node to the merged list and move the pointer forward
                 current.next = list2
                 list2 = list2.next
             current = current.next
-        
+# At the end of the loop, at least one of the lists is exhausted. Attach the 
+# remaining part of the other list.
+# Since the lists are sorted, we can simply point to the non-null list.       
         if list1:
             current.next = list1
         else: 
