@@ -40,3 +40,32 @@ class Solution:
 
 sol = Solution()
 print(sol.generateParenthesis(3))  # Output: ["((()))","(()())","(())()","()(())","()()()"]
+
+
+
+#Alternative Recursive Backtracking Approach
+#Pattern: Backtracking
+class Solution2:
+    def generateParenthesis(self, n: int):
+        result = []
+
+        def backtrack(current, open_count, close_count):
+            # If the current string is complete (2*n characters)
+            if len(current) == 2 * n:
+                result.append(current)
+                return
+
+            # Add '(' if we still have some left to use
+            if open_count < n:
+                backtrack(current + "(", open_count + 1, close_count)
+
+            # Add ')' only if it won't break validity
+            if close_count < open_count:
+                backtrack(current + ")", open_count, close_count + 1)
+
+        backtrack("", 0, 0)
+        return result
+
+        
+sol2 = Solution2()
+print(sol2.generateParenthesis(3))  # Output: ["((()))","(()())","(())()","()(())","()()()"]

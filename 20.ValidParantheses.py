@@ -11,10 +11,12 @@ class Solution:
         stack = []
         for char in s:
             if char in mapping:
-                top = stack.pop() if stack else '#'
+                # Pop the topmost element from the stack if it is non-empty
+                # Otherwise assign a dummy value of '#' to top
+                top = stack.pop() if stack else '#' 
                 if  mapping[char] != top:
                     return False
             else:
                 stack.append(char)
-        
+# At the end of the traversal, if the stack is empty, all opening parentheses were properly closed       
         return not stack
