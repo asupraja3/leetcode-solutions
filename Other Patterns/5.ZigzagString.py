@@ -1,3 +1,6 @@
+#Pattern: Zigzag Conversion
+#Time Complexity: O(n)
+#Space Complexity: O(n)
 class Solution:
     def convert(self, s: str, numRows: int) -> str:
         # Edge case: if there's only one row or the string is too short,

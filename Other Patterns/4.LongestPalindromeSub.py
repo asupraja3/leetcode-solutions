@@ -1,3 +1,7 @@
+#Pattern: Expand Around Center
+#Time Complexity: O(n^2)
+#Space Complexity: O(1)
+
 class Solution:
     def longestPalindrome(self, s: str) -> str:
         # Helper function to expand around a potential palindrome center
