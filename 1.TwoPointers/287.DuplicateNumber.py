@@ -1,3 +1,4 @@
+#Question 287: https://leetcode.com/problems/find-the-duplicate-number/description/
 #Pattern: Two Pointers
 #Time Complexity: O(n^2) Explained: We use a nested loop where the outer loop
 # iterates through each element and the inner loop uses two pointers to compare

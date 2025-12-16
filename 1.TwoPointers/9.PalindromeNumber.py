@@ -1,3 +1,4 @@
+#Question 9: https://leetcode.com/problems/palindrome-number/description/
 #Pattern Used: Two Pointers / Math Reverse Pattern
 #Why this pattern?: We need to reverse the digits of the number and compare it with the 
 # original number.
