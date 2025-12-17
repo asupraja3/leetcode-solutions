@@ -38,3 +38,22 @@ class Solution:
 
 sol = Solution()
 print(sol.sortedSquares([-4,-1,0,3,10]))  # Expected output: [0,1,9,16,100]
+
+#Brute Force Approach (for reference)
+#Time Complexity: O(n log n) Explained: We square each element in O(n)
+# and then sort the resulting array in O(n log n).
+#Space Complexity: O(n) Explained: We create a new list to store the squared values
+from typing import List
+class SolutionBruteForce:
+    def sortedSquares(self, nums: List[int]) -> List[int]:
+        # Square each element in the input array
+        squared = [x ** 2 for x in nums]
+        
+        # Sort the squared values
+        squared.sort()
+        
+        return squared
+solBF = SolutionBruteForce()
+print(solBF.sortedSquares([-4,-1,0,3,10]))  # Expected output: [0,1,9,16,100]
+
+
