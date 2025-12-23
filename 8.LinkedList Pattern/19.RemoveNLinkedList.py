@@ -1,3 +1,7 @@
+#Question Link: https://leetcode.com/problems/remove-nth-node-from-end-of-list/
+# Pattern Used: Two Pointers (Fast and Slow)
+#time Complexity: O(L) where L is the length of the linked list
+#space Complexity: O(1)
 # Definition for singly-linked list.
 from typing import Optional
 # Definition for singly-linked list.
