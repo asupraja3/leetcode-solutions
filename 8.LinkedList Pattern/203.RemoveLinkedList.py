@@ -3,12 +3,12 @@
 # Why this pattern?: Using a dummy node simplifies edge cases, such as removing the head node.
 # Time Complexity: O(n) where n is the number of nodes in the linked list.
 # Space Complexity: O(1) as we are using constant extra space.
-from typing import Optional
 # Definition for singly-linked list.
-# class ListNode:
-#     def __init__(self, val=0, next=None):
-#         self.val = val
-#         self.next = next
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+from typing import Optional
 
 class Solution:
     def removeElements(self, head: Optional[ListNode], val: int) -> Optional[ListNode]:
