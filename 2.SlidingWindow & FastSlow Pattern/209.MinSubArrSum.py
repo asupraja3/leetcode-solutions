@@ -3,6 +3,7 @@
 #Time Complexity: O(N), where N is the length of the input array nums 
 # Explained: Each element is added and removed from the sliding window at most once.
 #Space Complexity: O(1)
+from typing import List
 class Solution:
     def minSubArrayLen(self, target: int, nums: List[int]) -> int:
         
