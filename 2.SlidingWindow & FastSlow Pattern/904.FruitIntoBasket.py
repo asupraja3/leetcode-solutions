@@ -39,7 +39,7 @@ class Solution:
                 left += 1
 
             # Update the maximum window size (total fruits collected)
-            current_window_size = right - left + 1
-            max_fruits_collected = max(max_fruits_collected, current_window_size)
+            #max of max fruits and current_window_size  
+            max_fruits_collected = max(max_fruits_collected, right - left + 1)
 
         return max_fruits_collected
