@@ -1,3 +1,4 @@
+#Question 1: https://leetcode.com/problems/two-sum/description/
 # Pattern Used: Hashing / HashMap Pattern
 # Why this pattern?:We need to quickly check if a number’s complement (i.e., target - current) 
 # already exists — and hashmaps allow O(1) lookups.
