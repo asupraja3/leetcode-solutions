@@ -28,6 +28,15 @@ print(find_first_zero([[1, 1, 1], [1, 0, 1], [1, 1, 1]]))
       - No additional data structures or matrices are created, meaning the memory used stays completely constant regardless of how massive the grid gets.
 """
 
+""" 
+    Edge Cases to Consider:
+    1. An empty matrix (should return None).
+    2. A matrix with no 0s (should return None).
+    3. A matrix where the first cell (0, 0) is a 0 (should return (0, 0)).
+    4. A matrix where the last cell is a 0 (should return the coordinates of the last cell).
+    5. A matrix with multiple 0s (should return the coordinates of the first one found).
+    6. A non-rectangular matrix (should handle gracefully, but we assume input is well-formed).
+"""
 # -------------------------------------------------------------------------------------------------
 
 def find_rectangles(matrix):  
@@ -65,7 +74,11 @@ def find_rectangles(matrix):
     return rectangles
 
 
-print(find_rectangles([[1, 0, 0, 1,1], [1, 0, 0, 1,1], [1, 1, 1, 1,1], [0, 0, 0, 0,0]])) 
+print(find_rectangles([[1, 0, 0, 1,1], 
+                       [1, 0, 0, 1,1], 
+                       [1, 1, 1, 1,1], 
+                       [1, 0, 0, 1,1], 
+                       [0, 0, 0, 0,0]])) 
 # Expected output: [((0, 1), (1, 2)), ((3, 0), (3, 4))]
 
 """
@@ -80,6 +93,17 @@ print(find_rectangles([[1, 0, 0, 1,1], [1, 0, 0, 1,1], [1, 1, 1, 1,1], [0, 0, 0,
       - The separate boolean `visited` matrix requires exactly R * C memory to map every cell.
       - In the worst-case scenario (a grid full of alternating 1x1 rectangles), the `rectangles` output list will also scale proportionally with the grid size.
 """
+
+""" 
+    Edge Cases to Consider:
+    1. An empty matrix (should return an empty list).
+    2. A matrix with no 0s (should return an empty list).
+    3. A matrix where the entire grid is 0s (should return one rectangle covering the whole grid).
+    4. A matrix with multiple distinct rectangles (should return the correct coordinates for each).
+    5. A matrix with rectangles that touch each other (should still identify them as separate rectangles).
+    6. A non-rectangular matrix (should handle gracefully, but we assume input is well-formed).
+"""
+
 # -------------------------------------------------------------------------------------------------
 
 def find_shapes(matrix):

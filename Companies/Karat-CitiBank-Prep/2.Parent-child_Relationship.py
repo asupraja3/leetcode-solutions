@@ -49,6 +49,16 @@ print(result)
       - V is the number of unique individuals. Our dictionary stores one entry per person.
 """
 
+""" 
+    Edge Cases to Consider:
+    1. An empty list of pairs (should return two empty lists).
+    2. All individuals have parents (zero parents list should be empty).
+    3. All individuals have more than one parent (one parent list should be empty).
+    4. A node has no ancestors (should return -1).
+    5. Multiple nodes have the same earliest ancestor (should return any one of them).
+    6. A non-tree structure (should handle gracefully, but we assume input is well-formed).
+"""
+
 # ---------------------------------------------------------------------------------------------------
 
 def has_common_ancestor(parent_child_pairs, node1, node2):
