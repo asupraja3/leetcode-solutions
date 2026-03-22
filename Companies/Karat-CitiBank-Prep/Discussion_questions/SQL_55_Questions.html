@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;600;700&display=swap');
+:root{--bg:#0b0f1a;--card:#111a2e;--card2:#162038;--border:#1e2d4a;--accent:#f59e0b;--accent2:#38bdf8;--green:#4ade80;--red:#f87171;--purple:#a78bfa;--text:#d1d5db;--dim:#6b7280;--bright:#f9fafb;--code-bg:#0d1117;--code-border:#21262d}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.w{max-width:960px;margin:0 auto;padding:16px}
+header{text-align:center;padding:32px 16px 24px}
+h1{font-size:1.6rem;font-weight:700;color:var(--bright)}
+h1 b{color:var(--accent)}
+.sub{color:var(--dim);font-size:.88rem;margin-top:6px}
+.tags{display:flex;justify-content:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.tag{font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:3px 10px;border-radius:14px;letter-spacing:.5px;border:1px solid}
+.tag.c1{background:rgba(245,158,11,.12);color:var(--accent);border-color:rgba(245,158,11,.3)}
+.tag.c2{background:rgba(56,189,248,.12);color:var(--accent2);border-color:rgba(56,189,248,.3)}
+.tag.c3{background:rgba(167,139,250,.12);color:var(--purple);border-color:rgba(167,139,250,.3)}
+.tag.c4{background:rgba(74,222,128,.12);color:var(--green);border-color:rgba(74,222,128,.3)}
+.info{background:var(--card);border:1px solid var(--accent);border-radius:10px;padding:16px;margin:24px 0;font-size:.85rem}
+.info strong{color:var(--accent)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin:20px 0}
+.st{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+.st .n{font-size:1.5rem;font-weight:700;color:var(--accent)}
+.st .l{font-size:.7rem;color:var(--dim);margin-top:2px}
+.btns{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0}
+.btn{padding:5px 12px;background:transparent;border:1px solid var(--border);color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:.65rem;border-radius:5px;cursor:pointer;transition:.2s}
+.btn:hover,.btn.on{border-color:var(--accent);color:var(--accent)}
+.sh{display:flex;align-items:center;gap:10px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.sh h2{font-size:1.05rem;font-weight:600;color:var(--bright)}
+.badge{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:600;padding:3px 8px;border-radius:12px;letter-spacing:.7px;text-transform:uppercase;white-space:nowrap}
+.badge.con{background:var(--accent);color:#000}
+.badge.cod{background:var(--accent2);color:#000}
+.badge.win{background:var(--purple);color:#fff}
+.badge.opt{background:var(--green);color:#000}
+.badge.bank{background:var(--red);color:#fff}
+.c{background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden;transition:.2s}
+.c:hover{border-color:#2d3f6a}
+.q{padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;user-select:none}
+.q:hover{background:var(--card2)}
+.qn{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent);min-width:24px}
+.qt{font-size:.88rem;font-weight:600;color:var(--bright);flex:1}
+.ti{font-size:1.1rem;color:var(--dim);transition:transform .3s;flex-shrink:0}
+.c.o .ti{transform:rotate(45deg)}
+.a{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.c.o .a{max-height:8000px}
+.ac{padding:0 16px 16px;border-top:1px solid var(--border)}
+pre{background:var(--code-bg);border:1px solid var(--code-border);border-radius:6px;padding:12px 14px;margin:10px 0;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.76rem;line-height:1.6;color:#e6edf3}
+.lbl{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.8px;text-transform:uppercase;margin:14px 0 6px;display:block}
+.lbl.q-l{color:var(--red)}
+.lbl.a-l{color:var(--green)}
+.lbl.w-l{color:var(--accent)}
+.lbl.k-l{color:var(--accent2)}
+.ac p{font-size:.84rem;margin-bottom:6px;line-height:1.65}
+.ac code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:1px 5px;border-radius:3px;font-size:.76rem;color:var(--accent2)}
+.key{display:inline-block;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);padding:1px 7px;border-radius:4px;font-size:.73rem;color:var(--accent);margin:2px}
+.tbl{width:100%;border-collapse:collapse;margin:10px 0;font-size:.78rem}
+.tbl th{background:var(--card2);padding:6px 10px;text-align:left;color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.7rem;border:1px solid var(--border)}
+.tbl td{padding:6px 10px;border:1px solid var(--border);color:var(--text)}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:100;transition:width .3s}
+.ft{text-align:center;padding:30px 16px;color:var(--dim);font-size:.75rem;border-top:1px solid var(--border);margin-top:30px}
+@media(max-width:600px){.w{padding:10px}h1{font-size:1.2rem}pre{font-size:.68rem;padding:8px 10px}}
+</style>
+</head>
+<body>
+<div class="bar" id="pb"></div>
+<div class="w">
+<header>
+<h1>SQL <b>Interview Prep</b> — Citi/Karat</h1>
+<p class="sub">Concepts • Coding Queries • Window Functions • Optimization • Banking Scenarios</p>
+<div class="tags">
+<span class="tag c1">🟡 Concepts</span>
+<span class="tag c2">🔵 Write the Query</span>
+<span class="tag c3">🟣 Window Functions</span>
+<span class="tag c4">🟢 Optimization</span>
+</div>
+</header>
+
+<div class="stats">
+<div class="st"><div class="n">45</div><div class="l">Questions</div></div>
+<div class="st"><div class="n">5</div><div class="l">Sections</div></div>
+<div class="st"><div class="n">🏦</div><div class="l">Citi-Relevant</div></div>
+</div>
+
+<div class="info">
+<p><strong>Why SQL matters for your Citi AI Engineer role:</strong> Citi's AI pipelines consume data from SQL databases. Your resume lists PostgreSQL, Oracle SQL, MySQL, and PySpark SQL. Even for AI roles, Karat may test SQL fundamentals in the discussion section or as a coding warm-up.</p>
+</div>
+
+<div class="btns">
+<button class="btn on" onclick="showAll()">All</button>
+<button class="btn" onclick="filt('con')">Concepts</button>
+<button class="btn" onclick="filt('cod')">Coding</button>
+<button class="btn" onclick="filt('win')">Window Funcs</button>
+<button class="btn" onclick="filt('opt')">Optimization</button>
+<button class="btn" onclick="filt('bank')">Banking/Citi</button>
+<button class="btn" onclick="xAll()">± Expand All</button>
+</div>
+
+<!-- ====== SECTION 1: CONCEPTS ====== -->
+<div class="sh" data-sec="con"><span class="badge con">CONCEPTS</span><h2>1. SQL Fundamentals — Discussion Questions</h2></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">01</span><span class="qt">What are the different types of JOINs? When to use each?</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<table class="tbl"><tr><th>Join</th><th>Returns</th><th>Use When</th></tr>
+<tr><td>INNER JOIN</td><td>Only matching rows from both tables</td><td>You only want records that exist in both</td></tr>
+<tr><td>LEFT JOIN</td><td>All rows from left + matches from right (NULL if no match)</td><td>You want all records from the main table even without matches</td></tr>
+<tr><td>RIGHT JOIN</td><td>All rows from right + matches from left</td><td>Rarely used — just swap table order with LEFT JOIN</td></tr>
+<tr><td>FULL OUTER JOIN</td><td>All rows from both tables (NULLs where no match)</td><td>Finding unmatched records in either table</td></tr>
+<tr><td>CROSS JOIN</td><td>Cartesian product (every row × every row)</td><td>Generating all combinations (rare in practice)</td></tr>
+<tr><td>SELF JOIN</td><td>Table joined to itself</td><td>Hierarchical data (employee → manager)</td></tr>
+</table>
+<p class="key">MOST COMMONLY ASKED SQL CONCEPT</p>
+</div></div></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">02</span><span class="qt">WHERE vs HAVING — what's the difference?</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<p><code>WHERE</code> filters <strong>individual rows BEFORE</strong> grouping. <code>HAVING</code> filters <strong>groups AFTER</strong> aggregation.</p>
+<pre>-- WHERE: filter rows before GROUP BY
+SELECT dept, AVG(salary) FROM employees
+WHERE hire_date > '2020-01-01'
+GROUP BY dept
+
+-- HAVING: filter groups after aggregation
+SELECT dept, AVG(salary) as avg_sal FROM employees
+GROUP BY dept
+HAVING AVG(salary) > 80000</pre>
+<p>You can use both: WHERE filters rows first, then GROUP BY aggregates, then HAVING filters groups.</p>
+</div></div></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">03</span><span class="qt">What is normalization? Explain 1NF, 2NF, 3NF</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<p><strong>1NF:</strong> Each column contains atomic values (no lists/arrays in a cell). Each row is unique.</p>
+<p><strong>2NF:</strong> 1NF + every non-key column depends on the <strong>entire</strong> primary key (not just part of a composite key).</p>
+<p><strong>3NF:</strong> 2NF + no <strong>transitive dependencies</strong> — non-key columns depend ONLY on the primary key, not on other non-key columns.</p>
+<p><strong>When to denormalize:</strong> Read-heavy analytics/reporting. Data warehouses often use star/snowflake schemas (denormalized) for query speed.</p>
+</div></div></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">04</span><span class="qt">What is the difference between DELETE, TRUNCATE, and DROP?</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<p><code>DELETE</code>: Removes specific rows (can use WHERE). Logged, can be rolled back. Triggers fire.</p>
+<p><code>TRUNCATE</code>: Removes ALL rows. Faster (minimal logging). Resets identity. Cannot use WHERE. Usually can't rollback.</p>
+<p><code>DROP</code>: Removes the entire table structure + data. Gone completely.</p>
+</div></div></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">05</span><span class="qt">What are indexes? When should you use them?</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<p>Indexes are data structures (usually B-tree) that speed up data retrieval. Like a book index — instead of scanning every page, you look up where something is.</p>
+<p><strong>Use on:</strong> Columns in WHERE clauses, JOIN conditions, ORDER BY, GROUP BY. Primary keys are automatically indexed.</p>
+<p><strong>Don't over-index:</strong> Each index slows down INSERT/UPDATE/DELETE because the index must be maintained. Don't index low-cardinality columns (e.g., boolean).</p>
+</div></div></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">06</span><span class="qt">UNION vs UNION ALL</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<p><code>UNION</code>: Combines results and <strong>removes duplicates</strong> (requires sorting — slower). <code>UNION ALL</code>: Combines results and <strong>keeps duplicates</strong> (faster, no sort needed).</p>
+<p>Use <code>UNION ALL</code> when you know there are no duplicates or when duplicates are acceptable. It's always faster.</p>
+</div></div></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">07</span><span class="qt">What is a subquery vs a CTE (Common Table Expression)?</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<p><strong>Subquery:</strong> Nested query inside another query. Can be in SELECT, FROM, or WHERE. Hard to read when deeply nested.</p>
+<p><strong>CTE (WITH clause):</strong> Named temporary result set. More readable, can be referenced multiple times, supports recursion.</p>
+<pre>-- CTE approach (preferred for readability)
+WITH high_earners AS (
+    SELECT dept_id, COUNT(*) as cnt
+    FROM employees WHERE salary > 100000
+    GROUP BY dept_id
+)
+SELECT d.name, h.cnt
+FROM departments d JOIN high_earners h ON d.id = h.dept_id;</pre>
+<p><strong>Performance:</strong> Usually identical. CTEs are not materialized in most databases (they're inlined). Use CTEs for readability.</p>
+</div></div></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">08</span><span class="qt">What are ACID properties?</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<p><strong>Atomicity:</strong> Transaction is all-or-nothing. <strong>Consistency:</strong> DB moves from one valid state to another. <strong>Isolation:</strong> Concurrent transactions don't interfere. <strong>Durability:</strong> Committed data survives crashes.</p>
+<p>Critical in banking — a money transfer must debit AND credit atomically. If one fails, both must rollback.</p>
+</div></div></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">09</span><span class="qt">NULL handling — what are the gotchas?</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<p>NULL is not a value — it's the <strong>absence of a value</strong>. Gotchas:</p>
+<p>• <code>NULL = NULL</code> → NULL (not TRUE!). Use <code>IS NULL</code> / <code>IS NOT NULL</code></p>
+<p>• <code>NULL</code> in aggregates is ignored by SUM, AVG, COUNT(column) but NOT by COUNT(*)</p>
+<p>• <code>WHERE col != 'X'</code> does NOT return rows where col is NULL</p>
+<p>• Use <code>COALESCE(col, default)</code> to handle NULLs</p>
+</div></div></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">10</span><span class="qt">SQL order of execution</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<p>Not the order you write it! Actual execution order:</p>
+<pre>1. FROM / JOINs     → identify tables
+2. WHERE            → filter rows
+3. GROUP BY         → create groups
+4. HAVING           → filter groups
+5. SELECT           → compute columns
+6. DISTINCT         → remove duplicates
+7. ORDER BY         → sort results
+8. LIMIT / OFFSET   → paginate</pre>
+<p>This is why you can't use a column alias from SELECT in WHERE (WHERE runs before SELECT). But you CAN use it in ORDER BY.</p>
+<p class="key">UNDERSTANDING THIS PREVENTS MANY MISTAKES</p>
+</div></div></div>
+
+<!-- ====== SECTION 2: CODING ====== -->
+<div class="sh" data-sec="cod"><span class="badge cod">CODING</span><h2>2. "Write the Query" — Practical SQL</h2></div>
+
+<div class="c" data-t="cod" onclick="tog(this)"><div class="q"><span class="qn">11</span><span class="qt">Find the second highest salary</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl k-l">Schema: employees(id, name, salary, dept_id)</span>
+<pre>-- Method 1: Subquery
+SELECT MAX(salary) FROM employees
+WHERE salary < (SELECT MAX(salary) FROM employees);
+
+-- Method 2: DENSE_RANK (handles ties)
+SELECT salary FROM (
+    SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) as rnk
+    FROM employees
+) ranked WHERE rnk = 2;
+
+-- Method 3: OFFSET
+SELECT DISTINCT salary FROM employees
+ORDER BY salary DESC LIMIT 1 OFFSET 1;</pre>
+<p class="key">CLASSIC INTERVIEW QUESTION</p>
+</div></div></div>
+
+<div class="c" data-t="cod" onclick="tog(this)"><div class="q"><span class="qn">12</span><span class="qt">Find duplicate records</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl k-l">Schema: emails(id, email)</span>
+<pre>-- Find duplicate emails
+SELECT email, COUNT(*) as cnt
+FROM emails
+GROUP BY email
+HAVING COUNT(*) > 1;</pre>
+<p>To find and DELETE duplicates keeping the lowest id:</p>
+<pre>DELETE FROM emails
+WHERE id NOT IN (
+    SELECT MIN(id) FROM emails GROUP BY email
+);</pre>
+</div></div></div>
+
+<div class="c" data-t="cod" onclick="tog(this)"><div class="q"><span class="qn">13</span><span class="qt">Find employees who earn more than their manager</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl k-l">Schema: employees(id, name, salary, manager_id)</span>
+<pre>SELECT e.name AS employee
+FROM employees e
+JOIN employees m ON e.manager_id = m.id
+WHERE e.salary > m.salary;</pre>
+<p>This is a <strong>self-join</strong> — joining the table to itself. The alias <code>e</code> represents employees, <code>m</code> represents their managers.</p>
+</div></div></div>
+
+<div class="c" data-t="cod" onclick="tog(this)"><div class="q"><span class="qn">14</span><span class="qt">Monthly active users and transaction totals for 2020</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl k-l">Schema: transactions(id, user_id, amount, created_at)</span>
+<pre>SELECT
+    EXTRACT(MONTH FROM created_at) AS month,
+    COUNT(DISTINCT user_id) AS active_users,
+    COUNT(*) AS total_transactions,
+    SUM(amount) AS total_amount
+FROM transactions
+WHERE created_at >= '2020-01-01' AND created_at < '2021-01-01'
+GROUP BY EXTRACT(MONTH FROM created_at)
+ORDER BY month;</pre>
+<p>Note: <code>COUNT(DISTINCT user_id)</code> for unique users, <code>COUNT(*)</code> for all transactions.</p>
+</div></div></div>
+
+<div class="c" data-t="cod" onclick="tog(this)"><div class="q"><span class="qn">15</span><span class="qt">Find customers who never placed an order</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl k-l">Schema: customers(id, name), orders(id, customer_id, amount)</span>
+<pre>-- Method 1: LEFT JOIN + NULL check
+SELECT c.name
+FROM customers c
+LEFT JOIN orders o ON c.id = o.customer_id
+WHERE o.id IS NULL;
+
+-- Method 2: NOT EXISTS (often faster)
+SELECT c.name
+FROM customers c
+WHERE NOT EXISTS (
+    SELECT 1 FROM orders o WHERE o.customer_id = c.id
+);
+
+-- Method 3: NOT IN (careful with NULLs!)
+SELECT name FROM customers
+WHERE id NOT IN (SELECT customer_id FROM orders
+                 WHERE customer_id IS NOT NULL);</pre>
+</div></div></div>
+
+<div class="c" data-t="cod" onclick="tog(this)"><div class="q"><span class="qn">16</span><span class="qt">Top 3 departments by headcount with at least 10 employees</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl k-l">Schema: employees(id, name, dept_id), departments(id, name)</span>
+<pre>SELECT d.name, COUNT(*) AS headcount
+FROM employees e
+JOIN departments d ON e.dept_id = d.id
+GROUP BY d.name
+HAVING COUNT(*) >= 10
+ORDER BY headcount DESC
+LIMIT 3;</pre>
+</div></div></div>
+
+<div class="c" data-t="cod" onclick="tog(this)"><div class="q"><span class="qn">17</span><span class="qt">Pivot: count of orders per status per month</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl k-l">Schema: orders(id, status, created_at) — status: 'pending','shipped','delivered'</span>
+<pre>SELECT
+    EXTRACT(MONTH FROM created_at) AS month,
+    SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending,
+    SUM(CASE WHEN status = 'shipped' THEN 1 ELSE 0 END) AS shipped,
+    SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) AS delivered
+FROM orders
+WHERE created_at >= '2024-01-01'
+GROUP BY EXTRACT(MONTH FROM created_at)
+ORDER BY month;</pre>
+<p>CASE WHEN inside aggregates = manual pivot. Essential pattern.</p>
+</div></div></div>
+
+<div class="c" data-t="cod" onclick="tog(this)"><div class="q"><span class="qn">18</span><span class="qt">Cumulative sum (running total)</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl k-l">Schema: daily_sales(date, amount)</span>
+<pre>SELECT
+    date,
+    amount,
+    SUM(amount) OVER (ORDER BY date) AS running_total
+FROM daily_sales;</pre>
+<p>Without <code>ROWS BETWEEN</code>, the default window frame is <code>RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW</code> — perfect for cumulative sum.</p>
+</div></div></div>
+
+<!-- ====== SECTION 3: WINDOW FUNCTIONS ====== -->
+<div class="sh" data-sec="win"><span class="badge win">WINDOW FUNCTIONS</span><h2>3. Window Functions — Citi's Favorite Topic</h2></div>
+
+<div class="c" data-t="win" onclick="tog(this)"><div class="q"><span class="qn">19</span><span class="qt">ROW_NUMBER vs RANK vs DENSE_RANK</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<table class="tbl"><tr><th>Salary</th><th>ROW_NUMBER</th><th>RANK</th><th>DENSE_RANK</th></tr>
+<tr><td>100</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>100</td><td>2</td><td>1</td><td>1</td></tr>
+<tr><td>90</td><td>3</td><td>3</td><td>2</td></tr>
+<tr><td>80</td><td>4</td><td>4</td><td>3</td></tr>
+</table>
+<p><code>ROW_NUMBER</code>: Always unique (arbitrary tiebreak). <code>RANK</code>: Same rank for ties, gaps after. <code>DENSE_RANK</code>: Same rank for ties, no gaps.</p>
+<p class="key">KNOW THIS COLD — ASKED CONSTANTLY</p>
+</div></div></div>
+
+<div class="c" data-t="win" onclick="tog(this)"><div class="q"><span class="qn">20</span><span class="qt">LAG and LEAD — accessing previous/next rows</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>-- Day-over-day change in transactions
+SELECT
+    date,
+    amount,
+    LAG(amount) OVER (ORDER BY date) AS prev_day,
+    amount - LAG(amount) OVER (ORDER BY date) AS daily_change
+FROM daily_transactions;</pre>
+<p><code>LAG(col, n, default)</code>: Value from n rows BEFORE. <code>LEAD(col, n, default)</code>: Value from n rows AFTER. Essential for comparing consecutive rows.</p>
+</div></div></div>
+
+<div class="c" data-t="win" onclick="tog(this)"><div class="q"><span class="qn">21</span><span class="qt">3-day rolling average</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>SELECT
+    date,
+    amount,
+    AVG(amount) OVER (
+        ORDER BY date
+        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+    ) AS rolling_3day_avg
+FROM daily_deposits;</pre>
+<p><strong>ROWS BETWEEN:</strong> Defines the window frame. <code>2 PRECEDING AND CURRENT ROW</code> = current row + 2 before = 3-day window.</p>
+<p>⚠️ <code>ROWS</code> vs <code>RANGE</code>: ROWS counts physical rows. RANGE groups by value. For dates with gaps, ROWS might give wrong results — you may need to fill missing dates first.</p>
+</div></div></div>
+
+<div class="c" data-t="win" onclick="tog(this)"><div class="q"><span class="qn">22</span><span class="qt">Top N per group (e.g., top 3 earners per department)</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>WITH ranked AS (
+    SELECT
+        name, dept_id, salary,
+        ROW_NUMBER() OVER (
+            PARTITION BY dept_id
+            ORDER BY salary DESC
+        ) AS rn
+    FROM employees
+)
+SELECT name, dept_id, salary
+FROM ranked WHERE rn <= 3;</pre>
+<p><strong>PARTITION BY:</strong> Restarts the ranking for each group (department). This pattern (rank + filter) is the #1 window function use case in interviews.</p>
+<p class="key">TOP KARAT/CITI SQL PATTERN</p>
+</div></div></div>
+
+<div class="c" data-t="win" onclick="tog(this)"><div class="q"><span class="qn">23</span><span class="qt">Percent of total within group</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>SELECT
+    dept_id,
+    name,
+    salary,
+    ROUND(salary * 100.0 / SUM(salary) OVER (PARTITION BY dept_id), 2)
+        AS pct_of_dept_total
+FROM employees;</pre>
+<p><code>SUM() OVER (PARTITION BY ...)</code> without ORDER BY gives the total for the entire partition — perfect for percentage calculations.</p>
+</div></div></div>
+
+<div class="c" data-t="win" onclick="tog(this)"><div class="q"><span class="qn">24</span><span class="qt">Detect consecutive events (e.g., 3+ consecutive days of login)</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>WITH numbered AS (
+    SELECT
+        user_id, login_date,
+        login_date - INTERVAL '1 day' * ROW_NUMBER()
+            OVER (PARTITION BY user_id ORDER BY login_date) AS grp
+    FROM logins
+)
+SELECT user_id, COUNT(*) AS streak, MIN(login_date), MAX(login_date)
+FROM numbered
+GROUP BY user_id, grp
+HAVING COUNT(*) >= 3;</pre>
+<p><strong>Gaps and Islands technique:</strong> Subtracting row_number from date creates the same value for consecutive dates. Brilliant pattern for detecting streaks.</p>
+</div></div></div>
+
+<div class="c" data-t="win" onclick="tog(this)"><div class="q"><span class="qn">25</span><span class="qt">FIRST_VALUE / LAST_VALUE</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>-- Each employee vs highest earner in their department
+SELECT
+    name, salary,
+    FIRST_VALUE(name) OVER (
+        PARTITION BY dept_id ORDER BY salary DESC
+    ) AS top_earner,
+    FIRST_VALUE(salary) OVER (
+        PARTITION BY dept_id ORDER BY salary DESC
+    ) AS top_salary
+FROM employees;</pre>
+<p>⚠️ <code>LAST_VALUE</code> gotcha: default frame is up to current row, not end of partition. Use <code>ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING</code> for true last value.</p>
+</div></div></div>
+
+<!-- ====== SECTION 4: OPTIMIZATION ====== -->
+<div class="sh" data-sec="opt"><span class="badge opt">OPTIMIZATION</span><h2>4. Query Optimization & Performance</h2></div>
+
+<div class="c" data-t="opt" onclick="tog(this)"><div class="q"><span class="qn">26</span><span class="qt">How do you optimize a slow SQL query?</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Systematic Approach</span>
+<p>1. <strong>EXPLAIN ANALYZE</strong> — read the query plan. Look for sequential scans, high row estimates, sorts.</p>
+<p>2. <strong>Add indexes</strong> on WHERE, JOIN, ORDER BY columns.</p>
+<p>3. <strong>Avoid SELECT *</strong> — only select needed columns.</p>
+<p>4. <strong>Check JOINs</strong> — are you joining on indexed columns? Correct join type?</p>
+<p>5. <strong>Reduce data early</strong> — filter in WHERE before JOINs when possible.</p>
+<p>6. <strong>Avoid functions on indexed columns</strong> in WHERE (e.g., <code>WHERE YEAR(date) = 2024</code> can't use index — use range instead).</p>
+<p>7. <strong>Consider materialized views</strong> for expensive aggregations run repeatedly.</p>
+</div></div></div>
+
+<div class="c" data-t="opt" onclick="tog(this)"><div class="q"><span class="qn">27</span><span class="qt">Why is SELECT * bad?</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<p>1. Fetches unnecessary data — more I/O, network transfer. 2. Prevents covering index optimization. 3. Breaks if table schema changes (new column appears). 4. Makes query intent unclear. Always explicitly list needed columns.</p>
+</div></div></div>
+
+<div class="c" data-t="opt" onclick="tog(this)"><div class="q"><span class="qn">28</span><span class="qt">Index anti-patterns — when indexes DON'T help</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<p>• <code>WHERE UPPER(name) = 'ALICE'</code> — function on column prevents index use. Fix: functional index or store normalized.</p>
+<p>• <code>WHERE col LIKE '%abc'</code> — leading wildcard = full scan. <code>LIKE 'abc%'</code> CAN use index.</p>
+<p>• <code>WHERE col != 'X'</code> — negation often skips index (too many rows match).</p>
+<p>• Low-cardinality columns (boolean, status with 3 values) — index doesn't help much.</p>
+<p>• <code>OR</code> conditions across different columns — may not use indexes effectively.</p>
+</div></div></div>
+
+<div class="c" data-t="opt" onclick="tog(this)"><div class="q"><span class="qn">29</span><span class="qt">EXISTS vs IN — which is faster?</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<p><code>EXISTS</code> stops at the first match (short-circuits). <code>IN</code> may evaluate the entire subquery list.</p>
+<p>Rule of thumb: <code>EXISTS</code> is faster when the subquery returns many rows. <code>IN</code> is fine for small lists. Modern optimizers often make them equivalent, but <code>EXISTS</code> handles NULLs better.</p>
+<pre>-- Prefer EXISTS for large subqueries
+SELECT * FROM customers c
+WHERE EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.id);</pre>
+</div></div></div>
+
+<div class="c" data-t="opt" onclick="tog(this)"><div class="q"><span class="qn">30</span><span class="qt">What is a query execution plan? How do you read it?</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<p>Run <code>EXPLAIN</code> (or <code>EXPLAIN ANALYZE</code> for actual timing). Key things to look for:</p>
+<p>• <strong>Seq Scan</strong> (full table scan) — missing index?</p>
+<p>• <strong>Nested Loop</strong> on large tables — consider hash join</p>
+<p>• <strong>Sort</strong> — can an index eliminate sorting?</p>
+<p>• <strong>Rows estimate</strong> vs actual — if very different, statistics are stale (<code>ANALYZE table</code>)</p>
+<p>• <strong>Cost</strong> — higher startup cost = more setup. Higher total cost = more work overall.</p>
+</div></div></div>
+
+<!-- ====== SECTION 5: BANKING / CITI ====== -->
+<div class="sh" data-sec="bank"><span class="badge bank">BANKING/CITI</span><h2>5. Banking & Citi-Relevant SQL Scenarios</h2></div>
+
+<div class="c" data-t="bank" onclick="tog(this)"><div class="q"><span class="qn">31</span><span class="qt">Calculate daily balance from transactions</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl k-l">Schema: transactions(id, account_id, amount, type, date) — type: 'credit'/'debit'</span>
+<pre>SELECT
+    account_id,
+    date,
+    SUM(CASE WHEN type = 'credit' THEN amount
+             WHEN type = 'debit' THEN -amount END)
+        OVER (PARTITION BY account_id ORDER BY date) AS running_balance
+FROM transactions
+ORDER BY account_id, date;</pre>
+<p>Window function running sum — core banking calculation.</p>
+</div></div></div>
+
+<div class="c" data-t="bank" onclick="tog(this)"><div class="q"><span class="qn">32</span><span class="qt">Detect accounts with >40% daily balance drop</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>WITH daily_bal AS (
+    SELECT account_id, date,
+        SUM(amount) AS balance
+    FROM transactions GROUP BY account_id, date
+),
+with_prev AS (
+    SELECT *,
+        LAG(balance) OVER (PARTITION BY account_id ORDER BY date) AS prev_balance
+    FROM daily_bal
+)
+SELECT * FROM with_prev
+WHERE prev_balance > 0
+  AND (balance - prev_balance) / prev_balance < -0.4;</pre>
+<p>LAG for previous day comparison. Relevant for fraud detection and anomaly monitoring at Citi.</p>
+</div></div></div>
+
+<div class="c" data-t="bank" onclick="tog(this)"><div class="q"><span class="qn">33</span><span class="qt">Year-over-year growth by product</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>WITH yearly AS (
+    SELECT
+        product_id,
+        EXTRACT(YEAR FROM date) AS yr,
+        SUM(revenue) AS total
+    FROM sales GROUP BY product_id, EXTRACT(YEAR FROM date)
+)
+SELECT
+    curr.product_id, curr.yr,
+    curr.total AS current_year,
+    prev.total AS previous_year,
+    ROUND((curr.total - prev.total) * 100.0 / NULLIF(prev.total, 0), 2)
+        AS yoy_growth_pct
+FROM yearly curr
+LEFT JOIN yearly prev
+    ON curr.product_id = prev.product_id
+    AND curr.yr = prev.yr + 1;</pre>
+<p>Self-join on year offset. <code>NULLIF</code> prevents division by zero for new products.</p>
+</div></div></div>
+
+<div class="c" data-t="bank" onclick="tog(this)"><div class="q"><span class="qn">34</span><span class="qt">Find users active for 5+ consecutive days in January</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>WITH jan_logins AS (
+    SELECT DISTINCT user_id, DATE(login_time) AS login_date
+    FROM logins
+    WHERE login_time >= '2024-01-01' AND login_time < '2024-02-01'
+),
+grouped AS (
+    SELECT user_id, login_date,
+        login_date - (ROW_NUMBER() OVER (
+            PARTITION BY user_id ORDER BY login_date
+        ))::int AS grp
+    FROM jan_logins
+)
+SELECT user_id, COUNT(*) AS streak_days
+FROM grouped
+GROUP BY user_id, grp
+HAVING COUNT(*) >= 5;</pre>
+<p>Gaps and Islands technique again — Citi uses this for identifying consistent customer engagement patterns.</p>
+</div></div></div>
+
+<div class="c" data-t="bank" onclick="tog(this)"><div class="q"><span class="qn">35</span><span class="qt">Email click-through rate (CTR) by day</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl k-l">Schema: emails(id, user_id, send_date, action) — action: 'sent','opened','clicked'</span>
+<pre>WITH opened AS (
+    SELECT send_date, COUNT(*) AS open_cnt
+    FROM emails WHERE action = 'opened'
+    GROUP BY send_date
+),
+clicked AS (
+    SELECT send_date, COUNT(*) AS click_cnt
+    FROM emails WHERE action = 'clicked'
+    GROUP BY send_date
+)
+SELECT
+    o.send_date,
+    ROUND(c.click_cnt * 100.0 / NULLIF(o.open_cnt, 0), 2) AS ctr_pct
+FROM opened o
+LEFT JOIN clicked c ON o.send_date = c.send_date
+ORDER BY o.send_date;</pre>
+<p>This is a reported Citigroup SQL interview question — calculating rates from event data.</p>
+<p class="key">ACTUAL CITI INTERVIEW QUESTION</p>
+</div></div></div>
+
+<div class="c" data-t="bank" onclick="tog(this)"><div class="q"><span class="qn">36</span><span class="qt">Deduplication after ETL error</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl k-l">ETL inserted duplicate rows — get the latest unique record per employee</span>
+<pre>WITH ranked AS (
+    SELECT *,
+        ROW_NUMBER() OVER (
+            PARTITION BY employee_id
+            ORDER BY ingestion_timestamp DESC
+        ) AS rn
+    FROM employees_raw
+)
+SELECT * FROM ranked WHERE rn = 1;</pre>
+<p>ROW_NUMBER + PARTITION BY for dedup. Common in real ETL pipelines at any bank.</p>
+</div></div></div>
+
+<div class="c" data-t="bank" onclick="tog(this)"><div class="q"><span class="qn">37</span><span class="qt">Top 3 products by revenue per region</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>WITH product_rev AS (
+    SELECT region, product, SUM(revenue) AS total_rev,
+        DENSE_RANK() OVER (
+            PARTITION BY region ORDER BY SUM(revenue) DESC
+        ) AS rnk
+    FROM sales
+    GROUP BY region, product
+)
+SELECT region, product, total_rev
+FROM product_rev WHERE rnk <= 3;</pre>
+<p>Combines GROUP BY aggregation with window function ranking — a very common pattern.</p>
+</div></div></div>
+
+<div class="c" data-t="bank" onclick="tog(this)"><div class="q"><span class="qn">38</span><span class="qt">Identify dormant accounts (no transaction in 90 days)</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>SELECT a.id, a.name, MAX(t.date) AS last_txn
+FROM accounts a
+LEFT JOIN transactions t ON a.id = t.account_id
+GROUP BY a.id, a.name
+HAVING MAX(t.date) < CURRENT_DATE - INTERVAL '90 days'
+    OR MAX(t.date) IS NULL;</pre>
+<p>LEFT JOIN + NULL check catches accounts with zero transactions. HAVING filters on aggregated date.</p>
+</div></div></div>
+
+<div class="c" data-t="bank" onclick="tog(this)"><div class="q"><span class="qn">39</span><span class="qt">Monthly retention rate</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>WITH monthly AS (
+    SELECT DISTINCT user_id,
+        DATE_TRUNC('month', txn_date) AS month
+    FROM transactions
+)
+SELECT
+    curr.month,
+    COUNT(prev.user_id) AS retained,
+    COUNT(curr.user_id) AS total,
+    ROUND(COUNT(prev.user_id) * 100.0 / COUNT(curr.user_id), 2)
+        AS retention_pct
+FROM monthly curr
+LEFT JOIN monthly prev
+    ON curr.user_id = prev.user_id
+    AND curr.month = prev.month + INTERVAL '1 month'
+GROUP BY curr.month
+ORDER BY curr.month;</pre>
+<p>Self-join on user + month offset. Retention = users who were active this month AND last month.</p>
+</div></div></div>
+
+<div class="c" data-t="bank" onclick="tog(this)"><div class="q"><span class="qn">40</span><span class="qt">SQL injection — how to prevent it</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Discussion Answer</span>
+<p><strong>Never</strong> interpolate user input into SQL strings. Use <strong>parameterized queries</strong> (prepared statements):</p>
+<pre>-- BAD: SQL injection risk
+query = f"SELECT * FROM users WHERE id = {user_input}"
+
+-- GOOD: Parameterized
+cursor.execute("SELECT * FROM users WHERE id = %s", (user_input,))</pre>
+<p>ORMs (SQLAlchemy) handle this automatically. In banking, SQL injection could expose customer financial data — critical security concern.</p>
+</div></div></div>
+
+<div class="c" data-t="bank" onclick="tog(this)"><div class="q"><span class="qn">41</span><span class="qt">3-day rolling average of deposits (Citi-reported question)</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>SELECT
+    customer_id,
+    txn_date,
+    deposit_amount,
+    AVG(deposit_amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY txn_date
+        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+    ) AS rolling_3day_avg
+FROM deposits
+ORDER BY customer_id, txn_date;</pre>
+<p>Partition by customer so each customer gets their own rolling window. Mentioned specifically in Citi interview guides.</p>
+<p class="key">REPORTED CITI INTERVIEW QUESTION</p>
+</div></div></div>
+
+<div class="c" data-t="bank" onclick="tog(this)"><div class="q"><span class="qn">42</span><span class="qt">Percent of employees earning >100K by department (Citi-reported)</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>SELECT
+    d.name AS department,
+    COUNT(*) AS total_employees,
+    SUM(CASE WHEN e.salary > 100000 THEN 1 ELSE 0 END) AS high_earners,
+    ROUND(
+        SUM(CASE WHEN e.salary > 100000 THEN 1 ELSE 0 END) * 100.0
+        / COUNT(*), 2
+    ) AS pct_high_earners
+FROM employees e
+JOIN departments d ON e.dept_id = d.id
+GROUP BY d.name
+HAVING COUNT(*) >= 10
+ORDER BY pct_high_earners DESC
+LIMIT 3;</pre>
+<p>CASE inside SUM for conditional counting. HAVING filters small departments. Reported as Citi analyst question.</p>
+</div></div></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">43</span><span class="qt">What is a VIEW? When would you use one?</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<p>A VIEW is a <strong>saved query</strong> — a virtual table that doesn't store data. Every time you query the view, the underlying SQL runs.</p>
+<p><strong>Use cases:</strong> Data abstraction (hide complex joins), security (restrict access to specific columns), consistency (everyone uses the same business logic).</p>
+<p><strong>Materialized View:</strong> Actually stores the result. Faster reads but needs refreshing. Good for expensive dashboards queried repeatedly.</p>
+</div></div></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">44</span><span class="qt">What are transactions and isolation levels?</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<p>A transaction is a sequence of operations that are atomic. <code>BEGIN → operations → COMMIT</code> (or <code>ROLLBACK</code>).</p>
+<p><strong>Isolation levels</strong> (weakest to strongest):</p>
+<p>1. <strong>Read Uncommitted</strong> — can see uncommitted changes (dirty reads)</p>
+<p>2. <strong>Read Committed</strong> — only sees committed data (default in PostgreSQL)</p>
+<p>3. <strong>Repeatable Read</strong> — same query returns same results within transaction</p>
+<p>4. <strong>Serializable</strong> — transactions behave as if executed one at a time (slowest)</p>
+<p>Banking typically uses Read Committed or higher to prevent financial data corruption.</p>
+</div></div></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">45</span><span class="qt">What is the difference between OLTP and OLAP?</span><span class="ti">+</span></div><div class="a"><div class="ac"><span class="lbl a-l">Answer</span>
+<table class="tbl"><tr><th></th><th>OLTP</th><th>OLAP</th></tr>
+<tr><td>Purpose</td><td>Day-to-day operations</td><td>Analytics & reporting</td></tr>
+<tr><td>Queries</td><td>Simple, fast (INSERT, UPDATE)</td><td>Complex aggregations, joins</td></tr>
+<tr><td>Schema</td><td>Normalized (3NF)</td><td>Denormalized (star/snowflake)</td></tr>
+<tr><td>Users</td><td>Many concurrent</td><td>Few analysts</td></tr>
+<tr><td>Example</td><td>Transaction processing DB</td><td>Data warehouse (Databricks)</td></tr>
+</table>
+<p>At Citi, OLTP handles real-time transactions. Your Databricks/Delta Lake work at Citadel is OLAP-style analytics.</p>
+</div></div></div>
+
+<div class="ft">
+<p>💪 <strong>45 SQL questions covering everything Karat/Citi might ask.</strong></p>
+<p>Priority: Concepts (JOINs, WHERE vs HAVING), Window Functions (ROW_NUMBER, LAG, rolling avg), Banking scenarios (31-42)</p>
+<p>Good luck tomorrow, Supraja! 🚀</p>
+</div>
+</div>
+
+<script>
+function tog(c){c.classList.toggle('o')}
+function xAll(){const cs=document.querySelectorAll('.c');const ao=[...cs].every(c=>c.classList.contains('o'));cs.forEach(c=>{ao?c.classList.remove('o'):c.classList.add('o')})}
+function showAll(){document.querySelectorAll('.c').forEach(c=>c.style.display='');document.querySelectorAll('[data-sec]').forEach(s=>s.style.display='');document.querySelectorAll('.btn').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.btn')[0].classList.add('on')}
+function filt(t){document.querySelectorAll('.btn').forEach(b=>b.classList.remove('on'));event.target.classList.add('on');document.querySelectorAll('.c').forEach(c=>{c.style.display=c.dataset.t===t?'':'none'});const m={con:0,cod:1,win:2,opt:3,bank:4};document.querySelectorAll('[data-sec]').forEach((s,i)=>{s.style.display=i===m[t]?'':'none'})}
+window.addEventListener('scroll',()=>{const s=window.scrollY,d=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('pb').style.width=(s/d)*100+'%'})
+</script>
+</body>
+</html>

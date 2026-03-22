@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;600;700&display=swap');
+:root{--bg:#0a0d15;--card:#111827;--card2:#1a2236;--border:#1f2a42;--accent:#f59e0b;--accent2:#38bdf8;--green:#22c55e;--red:#ef4444;--purple:#a78bfa;--pink:#f472b6;--text:#d1d5db;--dim:#6b7280;--bright:#f9fafb;--code-bg:#0d1117;--right:rgba(34,197,94,.12);--wrong:rgba(239,68,68,.12);--hard:#ff6b6b}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.w{max-width:800px;margin:0 auto;padding:16px}
+header{text-align:center;padding:32px 16px 20px}
+h1{font-size:1.6rem;font-weight:700;color:var(--bright)}h1 b{color:var(--accent)}
+.sub{color:var(--dim);font-size:.88rem;margin-top:6px}
+.score-bar{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin:20px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.score-bar .s{font-family:'JetBrains Mono',monospace;font-size:.85rem}.score-bar .s b{color:var(--green);font-size:1.1rem}.score-bar .s.wrong b{color:var(--red)}
+.reset-btn{padding:6px 16px;background:transparent;border:1px solid var(--border);color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:.7rem;border-radius:6px;cursor:pointer;transition:.2s}.reset-btn:hover{border-color:var(--accent);color:var(--accent)}
+.pct-bar{width:100%;height:6px;background:var(--border);border-radius:3px;margin:10px 0;overflow:hidden}.pct-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--accent));border-radius:3px;transition:width .3s;width:0}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.fbtn{padding:4px 10px;background:transparent;border:1px solid var(--border);color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:.6rem;border-radius:5px;cursor:pointer;transition:.2s}.fbtn:hover,.fbtn.on{border-color:var(--accent);color:var(--accent)}
+.fbtn.hrd{border-color:var(--hard);color:var(--hard)}
+.sh{display:flex;align-items:center;gap:10px;margin:26px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--border)}.sh h2{font-size:1rem;font-weight:600;color:var(--bright)}
+.badge{font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:600;padding:3px 8px;border-radius:10px;letter-spacing:.6px;text-transform:uppercase;white-space:nowrap}
+.badge.bigo{background:var(--accent);color:#000}.badge.ds{background:var(--accent2);color:#000}.badge.py{background:var(--green);color:#000}.badge.oop{background:var(--pink);color:#000}.badge.net{background:var(--purple);color:#fff}.badge.ai{background:var(--red);color:#fff}.badge.sys{background:#fb923c;color:#000}
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:12px;overflow:hidden}.q-card:hover{border-color:#2d3f6a}
+.q-card.hard-q{border-left:3px solid var(--hard)}
+.q-head{padding:14px 16px;display:flex;gap:10px;align-items:flex-start}.q-num{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent);min-width:26px;padding-top:2px}.q-text{font-size:.88rem;font-weight:500;color:var(--bright);flex:1}.q-text code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:1px 5px;border-radius:3px;font-size:.78rem;color:var(--accent2)}
+.hard-tag{font-family:'JetBrains Mono',monospace;font-size:.55rem;background:var(--hard);color:#fff;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle}
+.opts{padding:0 16px 6px}.opt{display:flex;align-items:center;gap:10px;padding:8px 12px;margin:4px 0;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:.15s;font-size:.84rem}.opt:hover{border-color:#3b4570;background:var(--card2)}.opt .letter{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:600;color:var(--accent);min-width:18px}
+.opt.correct{border-color:var(--green);background:var(--right)}.opt.correct .letter{color:var(--green)}.opt.incorrect{border-color:var(--red);background:var(--wrong)}.opt.incorrect .letter{color:var(--red)}.opt.show-right{border-color:var(--green);background:var(--right)}.opt.show-right .letter{color:var(--green)}
+.explanation{max-height:0;overflow:hidden;transition:max-height .3s}.explanation.show{max-height:600px}
+.exp-content{padding:8px 16px 14px;font-size:.82rem;color:var(--text);border-top:1px solid var(--border);margin-top:4px}.exp-content b{color:var(--green)}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:100;transition:width .3s}
+.ft{text-align:center;padding:30px 16px;color:var(--dim);font-size:.75rem;border-top:1px solid var(--border);margin-top:30px}
+@media(max-width:600px){.w{padding:10px}h1{font-size:1.2rem}}
+</style>
+</head>
+<body>
+<div class="bar" id="pb"></div>
+<div class="w">
+<header>
+<h1>CS <b>Trivia</b> — Ultimate + Hard Mode</h1>
+<p class="sub">130 Questions • 🔥 Hard questions marked with red border • Good luck Supraja!</p>
+</header>
+<div class="score-bar">
+<div class="s">✅ <b id="sc">0</b> / <span id="tot">0</span></div>
+<div class="s wrong">❌ <b id="wr">0</b></div>
+<div class="s">📋 Left: <b id="rem">0</b></div>
+<button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</div>
+<div class="pct-bar"><div class="pct-fill" id="pf"></div></div>
+<div class="filters">
+<button class="fbtn on" onclick="showAll(this)">All (130)</button>
+<button class="fbtn" onclick="filt(this,'bigo')">Big-O (30)</button>
+<button class="fbtn" onclick="filt(this,'ds')">Data Structs (25)</button>
+<button class="fbtn" onclick="filt(this,'py')">Python (27)</button>
+<button class="fbtn" onclick="filt(this,'oop')">OOP (10)</button>
+<button class="fbtn" onclick="filt(this,'ai')">AI/ML (23)</button>
+<button class="fbtn" onclick="filt(this,'net')">Network (5)</button>
+<button class="fbtn" onclick="filt(this,'sys')">Systems (10)</button>
+<button class="fbtn hrd" onclick="filtHard(this)">🔥 Hard Only</button>
+</div>
+<div id="quiz"></div>
+<div class="ft"><p>🔥 = Hard questions. Aim for <b>100+/130</b>. You've got this! 🚀</p></div>
+</div>
+<script>
+const Q=[
+// ==================== BIG-O (30) ====================
+{cat:"bigo",sec:"Big-O & Complexity",q:"Time complexity of binary search?",opts:["O(n)","O(log n)","O(n log n)","O(1)"],ans:1,exp:"Halves search space each step → log₂(n)."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Average time complexity of QuickSort?",opts:["O(n)","O(n²)","O(n log n)","O(log n)"],ans:2,exp:"Average O(n log n). Worst O(n²) with bad pivot."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Python dict lookup complexity?",opts:["O(1) average","O(n)","O(log n)","O(n log n)"],ans:0,exp:"Hash table → O(1) avg. O(n) worst with collisions."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"<code>list.insert(0, x)</code> complexity?",opts:["O(1)","O(log n)","O(n)","O(n²)"],ans:2,exp:"Shifts all elements → O(n). Use deque.appendleft()."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Space complexity of recursion depth d?",opts:["O(1)","O(d)","O(n)","O(d²)"],ans:1,exp:"Each call = stack frame. d frames → O(d)."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Stable + O(n log n) worst-case sort?",opts:["QuickSort","HeapSort","MergeSort","Selection Sort"],ans:2,exp:"MergeSort: stable + always O(n log n)."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"<code>x in my_set</code> complexity?",opts:["O(n)","O(1) average","O(log n)","O(n log n)"],ans:1,exp:"Sets = hash tables → O(1) avg membership."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"What is O(1)?",opts:["Linear","Constant time","Logarithmic","Impossible"],ans:1,exp:"Doesn't grow with input. Array index, hash lookup."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Two nested loops over n items?",opts:["O(n)","O(2n)","O(n²)","O(n log n)"],ans:2,exp:"n × n = n²."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Building a heap from n elements?",opts:["O(n log n)","O(n²)","O(n)","O(log n)"],ans:2,exp:"Bottom-up heapify = O(n). Trick question!"},
+{cat:"bigo",sec:"Big-O & Complexity",q:"BFS/DFS on graph (V vertices, E edges)?",opts:["O(V)","O(E)","O(V + E)","O(V × E)"],ans:2,exp:"Visit each vertex + traverse each edge = O(V+E)."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Python <code>sorted()</code> complexity?",opts:["O(n)","O(n log n)","O(n²)","O(log n)"],ans:1,exp:"Timsort: O(n log n) worst, O(n) best."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Linked list index access?",opts:["O(1)","O(log n)","O(n)","O(n²)"],ans:2,exp:"Traverse from head → O(n). Arrays = O(1)."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"O(n log n) vs O(n√n) for large n?",opts:["O(n log n) faster","O(n√n) faster","Same","Depends"],ans:0,exp:"log n grows much slower than √n."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Balanced BST search?",opts:["O(1)","O(n)","O(log n)","O(n log n)"],ans:2,exp:"Halves each level → O(log n). Unbalanced → O(n)."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"What is amortized O(1)?",opts:["Always exactly 1 op","Average O(1) over many ops though some are O(n)","Same as O(1)","Faster than O(1)"],ans:1,exp:"list.append(): usually O(1), occasionally O(n) on resize. Averaged = O(1)."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Palindrome check complexity?",opts:["O(1)","O(n)","O(n²)","O(log n)"],ans:1,exp:"Compare from both ends. One pass = O(n)."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"<code>list.pop()</code> vs <code>list.pop(0)</code>?",opts:["Both O(1)","Both O(n)","pop() O(1), pop(0) O(n)","pop() O(n), pop(0) O(1)"],ans:2,exp:"pop() = end O(1). pop(0) = front, shifts all = O(n)."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Counting sort runs in?",opts:["O(n log n)","O(n + k) where k = range","O(n²)","O(n)"],ans:1,exp:"O(n+k). Linear when k is small. Non-comparison sort."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Dijkstra's with min-heap?",opts:["O(V²)","O(V+E)","O((V+E) log V)","O(V log V)"],ans:2,exp:"Extract-min O(V log V) + relax edges O(E log V) = O((V+E) log V)."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"<code>set.intersection(other)</code>?",opts:["O(1)","O(min(m,n))","O(n²)","O(n log n)"],ans:1,exp:"Iterates smaller set, checks in larger → O(min(m,n))."},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Bubble Sort best case?",opts:["O(n log n)","O(n²)","O(n)","O(1)"],ans:2,exp:"With swap flag optimization: no swaps = sorted → O(n)."},
+// 🔥 HARD BIG-O
+{cat:"bigo",sec:"Big-O & Complexity",q:"What is the complexity of <code>for i in range(n): for j in range(i, n)</code>?",opts:["O(n)","O(n²)","O(n²/2) which is O(n²)","O(n log n)"],ans:2,exp:"Sum of n + (n-1) + ... + 1 = n(n+1)/2 = O(n²). The constant ½ is dropped in Big-O.",hard:1},
+{cat:"bigo",sec:"Big-O & Complexity",q:"What is the time complexity of generating all subsets of a set of size n?",opts:["O(n²)","O(n!)","O(2ⁿ)","O(n log n)"],ans:2,exp:"Each element is either included or not → 2 choices × n elements = 2ⁿ subsets. Power set.",hard:1},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Time complexity of generating all permutations of n elements?",opts:["O(2ⁿ)","O(n!)","O(nⁿ)","O(n²)"],ans:1,exp:"n choices for first, n-1 for second, ... = n! permutations. Grows faster than 2ⁿ.",hard:1},
+{cat:"bigo",sec:"Big-O & Complexity",q:"A function calls itself twice with n-1: <code>f(n-1) + f(n-1)</code>. Complexity?",opts:["O(n)","O(n²)","O(2ⁿ)","O(n log n)"],ans:2,exp:"Branching factor 2, depth n → 2ⁿ calls. Classic unoptimized fibonacci pattern.",hard:1},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Complexity of finding the median using QuickSelect?",opts:["O(n log n)","O(n²)","O(n) average","O(log n)"],ans:2,exp:"QuickSelect: average O(n), worst O(n²). Partitions like QuickSort but only recurses into one half.",hard:1},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Three nested loops: <code>for i in n: for j in n: for k in n:</code>?",opts:["O(n²)","O(3n)","O(n³)","O(n log n)"],ans:2,exp:"n × n × n = n³. Each additional nested loop multiplies by n.",hard:1},
+{cat:"bigo",sec:"Big-O & Complexity",q:"What is the complexity of <code>while n > 1: n = n // 2</code>?",opts:["O(n)","O(n²)","O(log n)","O(1)"],ans:2,exp:"Halving n each time → log₂(n) iterations. Same pattern as binary search.",hard:1},
+{cat:"bigo",sec:"Big-O & Complexity",q:"Complexity of finding all pairs in an array summing to target (using hash set)?",opts:["O(n²)","O(n)","O(n log n)","O(1)"],ans:1,exp:"One pass: for each element, check if (target - element) is in the set. O(n) time, O(n) space. The classic Two Sum optimization.",hard:1},
+
+// ==================== DATA STRUCTURES (25) ====================
+{cat:"ds",sec:"Data Structures",q:"Stack follows?",opts:["FIFO","LIFO","LILO","Random"],ans:1,exp:"LIFO. Queue = FIFO."},
+{cat:"ds",sec:"Data Structures",q:"BFS uses which structure?",opts:["Stack","Queue","Heap","Linked List"],ans:1,exp:"BFS = FIFO = Queue. DFS = Stack."},
+{cat:"ds",sec:"Data Structures",q:"Hash table vs BST advantage?",opts:["Sorted order","O(1) avg lookup","Less memory","Guaranteed worst case"],ans:1,exp:"Hash O(1) avg. BST O(log n) guaranteed + sorted."},
+{cat:"ds",sec:"Data Structures",q:"Min-heap root is?",opts:["Maximum","Median","Minimum","Random"],ans:2,exp:"Min-heap: parent ≤ children. Root = min."},
+{cat:"ds",sec:"Data Structures",q:"LRU cache structure?",opts:["Array","HashMap + Doubly Linked List","Stack+Queue","Trie"],ans:1,exp:"HashMap O(1) lookup + DLL O(1) move/evict."},
+{cat:"ds",sec:"Data Structures",q:"Trie is for?",opts:["Sorting","Prefix string search","Graph traversal","Balancing"],ans:1,exp:"Prefix tree. Autocomplete, spell check."},
+{cat:"ds",sec:"Data Structures",q:"O(1) index access: array or linked list?",opts:["Linked List","Array","Both","Neither"],ans:1,exp:"Array = contiguous memory = O(1). LL = O(n)."},
+{cat:"ds",sec:"Data Structures",q:"Max edges, n nodes, undirected, no self-loops?",opts:["n","n²","n(n-1)/2","2ⁿ"],ans:2,exp:"C(n,2) = n(n-1)/2."},
+{cat:"ds",sec:"Data Structures",q:"O(1) both-end append/pop?",opts:["Array","Stack","Deque","Singly LL"],ans:2,exp:"Deque = double-ended queue. collections.deque."},
+{cat:"ds",sec:"Data Structures",q:"Binary tree max levels with n nodes?",opts:["n","log₂(n)","n/2","n-1"],ans:0,exp:"Worst (degenerate): n levels. Best (balanced): log₂(n)+1."},
+{cat:"ds",sec:"Data Structures",q:"Hash table maps keys via?",opts:["Sorting","Hash function","Recursion","Binary search"],ans:1,exp:"hash(key) → bucket index."},
+{cat:"ds",sec:"Data Structures",q:"High load factor → hash table does what?",opts:["Crashes","Resizes + rehashes","Switches to BST","Deletes old"],ans:1,exp:"Doubles size, rehashes all entries."},
+{cat:"ds",sec:"Data Structures",q:"O(log n) insert, delete, AND search?",opts:["Hash Table","Sorted Array","Balanced BST","Linked List"],ans:2,exp:"Balanced BST: all ops O(log n) guaranteed."},
+{cat:"ds",sec:"Data Structures",q:"Priority queue implemented with?",opts:["Sorted array","Stack","Heap","Hash table"],ans:2,exp:"Heap: O(log n) insert, O(1) peek, O(log n) extract."},
+{cat:"ds",sec:"Data Structures",q:"Graph vs Tree?",opts:["Identical","Tree = connected acyclic graph","Graph has no edges","Trees can cycle"],ans:1,exp:"Tree: connected + acyclic + n-1 edges."},
+{cat:"ds",sec:"Data Structures",q:"Balanced parentheses → use?",opts:["Queue","Hash Map","Stack","Array"],ans:2,exp:"Push open, pop on close. Stack empty at end = balanced."},
+{cat:"ds",sec:"Data Structures",q:"Adjacency list vs matrix for sparse graph?",opts:["Matrix better","List better — O(V+E) vs O(V²)","Same","Neither"],ans:1,exp:"Sparse: list O(V+E) saves space. Dense: matrix O(V²) ok."},
+{cat:"ds",sec:"Data Structures",q:"What is a bloom filter?",opts:["Sorting algo","Probabilistic: possibly-in or definitely-not","Balanced tree","Compression"],ans:1,exp:"May false positive, never false negative. Space-efficient."},
+// 🔥 HARD DS
+{cat:"ds",sec:"Data Structures",q:"What is a skip list and what is its search complexity?",opts:["A linked list variant with O(n) search","A multi-level linked list with O(log n) average search","A type of hash table","A balanced BST"],ans:1,exp:"Skip list: multiple layers of linked lists with 'express lanes'. Average O(log n) search/insert/delete. Alternative to balanced BSTs. Used in Redis.",hard:1},
+{cat:"ds",sec:"Data Structures",q:"In a B-tree (used in databases), nodes can have more than 2 children. Why?",opts:["It looks nicer","Minimizes disk I/O by storing more keys per node, reducing tree height","It's faster in RAM","No reason, tradition"],ans:1,exp:"B-trees are optimized for systems that read/write large blocks of data (disks). Wide nodes = fewer levels = fewer disk reads. That's why databases use B-trees for indexes.",hard:1},
+{cat:"ds",sec:"Data Structures",q:"What is the time complexity of union and find in a Union-Find with path compression + union by rank?",opts:["O(1)","O(log n)","O(α(n)) — nearly O(1)","O(n)"],ans:2,exp:"α(n) is the inverse Ackermann function — grows so slowly it's effectively constant (≤4 for any practical n). Used in Kruskal's MST, connected components.",hard:1},
+{cat:"ds",sec:"Data Structures",q:"What is a monotonic stack used for?",opts:["Sorting arrays","Finding next greater/smaller element in O(n)","Balancing trees","Hash collision resolution"],ans:1,exp:"Monotonic stack maintains elements in increasing/decreasing order. Solves 'next greater element', 'largest rectangle in histogram', stock span problems in O(n).",hard:1},
+{cat:"ds",sec:"Data Structures",q:"A segment tree supports what operations efficiently?",opts:["Only sorting","Range queries (sum, min, max) and point updates in O(log n)","Only insertion","Only deletion"],ans:1,exp:"Segment tree: O(log n) for both range queries and updates. Used in competitive programming for range-sum, range-min queries. Lazy propagation for range updates.",hard:1},
+{cat:"ds",sec:"Data Structures",q:"What is a consistent hashing ring used for?",opts:["Sorting distributed data","Distributing keys across nodes with minimal redistribution when nodes join/leave","Encrypting data","Compressing files"],ans:1,exp:"Used in distributed systems (Cassandra, DynamoDB). When a node is added/removed, only ~1/n keys need to move instead of rehashing everything.",hard:1},
+{cat:"ds",sec:"Data Structures",q:"What is a topological sort and when is it possible?",opts:["Sorting any graph","Linear ordering of vertices in a DAG (directed acyclic graph) where u comes before v if edge u→v","Sorting by value","Only for trees"],ans:1,exp:"Only works on DAGs (no cycles). Used for: build systems, course prerequisites, task scheduling. Algorithms: Kahn's (BFS) or DFS-based.",hard:1},
+
+// ==================== PYTHON (27) ====================
+{cat:"py",sec:"Python Trivia",q:"<code>type([]) is list</code>?",opts:["True","False","TypeError","None"],ans:0,exp:"type([]) = <class 'list'>, same object as list."},
+{cat:"py",sec:"Python Trivia",q:"<code>bool('')</code>?",opts:["True","False","None","Error"],ans:1,exp:"Empty string = falsy."},
+{cat:"py",sec:"Python Trivia",q:"Keyword for generators?",opts:["return","generate","yield","async"],ans:2,exp:"yield pauses, returns value. Resumes on next()."},
+{cat:"py",sec:"Python Trivia",q:"<code>dict.get('x', 'def')</code> if 'x' missing?",opts:["None","KeyError","'def'","False"],ans:2,exp:".get() returns default. Avoids KeyError."},
+{cat:"py",sec:"Python Trivia",q:"<code>type(lambda: None)</code>?",opts:["NoneType","function","lambda","Error"],ans:1,exp:"Lambdas are function objects."},
+{cat:"py",sec:"Python Trivia",q:"Which is immutable?",opts:["list","dict","set","tuple"],ans:3,exp:"Tuples immutable. Lists, dicts, sets mutable."},
+{cat:"py",sec:"Python Trivia",q:"<code>@staticmethod</code>?",opts:["Takes cls","Takes self","No self/cls","Private"],ans:2,exp:"Plain function on the class. No implicit first arg."},
+{cat:"py",sec:"Python Trivia",q:"<code>[1,2]+[3,4]</code>?",opts:["[1,2,3,4]","[[1,2],[3,4]]","Error","10"],ans:0,exp:"+ concatenates lists."},
+{cat:"py",sec:"Python Trivia",q:"Module for defaultdict, Counter?",opts:["itertools","functools","collections","typing"],ans:2,exp:"collections module."},
+{cat:"py",sec:"Python Trivia",q:"PEP 8 is?",opts:["Package manager","Style guide","Async protocol","Test framework"],ans:1,exp:"Official style guide. 4 spaces, snake_case."},
+{cat:"py",sec:"Python Trivia",q:"<code>*args</code> collects?",opts:["Kwargs as dict","Positional as tuple","Strings","Env vars"],ans:1,exp:"*args = tuple. **kwargs = dict."},
+{cat:"py",sec:"Python Trivia",q:"<code>'hello'[1:4]</code>?",opts:["'hell'","'ell'","'ello'","'hel'"],ans:1,exp:"[1:4] = indices 1,2,3 → 'ell'."},
+{cat:"py",sec:"Python Trivia",q:"<code>enumerate()</code> returns?",opts:["List","(index,value) iterator","Dict","Set"],ans:1,exp:"(0,'a'), (1,'b'), (2,'c')..."},
+{cat:"py",sec:"Python Trivia",q:"<code>None == False</code>?",opts:["True","False","None","Error"],ans:1,exp:"None is NOT False. Different types."},
+{cat:"py",sec:"Python Trivia",q:"<code>zip()</code> does?",opts:["Compresses files","Pairs elements from iterables","Creates dict","Sorts"],ans:1,exp:"zip([1,2],['a','b']) → [(1,'a'),(2,'b')]."},
+{cat:"py",sec:"Python Trivia",q:"List comprehension is?",opts:["Compression","[expr for x in iter if cond]","Debug tool","Slower loop"],ans:1,exp:"Concise list creation. Faster than for loop."},
+{cat:"py",sec:"Python Trivia",q:"<code>isinstance(True, int)</code>?",opts:["True","False","Error","None"],ans:0,exp:"bool is subclass of int. True==1, False==0."},
+{cat:"py",sec:"Python Trivia",q:"<code>__name__ == '__main__'</code>?",opts:["Imports module","Runs only when executed directly","Defines main class","New process"],ans:1,exp:"Guards entry point. When imported, __name__ = module name."},
+{cat:"py",sec:"Python Trivia",q:"<code>@app.route('/path')</code> is?",opts:["Syntax error","Function returning a decorator","Class method","Static method"],ans:1,exp:"Calls app.route('/path') which RETURNS a decorator. Two levels."},
+{cat:"py",sec:"Python Trivia",q:"<code>id()</code> returns?",opts:["Type","Memory address/identity","Hash","Variable name"],ans:1,exp:"Unique identifier (memory address in CPython). Used by 'is'."},
+// 🔥 HARD PYTHON
+{cat:"py",sec:"Python Trivia",q:"What is the output of <code>print([x for x in range(5)] == list(range(5)))</code>?",opts:["True","False","Error","[0,1,2,3,4]"],ans:0,exp:"Both produce [0,1,2,3,4]. == compares values, not identity.",hard:1},
+{cat:"py",sec:"Python Trivia",q:"What does <code>collections.ChainMap</code> do?",opts:["Merges dicts into one copy","Groups multiple dicts into single view without copying","Chains iterators","Maps functions over lists"],ans:1,exp:"ChainMap creates a single view of multiple dicts. Lookups search each dict in order. No data is copied. Used for variable scoping, config layering.",hard:1},
+{cat:"py",sec:"Python Trivia",q:"What is <code>__slots__</code> and why use it?",opts:["Defines allowed attributes, saves ~40% memory per instance","Limits function arguments","Restricts imports","Enables multithreading"],ans:0,exp:"Replaces instance __dict__ with fixed-size array. Prevents dynamic attribute creation. Use when creating millions of small objects.",hard:1},
+{cat:"py",sec:"Python Trivia",q:"What is the MRO and which algorithm does Python use?",opts:["Method Resolution Order — uses C3 linearization","Main Runtime Operation — uses BFS","Memory Recovery Option — uses GC","Module Reload Order — uses depth-first"],ans:0,exp:"MRO determines which parent's method is called in multiple inheritance. C3 linearization ensures consistent, predictable ordering. Check with ClassName.__mro__.",hard:1},
+{cat:"py",sec:"Python Trivia",q:"What is <code>functools.partial</code> used for?",opts:["Partially sorting a list","Creating a new function with some arguments pre-filled","Partially loading a module","Running half of a function"],ans:1,exp:"partial(func, arg1) returns a new callable with arg1 fixed. Useful for callbacks, adapting function signatures, creating specialized versions.",hard:1},
+{cat:"py",sec:"Python Trivia",q:"What is a metaclass in Python?",opts:["A class that inherits from everything","A class whose instances are classes themselves","A class with no methods","A deprecated feature"],ans:1,exp:"type is the default metaclass. When you define 'class Foo:', Python calls type('Foo', bases, dict) to create it. Custom metaclasses control class creation (e.g., Django models, ORMs).",hard:1},
+{cat:"py",sec:"Python Trivia",q:"What is the descriptor protocol in Python?",opts:["A networking protocol","Objects defining __get__, __set__, __delete__ that customize attribute access","A file format","A testing pattern"],ans:1,exp:"Descriptors power property(), classmethod(), staticmethod(), and ORMs. When an attribute lookup finds a descriptor on the class, its __get__/__set__ methods are called instead of direct dict access.",hard:1},
+
+// ==================== OOP (10) ====================
+{cat:"oop",sec:"OOP",q:"Four pillars of OOP?",opts:["Variables, Functions, Loops, Classes","Encapsulation, Abstraction, Inheritance, Polymorphism","CRUD","Compile, Link, Load, Execute"],ans:1,exp:"Encapsulation, Abstraction, Inheritance, Polymorphism."},
+{cat:"oop",sec:"OOP",q:"Encapsulation?",opts:["Inheriting","Bundling data+methods, restricting access","Parallel execution","Type conversion"],ans:1,exp:"Data + methods in class, with access control."},
+{cat:"oop",sec:"OOP",q:"Polymorphism?",opts:["Inheritance","Same interface, different types","Private vars","Multiple constructors"],ans:1,exp:"Many forms. Duck typing in Python."},
+{cat:"oop",sec:"OOP",q:"Class vs Object?",opts:["Same","Class=blueprint, Object=instance","Object=blueprint","Classes for data"],ans:1,exp:"Class = template. Object = instance."},
+{cat:"oop",sec:"OOP",q:"Inheritance?",opts:["Hiding details","Child gets parent's properties/methods","Parallel exec","Auto conversion"],ans:1,exp:"Child acquires parent's attributes/methods."},
+{cat:"oop",sec:"OOP",q:"Abstract class?",opts:["Can't instantiate; has abstract methods","No methods","Auto-deleted","Memory only"],ans:0,exp:"Subclasses MUST implement abstract methods."},
+{cat:"oop",sec:"OOP",q:"Override vs Overload?",opts:["Same","Override=redefine parent method. Overload=same name, diff params","Opposite","Neither in Python"],ans:1,exp:"Python uses *args for overloading."},
+{cat:"oop",sec:"OOP",q:"super()?",opts:["Creates superclass","Calls parent via MRO","Deletes parent","Makes static"],ans:1,exp:"Proxy to parent following MRO."},
+{cat:"oop",sec:"OOP",q:"Composition vs Inheritance?",opts:["Same","Composition=has-a, Inheritance=is-a","Comp faster","Inheritance=functions"],ans:1,exp:"Favor composition for flexibility."},
+{cat:"oop",sec:"OOP",q:"Diamond problem?",opts:["Syntax error","Ambiguity: two parents share grandparent","Performance","Diamond DS"],ans:1,exp:"Python solves with C3 linearization."},
+
+// ==================== AI/ML (23) ====================
+{cat:"ai",sec:"AI / ML / GenAI",q:"Activation function purpose?",opts:["Init weights","Non-linearity","Split data","Normalize"],ans:1,exp:"ReLU, sigmoid, tanh add non-linearity."},
+{cat:"ai",sec:"AI / ML / GenAI",q:"Overfitting?",opts:["Great on new data","Memorizes train, fails on test","Too simple","Slow"],ans:1,exp:"Fix: regularization, dropout, more data."},
+{cat:"ai",sec:"AI / ML / GenAI",q:"LLM temperature?",opts:["Speed","Randomness of output","Learning rate","Max tokens"],ans:1,exp:"0 = deterministic. 1+ = creative."},
+{cat:"ai",sec:"AI / ML / GenAI",q:"RAG 'R' = ?",opts:["Recurrent","Retrieval","Reinforcement","Recursive"],ans:1,exp:"Retrieval-Augmented Generation."},
+{cat:"ai",sec:"AI / ML / GenAI",q:"LoRA advantage?",opts:["All params","Small adapters only","No GPU","Bigger model"],ans:1,exp:"Freezes base, trains low-rank adapters."},
+{cat:"ai",sec:"AI / ML / GenAI",q:"Precision vs Recall?",opts:["Same","Precision=TP/(TP+FP), Recall=TP/(TP+FN)","Precision for regression","Precision > Recall always"],ans:1,exp:"Precision: how many predicted positives are correct. Recall: how many actual positives were caught."},
+{cat:"ai",sec:"AI / ML / GenAI",q:"Vector embedding?",opts:["Compressed image","Dense vector for semantic meaning","DB index","Python type"],ans:1,exp:"Semantic similarity = spatial proximity."},
+{cat:"ai",sec:"AI / ML / GenAI",q:"Vanishing gradients?",opts:["Too large","Approach zero in deep nets","OOM","Loss infinity"],ans:1,exp:"Fix: ReLU, residual connections, batch norm."},
+{cat:"ai",sec:"AI / ML / GenAI",q:"Transfer learning?",opts:["Moving DBs","Pre-trained model on new task","Scratch always","Server transfer"],ans:1,exp:"Fine-tune big model on small data. Foundation of modern AI."},
+{cat:"ai",sec:"AI / ML / GenAI",q:"Dropout purpose?",opts:["Speed up","Randomly disable neurons → prevent overfitting","Remove layers","Compress"],ans:1,exp:"Forces redundant learning. Only during training."},
+{cat:"ai",sec:"AI / ML / GenAI",q:"Batch normalization?",opts:["Batch processing","Normalize layer inputs to stabilize training","Sort samples","Augmentation"],ans:1,exp:"Zero mean, unit variance. Allows higher learning rates."},
+{cat:"ai",sec:"AI / ML / GenAI",q:"Generative vs Discriminative?",opts:["Same","Gen models P(X,Y); Disc models P(Y|X)","Gen always better","Disc generates data"],ans:1,exp:"Disc: learns boundary. Gen: models data generation."},
+{cat:"ai",sec:"AI / ML / GenAI",q:"F1-score?",opts:["First layer output","Harmonic mean of precision and recall","Loss function","Accuracy × 2"],ans:1,exp:"F1 = 2×P×R/(P+R). Balances both."},
+{cat:"ai",sec:"AI / ML / GenAI",q:"Tokenization in NLP?",opts:["Encryption","Break text into words/subwords/chars","Counting","Translation"],ans:1,exp:"BPE common in LLMs."},
+{cat:"ai",sec:"AI / ML / GenAI",q:"LLM hallucination?",opts:["Dreaming","Confident but factually wrong output","Training technique","Activation"],ans:1,exp:"RAG and grounding reduce hallucinations."},
+// 🔥 HARD AI
+{cat:"ai",sec:"AI / ML / GenAI",q:"What is the difference between self-attention and cross-attention in Transformers?",opts:["They're identical","Self-attention: Q,K,V from same sequence. Cross-attention: Q from one, K,V from another","Self is faster","Cross is only in CNNs"],ans:1,exp:"Self-attention: token attends to all tokens in the same sequence (e.g., encoder self-attention in BERT). Cross-attention: one sequence queries another (e.g., decoder attending to encoder output in translation).",hard:1},
+{cat:"ai",sec:"AI / ML / GenAI",q:"What is KV-cache in LLM inference and why does it matter?",opts:["A database cache","Caching key-value pairs from previous tokens to avoid recomputation during autoregressive generation","A training optimization","A type of vector database"],ans:1,exp:"During autoregressive decoding, each new token would recompute attention over all previous tokens. KV-cache stores previous K and V matrices → linear instead of quadratic per new token. Critical for LLM serving speed.",hard:1},
+{cat:"ai",sec:"AI / ML / GenAI",q:"What is the difference between model parallelism and data parallelism in distributed training?",opts:["Same thing","Data: same model on each GPU, split data. Model: split model across GPUs","Data is slower","Model only works on CPUs"],ans:1,exp:"Data parallelism: replicate model, split batches across GPUs, synchronize gradients. Model parallelism: split model layers across GPUs (needed when model doesn't fit on one GPU). Often combined.",hard:1},
+{cat:"ai",sec:"AI / ML / GenAI",q:"What is quantization in the context of LLMs (e.g., GPTQ, AWQ)?",opts:["Making the model larger","Reducing model weight precision (e.g., FP32 → INT4) to decrease memory and speed up inference","A training technique","A type of tokenization"],ans:1,exp:"Quantization reduces precision: FP32 → FP16 → INT8 → INT4. Dramatically reduces memory (4x+ for INT8) with minimal quality loss. GPTQ, AWQ, bitsandbytes are popular methods. QLoRA = quantized model + LoRA fine-tuning.",hard:1},
+{cat:"ai",sec:"AI / ML / GenAI",q:"What is beam search vs greedy decoding in text generation?",opts:["Same algorithm","Greedy: pick top-1 token. Beam: maintain top-k sequences in parallel","Beam is always worse","Greedy is slower"],ans:1,exp:"Greedy: always picks highest probability next token. Fast but can miss globally better sequences. Beam search (beam_width=k): tracks k best partial sequences. Better quality but k× slower. Nucleus/top-p sampling is another approach for creative text.",hard:1},
+{cat:"ai",sec:"AI / ML / GenAI",q:"What is RLHF (Reinforcement Learning from Human Feedback)?",opts:["A supervised learning method","Training a reward model from human preferences, then using RL (PPO) to fine-tune the LLM","A data augmentation method","A type of tokenizer"],ans:1,exp:"Step 1: Collect human rankings of model outputs. Step 2: Train a reward model on these rankings. Step 3: Use PPO (RL algorithm) to fine-tune LLM to maximize the reward model's score. Used by ChatGPT, Claude.",hard:1},
+{cat:"ai",sec:"AI / ML / GenAI",q:"What is the difference between encoder-only, decoder-only, and encoder-decoder Transformers?",opts:["No difference","Encoder-only (BERT): bidirectional, for understanding. Decoder-only (GPT): autoregressive, for generation. Encoder-decoder (T5): for seq-to-seq tasks","Encoder is newer","Decoder can't generate text"],ans:1,exp:"BERT (encoder): sees full context, great for classification/NER. GPT (decoder): sees only past tokens, great for generation. T5/BART (enc-dec): input→output, great for translation/summarization.",hard:1},
+{cat:"ai",sec:"AI / ML / GenAI",q:"What is a mixture of experts (MoE) in modern LLMs?",opts:["Combining multiple separate models","Architecture where only a subset of parameters (experts) are activated per token via a routing network","Ensemble learning","Multiple attention heads"],ans:1,exp:"MoE has many 'expert' FFN layers but a gating network routes each token to only ~2 experts. This allows massive total parameters with lower compute per token. Used in Mixtral, GPT-4 (rumored).",hard:1},
+
+// ==================== NETWORKING (5) ====================
+{cat:"net",sec:"Networking",q:"REST stands for?",opts:["Remote Execution","Representational State Transfer","Request-Event-Service","Real-time System"],ans:1,exp:"HTTP methods on resources. Stateless."},
+{cat:"net",sec:"Networking",q:"HTTP 404?",opts:["Bad Request","Unauthorized","Forbidden","Not Found"],ans:3,exp:"404 = Not Found."},
+{cat:"net",sec:"Networking",q:"HTTPS vs HTTP?",opts:["Faster","Encrypts via TLS","Newer","Same"],ans:1,exp:"HTTP + encryption. Essential for banking."},
+{cat:"net",sec:"Networking",q:"500 status?",opts:["Client error","Redirect","Server error","Success"],ans:2,exp:"5xx = server errors."},
+{cat:"net",sec:"Networking",q:"TCP vs UDP?",opts:["TCP connectionless","TCP guarantees delivery; UDP doesn't","UDP reliable","Same"],ans:1,exp:"TCP reliable. UDP fast. Banking = TCP."},
+
+// ==================== SYSTEMS (10) ====================
+{cat:"sys",sec:"Systems & DevOps",q:"Docker?",opts:["Language","Container platform","Database","Cloud"],ans:1,exp:"App + deps in container."},
+{cat:"sys",sec:"Systems & DevOps",q:"CI/CD?",opts:["Container stuff","Continuous Integration/Delivery","Code Inspection","Cloud Infra"],ans:1,exp:"Auto build+test+deploy."},
+{cat:"sys",sec:"Systems & DevOps",q:"Kubernetes?",opts:["Version control","Container orchestration","DB mgmt","Frontend"],ans:1,exp:"Deploy, scale, manage containers."},
+{cat:"sys",sec:"Systems & DevOps",q:"Process vs Thread?",opts:["Process shares mem","Thread shares mem; process separate","Same","Thread slower"],ans:1,exp:"Thread = shared memory. Process = separate."},
+{cat:"sys",sec:"Systems & DevOps",q:"Load balancer?",opts:["Compresses","Distributes traffic across servers","Database","Monitor"],ans:1,exp:"Round-robin, least connections."},
+{cat:"sys",sec:"Systems & DevOps",q:"Microservices?",opts:["One monolith","Small independent services via APIs","Frontend framework","DB pattern"],ans:1,exp:"Each service = one function, deployed independently."},
+{cat:"sys",sec:"Systems & DevOps",q:"Idempotent API?",opts:["Faster each call","Same request → same result","Called once only","Requires auth"],ans:1,exp:"GET, PUT, DELETE idempotent. POST is not."},
+{cat:"sys",sec:"Systems & DevOps",q:"Message queue (Kafka)?",opts:["Database","Async communication between services","Load balancer","Monitor"],ans:1,exp:"Producer → queue → consumer. Decouples services."},
+{cat:"sys",sec:"Systems & DevOps",q:"CAP theorem?",opts:["Sorting","Can only guarantee 2/3: Consistency, Availability, Partition tolerance","Caching","Security"],ans:1,exp:"Banks choose CP (consistent + partition tolerant)."},
+{cat:"sys",sec:"Systems & DevOps",q:"GitFlow?",opts:["One branch","main+develop+feature/release/hotfix","Branches forbidden","File branches"],ans:1,exp:"Structured branching for CI/CD."},
+];
+
+let score=0,wrong=0,answered=0;const L=['A','B','C','D'];const T=Q.length;
+function render(){let h='',cs='';Q.forEach((q,i)=>{if(q.sec!==cs){cs=q.sec;h+=`<div class="sh" data-sec="${q.cat}"><span class="badge ${q.cat}">${q.cat.toUpperCase()}</span><h2>${q.sec}</h2></div>`}const hc=q.hard?'hard-q':'';const ht=q.hard?'<span class="hard-tag">🔥 HARD</span>':'';h+=`<div class="q-card ${hc}" data-cat="${q.cat}" data-hard="${q.hard||0}" id="q${i}"><div class="q-head"><span class="q-num">${String(i+1).padStart(2,'0')}</span><span class="q-text">${q.q}${ht}</span></div><div class="opts">${q.opts.map((o,j)=>`<div class="opt" onclick="pick(${i},${j})"><span class="letter">${L[j]}</span><span>${o}</span></div>`).join('')}</div><div class="explanation" id="exp${i}"><div class="exp-content"><b>✓ ${q.opts[q.ans]}</b> — ${q.exp}</div></div></div>`});document.getElementById('quiz').innerHTML=h;document.getElementById('rem').textContent=T;upd()}
+function pick(qi,oi){const c=document.getElementById('q'+qi);if(c.dataset.done)return;c.dataset.done='1';const o=c.querySelectorAll('.opt'),a=Q[qi].ans;answered++;if(oi===a){score++;o[oi].classList.add('correct')}else{wrong++;o[oi].classList.add('incorrect');o[a].classList.add('show-right')}document.getElementById('exp'+qi).classList.add('show');upd()}
+function upd(){document.getElementById('sc').textContent=score;document.getElementById('tot').textContent=answered;document.getElementById('wr').textContent=wrong;document.getElementById('rem').textContent=T-answered;document.getElementById('pf').style.width=(answered/T*100)+'%'}
+function resetAll(){score=0;wrong=0;answered=0;render()}
+function showAll(b){document.querySelectorAll('.q-card').forEach(c=>c.style.display='');document.querySelectorAll('[data-sec]').forEach(s=>s.style.display='');document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));if(b)b.classList.add('on')}
+function filt(b,cat){document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.querySelectorAll('.q-card').forEach(c=>{c.style.display=c.dataset.cat===cat?'':'none'});document.querySelectorAll('[data-sec]').forEach(s=>{s.style.display=s.dataset.sec===cat?'':'none'})}
+function filtHard(b){document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.querySelectorAll('.q-card').forEach(c=>{c.style.display=c.dataset.hard==='1'?'':'none'});document.querySelectorAll('[data-sec]').forEach(s=>s.style.display='none')}
+window.addEventListener('scroll',()=>{const s=window.scrollY,d=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('pb').style.width=Math.min(s/d*100,100)+'%'});
+render();
+</script>
+</body>
+</html>

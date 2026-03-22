@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;600;700&display=swap');
+:root{--bg:#0c0f1a;--card:#12172a;--card2:#1a1f35;--border:#252d4a;--accent:#60a5fa;--accent2:#c084fc;--green:#4ade80;--red:#f87171;--yellow:#fbbf24;--orange:#fb923c;--text:#d1d5db;--dim:#6b7280;--bright:#f9fafb;--code-bg:#0d1117;--code-border:#21262d}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.w{max-width:960px;margin:0 auto;padding:16px}
+header{text-align:center;padding:32px 16px 24px}
+h1{font-size:1.6rem;font-weight:700;color:var(--bright)}
+h1 b{color:var(--accent2)}
+.sub{color:var(--dim);font-size:.88rem;margin-top:6px}
+.tags{display:flex;justify-content:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.tag{font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:3px 10px;border-radius:14px;letter-spacing:.5px}
+.tag.r{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)}
+.tag.g{background:rgba(74,222,128,.15);color:var(--green);border:1px solid rgba(74,222,128,.3)}
+.tag.b{background:rgba(96,165,250,.15);color:var(--accent);border:1px solid rgba(96,165,250,.3)}
+.tag.y{background:rgba(251,191,36,.15);color:var(--yellow);border:1px solid rgba(251,191,36,.3)}
+.info{background:var(--card);border:1px solid var(--accent2);border-radius:10px;padding:16px;margin:24px 0;font-size:.85rem}
+.info strong{color:var(--accent2)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin:20px 0}
+.st{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+.st .n{font-size:1.5rem;font-weight:700;color:var(--accent)}
+.st .l{font-size:.7rem;color:var(--dim);margin-top:2px}
+.btns{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0}
+.btn{padding:5px 12px;background:transparent;border:1px solid var(--border);color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:.65rem;border-radius:5px;cursor:pointer;transition:.2s}
+.btn:hover,.btn.on{border-color:var(--accent);color:var(--accent)}
+.sh{display:flex;align-items:center;gap:10px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.sh h2{font-size:1.05rem;font-weight:600;color:var(--bright)}
+.badge{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:600;padding:3px 8px;border-radius:12px;letter-spacing:.7px;text-transform:uppercase;white-space:nowrap}
+.badge.out{background:var(--red);color:#fff}
+.badge.bug{background:var(--orange);color:#000}
+.badge.perf{background:var(--yellow);color:#000}
+.badge.sec{background:var(--accent2);color:#000}
+.badge.ref{background:var(--green);color:#000}
+.badge.con{background:var(--accent);color:#000}
+.c{background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden;transition:.2s}
+.c:hover{border-color:#3b4570}
+.q{padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;user-select:none}
+.q:hover{background:var(--card2)}
+.qn{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent);min-width:24px}
+.qt{font-size:.88rem;font-weight:600;color:var(--bright);flex:1}
+.ti{font-size:1.1rem;color:var(--dim);transition:transform .3s;flex-shrink:0}
+.c.o .ti{transform:rotate(45deg)}
+.a{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.c.o .a{max-height:8000px}
+.ac{padding:0 16px 16px;border-top:1px solid var(--border)}
+pre{background:var(--code-bg);border:1px solid var(--code-border);border-radius:6px;padding:12px 14px;margin:10px 0;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.6;color:#e6edf3}
+.lbl{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.8px;text-transform:uppercase;margin:14px 0 6px;display:block}
+.lbl.q-l{color:var(--red)}
+.lbl.a-l{color:var(--green)}
+.lbl.w-l{color:var(--yellow)}
+.lbl.f-l{color:var(--accent)}
+.ac p{font-size:.84rem;margin-bottom:6px;line-height:1.65}
+.ac code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:1px 5px;border-radius:3px;font-size:.78rem;color:var(--accent)}
+.key{display:inline-block;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);padding:1px 7px;border-radius:4px;font-size:.75rem;color:var(--green);margin:2px}
+.rule{background:rgba(96,165,250,.08);border-left:3px solid var(--accent);padding:10px 14px;border-radius:0 6px 6px 0;margin:8px 0;font-size:.82rem}
+.bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:100;transition:width .3s}
+.ft{text-align:center;padding:30px 16px;color:var(--dim);font-size:.75rem;border-top:1px solid var(--border);margin-top:30px}
+@media(max-width:600px){.w{padding:10px}h1{font-size:1.2rem}pre{font-size:.7rem;padding:8px 10px}.q{padding:10px 12px}}
+</style>
+</head>
+<body>
+<div class="bar" id="pb"></div>
+<div class="w">
+<header>
+<h1>Python <b>Analysis</b> Questions</h1>
+<p class="sub">Karat Code Exhibits • "What's the output?" • "What's the bug?" • "How would you improve this?"</p>
+<div class="tags">
+<span class="tag r">🔴 What's the Output?</span>
+<span class="tag y">🟡 Find the Bug</span>
+<span class="tag b">🔵 Performance Issue</span>
+<span class="tag g">🟢 How to Improve</span>
+</div>
+</header>
+
+<div class="stats">
+<div class="st"><div class="n">60</div><div class="l">Code Exhibits</div></div>
+<div class="st"><div class="n">6</div><div class="l">Categories</div></div>
+<div class="st"><div class="n">🔥</div><div class="l">Real Karat Style</div></div>
+</div>
+
+<div class="info">
+<p><strong>How Karat Analysis works:</strong> They show you a code snippet and ask: "What does this output?", "Is there a bug?", "What's the performance issue?", or "How would you improve this for production?" You read, reason, and explain verbally. No coding needed — just analysis and communication.</p>
+</div>
+
+<div class="btns">
+<button class="btn on" onclick="showAll()">All (60)</button>
+<button class="btn" onclick="filt('out')">Output Prediction</button>
+<button class="btn" onclick="filt('bug')">Find the Bug</button>
+<button class="btn" onclick="filt('perf')">Performance</button>
+<button class="btn" onclick="filt('sec')">Security/Production</button>
+<button class="btn" onclick="filt('con')">Concurrency</button>
+<button class="btn" onclick="filt('ref')">Refactor/Improve</button>
+<button class="btn" onclick="xAll()">± Expand All</button>
+</div>
+
+<!-- ====== SECTION 1: OUTPUT PREDICTION ====== -->
+<div class="sh" data-sec="out"><span class="badge out">OUTPUT</span><h2>1. "What does this print?"</h2></div>
+
+<div class="c" data-t="out" onclick="tog(this)"><div class="q"><span class="qn">01</span><span class="qt">Mutable default argument</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def add_item(item, lst=[]):
+    lst.append(item)
+    return lst
+
+print(add_item(1))
+print(add_item(2))
+print(add_item(3))</pre>
+<span class="lbl a-l">Output</span>
+<pre>[1]
+[1, 2]
+[1, 2, 3]</pre>
+<span class="lbl w-l">Why</span>
+<p>The default <code>[]</code> is created <strong>once</strong> at function definition. All calls share the same list object. Each call appends to it.</p>
+<span class="lbl f-l">Fix</span>
+<p>Use <code>None</code> as default: <code>def add_item(item, lst=None): if lst is None: lst = []</code></p>
+<p class="key">CLASSIC KARAT QUESTION</p>
+</div></div></div>
+
+<div class="c" data-t="out" onclick="tog(this)"><div class="q"><span class="qn">02</span><span class="qt">List aliasing vs copy</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>a = [1, 2, 3]
+b = a
+b.append(4)
+print(a)
+print(a is b)</pre>
+<span class="lbl a-l">Output</span>
+<pre>[1, 2, 3, 4]
+True</pre>
+<p><code>b = a</code> creates a reference, not a copy. Both point to the same list. <code>b = a.copy()</code> or <code>b = a[:]</code> would create an independent copy.</p>
+</div></div></div>
+
+<div class="c" data-t="out" onclick="tog(this)"><div class="q"><span class="qn">03</span><span class="qt">Late binding closure in loop</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>funcs = []
+for i in range(4):
+    funcs.append(lambda: i)
+
+print([f() for f in funcs])</pre>
+<span class="lbl a-l">Output</span>
+<pre>[3, 3, 3, 3]</pre>
+<p>Closures capture the <strong>variable</strong> <code>i</code>, not its value. By loop end, <code>i</code> is 3 for all. Fix: <code>lambda i=i: i</code> (default arg captures current value).</p>
+</div></div></div>
+
+<div class="c" data-t="out" onclick="tog(this)"><div class="q"><span class="qn">04</span><span class="qt">Integer caching / interning</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>a = 256
+b = 256
+print(a is b)
+
+c = 257
+d = 257
+print(c is d)</pre>
+<span class="lbl a-l">Output</span>
+<pre>True
+False  (usually, implementation-dependent)</pre>
+<p>CPython caches integers -5 to 256. <code>a is b</code> is True because they reference the same cached object. 257 is outside the cache, so <code>c</code> and <code>d</code> are different objects. Never use <code>is</code> for value comparison — use <code>==</code>.</p>
+</div></div></div>
+
+<div class="c" data-t="out" onclick="tog(this)"><div class="q"><span class="qn">05</span><span class="qt">String multiplication and mutability</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>s = "hello"
+s[0] = "H"
+print(s)</pre>
+<span class="lbl a-l">Output</span>
+<pre>TypeError: 'str' object does not support item assignment</pre>
+<p>Strings are <strong>immutable</strong>. You can't change characters in-place. Fix: <code>s = "H" + s[1:]</code></p>
+</div></div></div>
+
+<div class="c" data-t="out" onclick="tog(this)"><div class="q"><span class="qn">06</span><span class="qt">Dictionary iteration and modification</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>d = {"a": 1, "b": 2, "c": 3}
+for key in d:
+    if d[key] % 2 == 0:
+        del d[key]</pre>
+<span class="lbl a-l">Output</span>
+<pre>RuntimeError: dictionary changed size during iteration</pre>
+<p>Can't modify dict while iterating. Fix: iterate over a copy of keys: <code>for key in list(d.keys()):</code></p>
+</div></div></div>
+
+<div class="c" data-t="out" onclick="tog(this)"><div class="q"><span class="qn">07</span><span class="qt">Tuple unpacking surprise</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>x = (1)
+y = (1,)
+print(type(x), type(y))</pre>
+<span class="lbl a-l">Output</span>
+<pre>&lt;class 'int'&gt; &lt;class 'tuple'&gt;</pre>
+<p><code>(1)</code> is just parenthesized integer. You need the trailing comma <code>(1,)</code> to make a single-element tuple.</p>
+</div></div></div>
+
+<div class="c" data-t="out" onclick="tog(this)"><div class="q"><span class="qn">08</span><span class="qt">List multiplication trap</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>grid = [[0] * 3] * 3
+grid[0][0] = 1
+print(grid)</pre>
+<span class="lbl a-l">Output</span>
+<pre>[[1, 0, 0], [1, 0, 0], [1, 0, 0]]</pre>
+<p><code>[[0]*3] * 3</code> creates 3 references to the <strong>same</strong> inner list. Changing one changes all. Fix: <code>[[0]*3 for _ in range(3)]</code></p>
+<p class="key">VERY COMMONLY ASKED</p>
+</div></div></div>
+
+<div class="c" data-t="out" onclick="tog(this)"><div class="q"><span class="qn">09</span><span class="qt">Global vs local scope</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>x = 10
+def foo():
+    x = x + 1
+    return x
+print(foo())</pre>
+<span class="lbl a-l">Output</span>
+<pre>UnboundLocalError: local variable 'x' referenced before assignment</pre>
+<p>Assignment to <code>x</code> makes it local, but <code>x + 1</code> reads it before assignment. Fix: use <code>global x</code> or pass as parameter.</p>
+</div></div></div>
+
+<div class="c" data-t="out" onclick="tog(this)"><div class="q"><span class="qn">10</span><span class="qt">Chained comparison</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>print(1 < 2 < 3)
+print(1 < 2 > 0)
+print(1 == 1.0 == True)</pre>
+<span class="lbl a-l">Output</span>
+<pre>True
+True
+True</pre>
+<p>Python chains comparisons: <code>1 < 2 < 3</code> means <code>1 < 2 and 2 < 3</code>. <code>True == 1 == 1.0</code> because <code>bool</code> is a subclass of <code>int</code>.</p>
+</div></div></div>
+
+<div class="c" data-t="out" onclick="tog(this)"><div class="q"><span class="qn">11</span><span class="qt">Dictionary comprehension overwrite</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>d = {k: v for k, v in [(1, 'a'), (2, 'b'), (1, 'c')]}
+print(d)</pre>
+<span class="lbl a-l">Output</span>
+<pre>{1: 'c', 2: 'b'}</pre>
+<p>Duplicate key <code>1</code> — last value wins. Same behavior as dict constructor.</p>
+</div></div></div>
+
+<div class="c" data-t="out" onclick="tog(this)"><div class="q"><span class="qn">12</span><span class="qt">or/and return values (not just booleans)</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>print(0 or "" or [] or "hello" or 42)
+print(1 and "yes" and [] and "no")</pre>
+<span class="lbl a-l">Output</span>
+<pre>hello
+[]</pre>
+<p><code>or</code> returns the first truthy value. <code>and</code> returns the first falsy value (or the last if all truthy). They return the <strong>actual object</strong>, not True/False.</p>
+</div></div></div>
+
+<div class="c" data-t="out" onclick="tog(this)"><div class="q"><span class="qn">13</span><span class="qt">Nested list shallow copy</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>import copy
+a = [[1, 2], [3, 4]]
+b = copy.copy(a)
+b[0].append(99)
+print(a)</pre>
+<span class="lbl a-l">Output</span>
+<pre>[[1, 2, 99], [3, 4]]</pre>
+<p>Shallow copy creates new outer list but inner lists are still shared references. Use <code>copy.deepcopy(a)</code> for full independence.</p>
+</div></div></div>
+
+<div class="c" data-t="out" onclick="tog(this)"><div class="q"><span class="qn">14</span><span class="qt">Class variable vs instance variable</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>class Dog:
+    tricks = []
+    def add_trick(self, trick):
+        self.tricks.append(trick)
+
+d1 = Dog()
+d2 = Dog()
+d1.add_trick("roll over")
+print(d2.tricks)</pre>
+<span class="lbl a-l">Output</span>
+<pre>['roll over']</pre>
+<p><code>tricks</code> is a <strong>class variable</strong> — shared across all instances. Fix: define in <code>__init__</code>: <code>self.tricks = []</code></p>
+<p class="key">FREQUENTLY ASKED</p>
+</div></div></div>
+
+<div class="c" data-t="out" onclick="tog(this)"><div class="q"><span class="qn">15</span><span class="qt">Generator exhaustion</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>gen = (x for x in range(3))
+print(list(gen))
+print(list(gen))</pre>
+<span class="lbl a-l">Output</span>
+<pre>[0, 1, 2]
+[]</pre>
+<p>Generators can only be iterated <strong>once</strong>. After exhaustion, calling <code>list()</code> returns empty. If you need multiple passes, use a list or recreate the generator.</p>
+</div></div></div>
+
+<!-- ====== SECTION 2: FIND THE BUG ====== -->
+<div class="sh" data-sec="bug"><span class="badge bug">BUG</span><h2>2. "Find the Bug in This Code"</h2></div>
+
+<div class="c" data-t="bug" onclick="tog(this)"><div class="q"><span class="qn">16</span><span class="qt">Silent exception swallowing</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def get_user(user_id):
+    try:
+        user = db.query(f"SELECT * FROM users WHERE id={user_id}")
+        return user
+    except:
+        pass</pre>
+<span class="lbl w-l">Bugs (Multiple!)</span>
+<p>1. <strong>Bare except: pass</strong> — silently swallows ALL errors including KeyboardInterrupt, SystemExit. Bugs become invisible.</p>
+<p>2. <strong>SQL injection</strong> — f-string interpolation in SQL. User could pass <code>"1; DROP TABLE users"</code>.</p>
+<p>3. <strong>Returns None implicitly</strong> on exception — caller might get NoneType errors later.</p>
+<span class="lbl f-l">Fix</span>
+<pre>def get_user(user_id):
+    try:
+        user = db.query(
+            "SELECT * FROM users WHERE id = %s", (user_id,)
+        )  # parameterized query
+        return user
+    except DatabaseError as e:
+        logger.error(f"DB error for user {user_id}: {e}")
+        raise</pre>
+</div></div></div>
+
+<div class="c" data-t="bug" onclick="tog(this)"><div class="q"><span class="qn">17</span><span class="qt">Off-by-one in range</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def get_pairs(lst):
+    pairs = []
+    for i in range(len(lst)):
+        pairs.append((lst[i], lst[i+1]))
+    return pairs
+
+print(get_pairs([1, 2, 3, 4]))</pre>
+<span class="lbl w-l">Bug</span>
+<p>IndexError on last iteration: <code>lst[i+1]</code> when <code>i = len(lst)-1</code> is out of bounds.</p>
+<span class="lbl f-l">Fix</span>
+<p><code>for i in range(len(lst) - 1)</code> or pythonically: <code>list(zip(lst, lst[1:]))</code></p>
+</div></div></div>
+
+<div class="c" data-t="bug" onclick="tog(this)"><div class="q"><span class="qn">18</span><span class="qt">Modifying list while iterating</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>numbers = [1, 2, 3, 4, 5, 6]
+for num in numbers:
+    if num % 2 == 0:
+        numbers.remove(num)
+print(numbers)</pre>
+<span class="lbl a-l">Output (Unexpected!)</span>
+<pre>[1, 3, 5]  # Looks correct but...
+# With [1,2,3,4,5,6,7,8] → [1,3,5,7] misses 4!</pre>
+<p>Removing during iteration shifts indices — some elements get skipped. Fix: iterate over a copy <code>for num in numbers[:]:</code> or use list comprehension <code>[n for n in numbers if n % 2 != 0]</code>.</p>
+</div></div></div>
+
+<div class="c" data-t="bug" onclick="tog(this)"><div class="q"><span class="qn">19</span><span class="qt">Equality vs identity for None check</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def process(data=None):
+    if data == None:
+        data = []
+    # ... process data</pre>
+<span class="lbl w-l">Bug</span>
+<p>Using <code>==</code> instead of <code>is</code> for None check. <code>==</code> can be overridden by custom <code>__eq__</code> — objects could falsely equal None. Fix: <code>if data is None:</code></p>
+</div></div></div>
+
+<div class="c" data-t="bug" onclick="tog(this)"><div class="q"><span class="qn">20</span><span class="qt">File handle leak</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def read_config(path):
+    f = open(path)
+    config = json.load(f)
+    return config</pre>
+<span class="lbl w-l">Bug</span>
+<p>File never closed. If <code>json.load</code> raises an exception, the file handle leaks. Fix: use context manager <code>with open(path) as f:</code></p>
+</div></div></div>
+
+<div class="c" data-t="bug" onclick="tog(this)"><div class="q"><span class="qn">21</span><span class="qt">Boolean comparison anti-pattern</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>if active == True:
+    do_something()
+if items != []:
+    process(items)</pre>
+<span class="lbl w-l">Issues</span>
+<p>1. <code>if active == True</code> → just <code>if active:</code>. 2. <code>if items != []</code> → just <code>if items:</code>. Empty collections are falsy in Python. Explicit comparison is redundant and can break with subclasses.</p>
+</div></div></div>
+
+<div class="c" data-t="bug" onclick="tog(this)"><div class="q"><span class="qn">22</span><span class="qt">Variable shadowing built-in</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>list = [1, 2, 3]
+dict = {"a": 1}
+# ... later in code ...
+new_list = list(range(5))</pre>
+<span class="lbl a-l">Output</span>
+<pre>TypeError: 'list' object is not callable</pre>
+<p>Naming variables <code>list</code>, <code>dict</code>, <code>str</code>, <code>type</code>, <code>id</code>, <code>input</code> shadows the built-in. Now <code>list</code> refers to the <code>[1,2,3]</code> object, not the constructor. Never shadow built-ins.</p>
+</div></div></div>
+
+<div class="c" data-t="bug" onclick="tog(this)"><div class="q"><span class="qn">23</span><span class="qt">Circular import</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre># module_a.py
+from module_b import func_b
+def func_a(): return func_b()
+
+# module_b.py
+from module_a import func_a
+def func_b(): return func_a()</pre>
+<span class="lbl w-l">Bug</span>
+<p>Circular import → ImportError or partially initialized module. Fix: restructure to remove cycle, use lazy imports inside functions, or create a third module for shared code.</p>
+</div></div></div>
+
+<div class="c" data-t="bug" onclick="tog(this)"><div class="q"><span class="qn">24</span><span class="qt">Integer division surprise (Python 2 vs 3)</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre># Someone migrated from Python 2
+result = 7 / 2
+print(result)
+
+result2 = 7 // 2
+print(result2)</pre>
+<span class="lbl a-l">Output (Python 3)</span>
+<pre>3.5
+3</pre>
+<p>In Python 3, <code>/</code> is true division (returns float). <code>//</code> is floor division (returns int). In Python 2, <code>7/2</code> was <code>3</code>. Know this for migrated codebases.</p>
+</div></div></div>
+
+<div class="c" data-t="bug" onclick="tog(this)"><div class="q"><span class="qn">25</span><span class="qt">Unpacking wrong number of values</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>data = [("Alice", 25, "NYC"), ("Bob", 30)]
+for name, age, city in data:
+    print(f"{name} from {city}")</pre>
+<span class="lbl w-l">Bug</span>
+<p>Second tuple has only 2 elements → <code>ValueError: not enough values to unpack</code>. Fix: validate data first, use try/except, or use <code>*rest</code> unpacking: <code>name, age, *rest = row</code></p>
+</div></div></div>
+
+<!-- ====== SECTION 3: PERFORMANCE ====== -->
+<div class="sh" data-sec="perf"><span class="badge perf">PERFORMANCE</span><h2>3. "What's the Performance Issue?"</h2></div>
+
+<div class="c" data-t="perf" onclick="tog(this)"><div class="q"><span class="qn">26</span><span class="qt">String concatenation in loop — O(n²)</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def build_report(items):
+    result = ""
+    for item in items:  # 100K items
+        result += f"Item: {item}\n"
+    return result</pre>
+<span class="lbl w-l">Issue</span>
+<p>Strings are immutable. Each <code>+=</code> creates a new string and copies all previous content. For n items: O(n²) time, O(n²) total allocations.</p>
+<span class="lbl f-l">Fix</span>
+<pre>def build_report(items):
+    parts = []
+    for item in items:
+        parts.append(f"Item: {item}")
+    return "\n".join(parts)  # O(n)</pre>
+<p class="key">#1 MOST ASKED PERFORMANCE Q</p>
+</div></div></div>
+
+<div class="c" data-t="perf" onclick="tog(this)"><div class="q"><span class="qn">27</span><span class="qt">List membership check — O(n) per lookup</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def find_common(list1, list2):
+    common = []
+    for item in list1:       # O(n)
+        if item in list2:    # O(m) per check!
+            common.append(item)
+    return common</pre>
+<span class="lbl w-l">Issue</span>
+<p>Total: O(n × m). For 100K items each = 10 billion operations.</p>
+<span class="lbl f-l">Fix</span>
+<pre>def find_common(list1, list2):
+    set2 = set(list2)  # O(m) once
+    return [item for item in list1 if item in set2]  # O(n)</pre>
+<p class="key">#2 MOST ASKED PERFORMANCE Q</p>
+</div></div></div>
+
+<div class="c" data-t="perf" onclick="tog(this)"><div class="q"><span class="qn">28</span><span class="qt">Repeated expensive computation</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def get_recommendations(user_ids):
+    results = []
+    for uid in user_ids:
+        prefs = fetch_user_preferences(uid)  # DB call
+        popular = get_popular_items()  # Same expensive call every iteration!
+        results.append(match(prefs, popular))
+    return results</pre>
+<span class="lbl w-l">Issue</span>
+<p><code>get_popular_items()</code> is called N times but returns the same data. Move it outside the loop, or cache with <code>@lru_cache</code>.</p>
+</div></div></div>
+
+<div class="c" data-t="perf" onclick="tog(this)"><div class="q"><span class="qn">29</span><span class="qt">Loading entire file into memory</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def process_log(filename):
+    with open(filename) as f:
+        lines = f.readlines()  # Loads ALL lines into memory
+    for line in lines:
+        if "ERROR" in line:
+            print(line)</pre>
+<span class="lbl w-l">Issue</span>
+<p>For a 10GB log file, this loads everything into RAM. OOM crash.</p>
+<span class="lbl f-l">Fix</span>
+<pre>def process_log(filename):
+    with open(filename) as f:
+        for line in f:  # Streams line by line, O(1) memory
+            if "ERROR" in line:
+                print(line)</pre>
+</div></div></div>
+
+<div class="c" data-t="perf" onclick="tog(this)"><div class="q"><span class="qn">30</span><span class="qt">Nested loop that could be a hash lookup</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def find_duplicates(list1, list2):
+    dupes = []
+    for a in list1:        # O(n)
+        for b in list2:    # O(m)
+            if a == b:
+                dupes.append(a)
+    return dupes</pre>
+<span class="lbl w-l">Issue</span>
+<p>O(n × m) brute force. Fix: <code>return list(set(list1) & set(list2))</code> → O(n + m).</p>
+</div></div></div>
+
+<div class="c" data-t="perf" onclick="tog(this)"><div class="q"><span class="qn">31</span><span class="qt">Sorting when you only need min/max</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def get_top_scorer(students):
+    sorted_students = sorted(students, key=lambda s: s.score, reverse=True)
+    return sorted_students[0]</pre>
+<span class="lbl w-l">Issue</span>
+<p>Sorting is O(n log n) just to find one element. <code>max(students, key=lambda s: s.score)</code> is O(n). For top-k, use <code>heapq.nlargest(k, students, key=...)</code> → O(n log k).</p>
+</div></div></div>
+
+<div class="c" data-t="perf" onclick="tog(this)"><div class="q"><span class="qn">32</span><span class="qt">Pandas apply with Python function</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>df['result'] = df['value'].apply(lambda x: x ** 2 + 2 * x + 1)</pre>
+<span class="lbl w-l">Issue</span>
+<p><code>apply</code> with a Python lambda iterates row-by-row — no vectorization benefit. For numerical ops, use vectorized: <code>df['result'] = df['value']**2 + 2*df['value'] + 1</code>. Can be 100x faster.</p>
+</div></div></div>
+
+<div class="c" data-t="perf" onclick="tog(this)"><div class="q"><span class="qn">33</span><span class="qt">Creating objects in a hot loop</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>import re
+def validate_emails(emails):
+    valid = []
+    for email in emails:  # 1M emails
+        pattern = re.compile(r'^[\w.-]+@[\w.-]+\.\w+$')
+        if pattern.match(email):
+            valid.append(email)
+    return valid</pre>
+<span class="lbl w-l">Issue</span>
+<p>Regex is recompiled on every iteration. Move <code>re.compile()</code> outside the loop — compile once, use many times.</p>
+</div></div></div>
+
+<div class="c" data-t="perf" onclick="tog(this)"><div class="q"><span class="qn">34</span><span class="qt">Recursive fibonacci without memoization</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def fib(n):
+    if n <= 1:
+        return n
+    return fib(n-1) + fib(n-2)</pre>
+<span class="lbl w-l">Issue</span>
+<p>O(2^n) time — recalculates same values exponentially. <code>fib(50)</code> would take years.</p>
+<span class="lbl f-l">Fix</span>
+<p>Add <code>@functools.lru_cache</code> → O(n). Or use iterative approach with two variables.</p>
+</div></div></div>
+
+<div class="c" data-t="perf" onclick="tog(this)"><div class="q"><span class="qn">35</span><span class="qt">Using list.insert(0, x) repeatedly</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def build_reversed(items):
+    result = []
+    for item in items:
+        result.insert(0, item)  # O(n) each time!
+    return result</pre>
+<span class="lbl w-l">Issue</span>
+<p><code>list.insert(0, x)</code> shifts all elements → O(n) per call. Total O(n²). Fix: use <code>collections.deque</code> with <code>appendleft()</code> → O(1), or just <code>result.append(item)</code> and <code>result.reverse()</code> at the end.</p>
+</div></div></div>
+
+<!-- ====== SECTION 4: SECURITY / PRODUCTION ====== -->
+<div class="sh" data-sec="sec"><span class="badge sec">SECURITY</span><h2>4. "Is This Production-Ready? What's Dangerous?"</h2></div>
+
+<div class="c" data-t="sec" onclick="tog(this)"><div class="q"><span class="qn">36</span><span class="qt">SQL injection via f-string</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def get_user(username):
+    query = f"SELECT * FROM users WHERE name = '{username}'"
+    return db.execute(query)</pre>
+<span class="lbl w-l">Vulnerability</span>
+<p>If <code>username = "'; DROP TABLE users; --"</code> → SQL injection. Always use parameterized queries: <code>db.execute("SELECT * FROM users WHERE name = %s", (username,))</code></p>
+</div></div></div>
+
+<div class="c" data-t="sec" onclick="tog(this)"><div class="q"><span class="qn">37</span><span class="qt">Using eval() on user input</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def calculate(expression):
+    return eval(expression)
+
+# User sends: "__import__('os').system('rm -rf /')"</pre>
+<span class="lbl w-l">Vulnerability</span>
+<p><code>eval()</code> executes arbitrary Python code. Never use on untrusted input. Use <code>ast.literal_eval()</code> for safe literal parsing, or a proper expression parser.</p>
+</div></div></div>
+
+<div class="c" data-t="sec" onclick="tog(this)"><div class="q"><span class="qn">38</span><span class="qt">Hardcoded secrets</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>API_KEY = "sk-abc123secretkey456"
+DB_PASSWORD = "admin123"
+
+def connect():
+    return psycopg2.connect(password=DB_PASSWORD)</pre>
+<span class="lbl w-l">Issue</span>
+<p>Secrets in source code get committed to git. Fix: use environment variables (<code>os.environ["API_KEY"]</code>), .env files (never committed), or secrets managers (AWS Secrets Manager, Azure Key Vault).</p>
+</div></div></div>
+
+<div class="c" data-t="sec" onclick="tog(this)"><div class="q"><span class="qn">39</span><span class="qt">Pickle deserialization of untrusted data</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>import pickle
+data = pickle.loads(user_uploaded_bytes)</pre>
+<span class="lbl w-l">Vulnerability</span>
+<p>Pickle can execute arbitrary code during deserialization. Never unpickle data from untrusted sources. Use JSON, MessagePack, or protobuf for untrusted data.</p>
+</div></div></div>
+
+<div class="c" data-t="sec" onclick="tog(this)"><div class="q"><span class="qn">40</span><span class="qt">Logging sensitive data</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def login(username, password):
+    logger.info(f"Login attempt: {username}, password: {password}")
+    return authenticate(username, password)</pre>
+<span class="lbl w-l">Issue</span>
+<p>Passwords in logs! Anyone with log access sees credentials. Never log passwords, tokens, PII, credit card numbers. Log only: username, timestamp, success/failure status.</p>
+</div></div></div>
+
+<div class="c" data-t="sec" onclick="tog(this)"><div class="q"><span class="qn">41</span><span class="qt">No input validation on API</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>@app.post("/predict")
+def predict(data: dict):
+    features = data["features"]
+    return model.predict([features])</pre>
+<span class="lbl w-l">Issues</span>
+<p>1. No type validation — <code>features</code> could be anything. 2. No bounds checking. 3. <code>KeyError</code> if "features" missing. Fix: use Pydantic models with FastAPI for automatic validation and type checking.</p>
+</div></div></div>
+
+<div class="c" data-t="sec" onclick="tog(this)"><div class="q"><span class="qn">42</span><span class="qt">Debug mode in production</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0")</pre>
+<span class="lbl w-l">Issue</span>
+<p><code>debug=True</code> in production exposes: interactive debugger (code execution!), full stack traces with source code, auto-reloader. Never run debug mode in prod. Use <code>debug=False</code> and a production WSGI server (gunicorn, uvicorn).</p>
+</div></div></div>
+
+<!-- ====== SECTION 5: CONCURRENCY ====== -->
+<div class="sh" data-sec="con"><span class="badge con">CONCURRENCY</span><h2>5. Concurrency & Async Analysis</h2></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">43</span><span class="qt">Race condition with shared state</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>import threading
+counter = 0
+
+def increment():
+    global counter
+    for _ in range(1000000):
+        counter += 1
+
+t1 = threading.Thread(target=increment)
+t2 = threading.Thread(target=increment)
+t1.start(); t2.start()
+t1.join(); t2.join()
+print(counter)  # Expected: 2000000</pre>
+<span class="lbl a-l">Actual Output</span>
+<p>Less than 2000000 (varies). <code>counter += 1</code> is NOT atomic — it's read-modify-write. Threads can interleave. Fix: use <code>threading.Lock()</code>, or <code>queue.Queue</code>, or avoid shared mutable state.</p>
+</div></div></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">44</span><span class="qt">Blocking call in async function</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>import asyncio, time
+
+async def fetch_data():
+    time.sleep(3)  # BLOCKING!
+    return "data"
+
+async def main():
+    results = await asyncio.gather(
+        fetch_data(), fetch_data(), fetch_data()
+    )
+    print(results)</pre>
+<span class="lbl w-l">Issue</span>
+<p><code>time.sleep()</code> blocks the entire event loop — tasks run sequentially (9 seconds total). Use <code>await asyncio.sleep(3)</code> for non-blocking. For real I/O, use async libraries (aiohttp, asyncpg).</p>
+</div></div></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">45</span><span class="qt">Threading for CPU-bound work</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>from concurrent.futures import ThreadPoolExecutor
+import math
+
+def heavy_computation(n):
+    return sum(math.factorial(i) for i in range(n))
+
+with ThreadPoolExecutor(max_workers=4) as pool:
+    results = list(pool.map(heavy_computation, [1000]*4))</pre>
+<span class="lbl w-l">Issue</span>
+<p>Using threads for CPU-bound work. Due to GIL, only one thread runs Python at a time — no speedup. Fix: <code>ProcessPoolExecutor</code> for true parallelism.</p>
+</div></div></div>
+
+<div class="c" data-t="con" onclick="tog(this)"><div class="q"><span class="qn">46</span><span class="qt">Deadlock potential</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>lock_a = threading.Lock()
+lock_b = threading.Lock()
+
+def task1():
+    with lock_a:
+        time.sleep(0.1)
+        with lock_b:  # Waits for lock_b
+            print("Task 1")
+
+def task2():
+    with lock_b:
+        time.sleep(0.1)
+        with lock_a:  # Waits for lock_a
+            print("Task 2")</pre>
+<span class="lbl w-l">Issue</span>
+<p>Classic deadlock: task1 holds lock_a, waits for lock_b. task2 holds lock_b, waits for lock_a. Neither can proceed. Fix: always acquire locks in the same order, or use <code>threading.RLock()</code> or timeout.</p>
+</div></div></div>
+
+<!-- ====== SECTION 6: REFACTOR / IMPROVE ====== -->
+<div class="sh" data-sec="ref"><span class="badge ref">REFACTOR</span><h2>6. "How Would You Improve This Code?"</h2></div>
+
+<div class="c" data-t="ref" onclick="tog(this)"><div class="q"><span class="qn">47</span><span class="qt">Nested if-else pyramid</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def get_discount(user):
+    if user.is_premium:
+        if user.years > 5:
+            if user.orders > 100:
+                return 0.3
+            else:
+                return 0.2
+        else:
+            return 0.1
+    else:
+        return 0</pre>
+<span class="lbl f-l">Improved</span>
+<pre>def get_discount(user):
+    if not user.is_premium:
+        return 0
+    if user.years > 5 and user.orders > 100:
+        return 0.3
+    if user.years > 5:
+        return 0.2
+    return 0.1</pre>
+<p>Use <strong>early returns</strong> (guard clauses) to flatten nesting. Each return handles one case and exits. Much more readable.</p>
+</div></div></div>
+
+<div class="c" data-t="ref" onclick="tog(this)"><div class="q"><span class="qn">48</span><span class="qt">Repeated code (DRY violation)</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def process_csv(filename):
+    f = open(filename)
+    data = csv.reader(f)
+    results = []
+    for row in data:
+        results.append(row[0].strip().lower())
+    f.close()
+    return results
+
+def process_tsv(filename):
+    f = open(filename)
+    data = csv.reader(f, delimiter='\t')
+    results = []
+    for row in data:
+        results.append(row[0].strip().lower())
+    f.close()
+    return results</pre>
+<span class="lbl f-l">Improved</span>
+<pre>def process_file(filename, delimiter=','):
+    with open(filename) as f:
+        return [row[0].strip().lower()
+                for row in csv.reader(f, delimiter=delimiter)]</pre>
+<p>Combine into one function with a parameter. Also: context manager, list comprehension, less code = fewer bugs.</p>
+</div></div></div>
+
+<div class="c" data-t="ref" onclick="tog(this)"><div class="q"><span class="qn">49</span><span class="qt">Magic numbers and unclear naming</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def calc(d, r):
+    if d > 30:
+        return d * r * 0.85
+    elif d > 10:
+        return d * r * 0.92
+    return d * r</pre>
+<span class="lbl f-l">Improved</span>
+<pre>BULK_DISCOUNT = 0.85
+MEDIUM_DISCOUNT = 0.92
+BULK_THRESHOLD = 30
+MEDIUM_THRESHOLD = 10
+
+def calculate_price(quantity, unit_rate):
+    if quantity > BULK_THRESHOLD:
+        return quantity * unit_rate * BULK_DISCOUNT
+    if quantity > MEDIUM_THRESHOLD:
+        return quantity * unit_rate * MEDIUM_DISCOUNT
+    return quantity * unit_rate</pre>
+<p>Named constants, descriptive variable names, self-documenting code.</p>
+</div></div></div>
+
+<div class="c" data-t="ref" onclick="tog(this)"><div class="q"><span class="qn">50</span><span class="qt">Manual dict counting → Counter</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def count_words(text):
+    counts = {}
+    for word in text.split():
+        if word in counts:
+            counts[word] += 1
+        else:
+            counts[word] = 1
+    return counts</pre>
+<span class="lbl f-l">Improved</span>
+<pre>from collections import Counter
+def count_words(text):
+    return Counter(text.split())</pre>
+<p>One line. Built-in, optimized, gives you <code>.most_common(n)</code> for free.</p>
+</div></div></div>
+
+<div class="c" data-t="ref" onclick="tog(this)"><div class="q"><span class="qn">51</span><span class="qt">Manual loop → list comprehension</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>result = []
+for i in range(len(items)):
+    if items[i].active:
+        result.append(items[i].name.upper())</pre>
+<span class="lbl f-l">Improved</span>
+<pre>result = [item.name.upper() for item in items if item.active]</pre>
+<p>More Pythonic, faster (C-optimized loop internally), no index variable needed. Never use <code>range(len(...))</code> when you can iterate directly.</p>
+</div></div></div>
+
+<div class="c" data-t="ref" onclick="tog(this)"><div class="q"><span class="qn">52</span><span class="qt">Type checking with isinstance vs type</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def process(data):
+    if type(data) == list:
+        return sum(data)
+    elif type(data) == dict:
+        return sum(data.values())</pre>
+<span class="lbl f-l">Improved</span>
+<pre>def process(data):
+    if isinstance(data, list):
+        return sum(data)
+    elif isinstance(data, dict):
+        return sum(data.values())</pre>
+<p><code>isinstance()</code> respects inheritance — a subclass of list would fail <code>type() == list</code> but pass <code>isinstance()</code>. Also supports tuples: <code>isinstance(x, (list, tuple))</code>.</p>
+</div></div></div>
+
+<div class="c" data-t="ref" onclick="tog(this)"><div class="q"><span class="qn">53</span><span class="qt">Multiple return values → namedtuple</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def analyze(data):
+    return len(data), sum(data)/len(data), max(data), min(data)
+
+count, avg, mx, mn = analyze(numbers)  # What's what?</pre>
+<span class="lbl f-l">Improved</span>
+<pre>from collections import namedtuple
+Stats = namedtuple('Stats', ['count', 'average', 'maximum', 'minimum'])
+
+def analyze(data):
+    return Stats(len(data), sum(data)/len(data), max(data), min(data))
+
+result = analyze(numbers)
+print(result.average)  # Self-documenting!</pre>
+</div></div></div>
+
+<div class="c" data-t="ref" onclick="tog(this)"><div class="q"><span class="qn">54</span><span class="qt">Verbose try/except for key access</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>try:
+    value = config["database"]["host"]
+except KeyError:
+    value = "localhost"</pre>
+<span class="lbl f-l">Improved</span>
+<pre>value = config.get("database", {}).get("host", "localhost")</pre>
+<p>Chained <code>.get()</code> with defaults. Even better for deep access: use a helper or <code>dict.setdefault()</code>.</p>
+</div></div></div>
+
+<div class="c" data-t="ref" onclick="tog(this)"><div class="q"><span class="qn">55</span><span class="qt">God function doing too much</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def process_order(order):
+    # Validate (20 lines)
+    # Calculate total (15 lines)
+    # Apply discount (10 lines)
+    # Charge payment (20 lines)
+    # Send confirmation email (15 lines)
+    # Update inventory (10 lines)
+    # Log analytics (5 lines)
+    pass  # 95+ lines</pre>
+<span class="lbl f-l">Improved</span>
+<p>Break into single-responsibility functions: <code>validate_order()</code>, <code>calculate_total()</code>, <code>apply_discount()</code>, <code>charge_payment()</code>, <code>send_confirmation()</code>, <code>update_inventory()</code>. Each testable independently.</p>
+<p>This shows understanding of <strong>SOLID principles</strong> — Single Responsibility in particular.</p>
+</div></div></div>
+
+<div class="c" data-t="ref" onclick="tog(this)"><div class="q"><span class="qn">56</span><span class="qt">Using global state in ML pipeline</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>model = None
+
+def load_model():
+    global model
+    model = pickle.load(open("model.pkl", "rb"))
+
+def predict(features):
+    if model is None:
+        load_model()
+    return model.predict(features)</pre>
+<span class="lbl w-l">Issues</span>
+<p>1. Global mutable state — not thread-safe. 2. File handle leak. 3. No error handling. 4. Hard to test (can't inject different models).</p>
+<span class="lbl f-l">Improved</span>
+<p>Use a class: <code>ModelService</code> with <code>__init__</code> loading the model. Or dependency injection. Or FastAPI's <code>app.state</code>. Context manager for file. Try/except for load failures.</p>
+</div></div></div>
+
+<div class="c" data-t="ref" onclick="tog(this)"><div class="q"><span class="qn">57</span><span class="qt">Catching too broad an exception</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>try:
+    data = json.loads(raw_input)
+    result = data["key"] / data["divisor"]
+    save_to_db(result)
+except Exception as e:
+    return {"error": "Something went wrong"}</pre>
+<span class="lbl f-l">Improved</span>
+<pre>try:
+    data = json.loads(raw_input)
+except json.JSONDecodeError:
+    return {"error": "Invalid JSON format"}
+try:
+    result = data["key"] / data["divisor"]
+except KeyError as e:
+    return {"error": f"Missing field: {e}"}
+except ZeroDivisionError:
+    return {"error": "Divisor cannot be zero"}
+save_to_db(result)</pre>
+<p>Separate try blocks, specific exceptions, useful error messages. Users and developers can both understand what went wrong.</p>
+</div></div></div>
+
+<div class="c" data-t="ref" onclick="tog(this)"><div class="q"><span class="qn">58</span><span class="qt">Hardcoded paths and config</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def load_data():
+    df = pd.read_csv("/home/supraja/data/train.csv")
+    model_path = "/home/supraja/models/v2/model.pkl"
+    return df, pickle.load(open(model_path, "rb"))</pre>
+<span class="lbl f-l">Improved</span>
+<p>Use config files, environment variables, or CLI arguments. <code>pathlib.Path</code> for cross-platform paths. Context managers for file handles. This code works only on one machine — not deployable.</p>
+</div></div></div>
+
+<div class="c" data-t="ref" onclick="tog(this)"><div class="q"><span class="qn">59</span><span class="qt">No type hints on API functions</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>def transform(data, config, flag):
+    if flag:
+        return [config["fn"](x) for x in data]
+    return data</pre>
+<span class="lbl f-l">Improved</span>
+<pre>from typing import Callable, Any
+
+def transform(
+    data: list[float],
+    config: dict[str, Callable],
+    apply_transform: bool
+) -> list[float]:
+    if apply_transform:
+        return [config["fn"](x) for x in data]
+    return data</pre>
+<p>Type hints + descriptive param name (<code>apply_transform</code> vs <code>flag</code>). IDE helps you, <code>mypy</code> catches bugs, new team members understand instantly.</p>
+</div></div></div>
+
+<div class="c" data-t="ref" onclick="tog(this)"><div class="q"><span class="qn">60</span><span class="qt">API endpoint without proper error handling</span><span class="ti">+</span></div><div class="a"><div class="ac">
+<pre>@app.post("/analyze")
+def analyze(request):
+    text = request.json["text"]
+    embeddings = model.encode(text)
+    similar = vector_db.search(embeddings, k=5)
+    return {"results": similar}</pre>
+<span class="lbl f-l">Improved</span>
+<pre>from pydantic import BaseModel
+from fastapi import HTTPException
+
+class AnalyzeRequest(BaseModel):
+    text: str
+    k: int = 5
+
+@app.post("/analyze")
+async def analyze(req: AnalyzeRequest):
+    try:
+        embeddings = model.encode(req.text)
+        similar = await vector_db.search(embeddings, k=req.k)
+        return {"results": similar}
+    except ModelError as e:
+        raise HTTPException(status_code=503, detail="Model unavailable")
+    except VectorDBError as e:
+        raise HTTPException(status_code=502, detail="Search failed")</pre>
+<p>Pydantic validation, async, proper HTTP error codes, specific exception handling. Production-ready.</p>
+</div></div></div>
+
+<div class="ft">
+<p>💪 <strong>60 code analysis scenarios. Study the patterns, not just the answers.</strong></p>
+<p>Most common in Karat: Output prediction (#1, #3, #8, #14), Performance (#26, #27), Bugs (#16, #20)</p>
+<p>Good luck tomorrow, Supraja! 🚀</p>
+</div>
+</div>
+
+<script>
+function tog(c){c.classList.toggle('o')}
+function xAll(){const cs=document.querySelectorAll('.c');const ao=[...cs].every(c=>c.classList.contains('o'));cs.forEach(c=>{ao?c.classList.remove('o'):c.classList.add('o')})}
+function showAll(){document.querySelectorAll('.c').forEach(c=>c.style.display='');document.querySelectorAll('[data-sec]').forEach(s=>s.style.display='');document.querySelectorAll('.btn').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.btn')[0].classList.add('on')}
+function filt(t){document.querySelectorAll('.btn').forEach(b=>b.classList.remove('on'));event.target.classList.add('on');document.querySelectorAll('.c').forEach(c=>{c.style.display=c.dataset.t===t?'':'none'});const m={out:0,bug:1,perf:2,sec:3,con:4,ref:5};document.querySelectorAll('[data-sec]').forEach((s,i)=>{s.style.display=i===m[t]?'':'none'})}
+window.addEventListener('scroll',()=>{const s=window.scrollY,d=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('pb').style.width=(s/d)*100+'%'})
+</script>
+</body>
+</html>
