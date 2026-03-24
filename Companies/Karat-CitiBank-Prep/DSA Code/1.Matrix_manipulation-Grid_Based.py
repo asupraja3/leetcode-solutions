@@ -59,8 +59,16 @@ def find_rectangles(matrix):
                     curr_c+=1
                 
                 curr_r = r
-                while curr_r < rows and  matrix[curr_r][c] == 0:
-                    curr_r+=1
+                while curr_r < rows:
+                    row_is_valid = True
+                    for col_idx in range(c, curr_c):
+                        if matrix[curr_r][col_idx] != 0:
+                            row_is_valid = False
+                            break
+                    
+                    if not row_is_valid:
+                        break
+                    curr_r += 1
 
                 top_left = (r,c)
                 bottom_right = (curr_r -1,curr_c-1)
@@ -75,7 +83,7 @@ def find_rectangles(matrix):
 
 
 print(find_rectangles([[1, 0, 0, 1,1], 
-                       [1, 0, 0, 1,1], 
+                       [1, 0, 1, 1,1], 
                        [1, 1, 1, 1,1], 
                        [1, 0, 0, 1,1], 
                        [0, 0, 0, 0,0]])) 

@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interview Prep Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f0f13; --bg2: #16161e; --bg3: #1e1e2a;
+    --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.14);
+    --text: #e8e6f0; --muted: #8a88a0;
+    --accent1: #7c6af7; --accent2: #3ecfb2; --accent3: #f7926a;
+    --accent4: #f7d06a; --accent5: #e86a9b; --accent6: #6ab8f7;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.6; }
+  .header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 24px 40px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .header-title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
+  .header-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .stats-bar { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+  .stat-chip { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .stat-chip strong { font-size: 16px; font-weight: 500; color: var(--text); }
+  .controls { padding: 16px 40px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; background: var(--bg); border-bottom: 1px solid var(--border); position: sticky; top: 73px; z-index: 99; }
+  .filter-btn { padding: 7px 16px; border-radius: 20px; border: 1px solid var(--border2); background: transparent; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .filter-btn:hover { border-color: var(--accent1); color: var(--accent1); }
+  .filter-btn.active { background: var(--accent1); border-color: var(--accent1); color: #fff; }
+  .search-box { margin-left: auto; padding: 7px 16px; border-radius: 20px; border: 1px solid var(--border2); background: var(--bg2); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; width: 260px; outline: none; transition: border-color 0.15s; }
+  .search-box:focus { border-color: var(--accent1); }
+  .search-box::placeholder { color: var(--muted); }
+  .main { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 130px); }
+  .sidebar { background: var(--bg2); border-right: 1px solid var(--border); padding: 20px 0; position: sticky; top: 130px; height: calc(100vh - 130px); overflow-y: auto; }
+  .sidebar-section { margin-bottom: 24px; }
+  .sidebar-label { font-size: 10px; font-weight: 500; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); padding: 0 20px; margin-bottom: 8px; }
+  .nav-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 20px; cursor: pointer; transition: background 0.12s; border-left: 2px solid transparent; font-size: 13px; color: var(--muted); }
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+  .nav-item.active { background: var(--bg3); color: var(--text); border-left-color: var(--accent1); }
+  .nav-count { font-size: 11px; background: var(--bg3); padding: 2px 7px; border-radius: 10px; color: var(--muted); }
+  .nav-item.active .nav-count { background: rgba(124,106,247,0.2); color: var(--accent1); }
+  .content { padding: 32px 40px; overflow-y: auto; }
+  .category-header { margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+  .category-title { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 10px; }
+  .category-badge { font-size: 11px; font-family: 'DM Sans', sans-serif; font-weight: 400; padding: 3px 10px; border-radius: 12px; letter-spacing: 0; }
+  .badge-ml { background: rgba(124,106,247,0.15); color: #a899ff; }
+  .badge-genai { background: rgba(106,184,247,0.15); color: var(--accent6); }
+  .badge-sys { background: rgba(62,207,178,0.15); color: var(--accent2); }
+  .badge-code { background: rgba(247,146,106,0.15); color: var(--accent3); }
+  .badge-db { background: rgba(247,208,106,0.15); color: var(--accent4); }
+  .badge-py { background: rgba(232,106,155,0.15); color: var(--accent5); }
+  .badge-api { background: rgba(247,146,106,0.15); color: var(--accent3); }
+  .badge-ds { background: rgba(62,207,178,0.15); color: var(--accent2); }
+  .questions-grid { display: flex; flex-direction: column; gap: 14px; }
+  .q-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color 0.15s; }
+  .q-card:hover { border-color: var(--border2); }
+  .q-card.expanded { border-color: var(--accent1); }
+  .q-header { padding: 15px 18px; cursor: pointer; display: flex; align-items: flex-start; gap: 12px; }
+  .q-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); background: var(--bg3); padding: 3px 8px; border-radius: 4px; white-space: nowrap; margin-top: 2px; flex-shrink: 0; }
+  .q-text { font-size: 14px; font-weight: 500; color: var(--text); flex: 1; line-height: 1.5; }
+  .q-tags { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+  .tag { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  .tag-hard { background: rgba(232,106,155,0.15); color: var(--accent5); }
+  .tag-med { background: rgba(247,208,106,0.15); color: var(--accent4); }
+  .tag-easy { background: rgba(62,207,178,0.15); color: var(--accent2); }
+  .q-expand-icon { font-size: 14px; color: var(--muted); flex-shrink: 0; transition: transform 0.2s; margin-top: 3px; }
+  .q-card.expanded .q-expand-icon { transform: rotate(180deg); }
+  .q-body { display: none; padding: 0 18px 18px 50px; border-top: 1px solid var(--border); }
+  .q-card.expanded .q-body { display: block; }
+  .answer-section { margin-top: 14px; }
+  .answer-label { font-size: 10px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .answer-content { font-size: 13.5px; color: var(--text); line-height: 1.75; }
+  .answer-content p { margin-bottom: 10px; }
+  .answer-content p:last-child { margin-bottom: 0; }
+  .answer-content ul { padding-left: 18px; margin-bottom: 10px; }
+  .answer-content li { margin-bottom: 5px; color: #c8c6d8; }
+  .answer-content code { font-family: 'DM Mono', monospace; font-size: 12px; background: var(--bg3); padding: 2px 6px; border-radius: 4px; color: var(--accent2); }
+  .code-block { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; font-family: 'DM Mono', monospace; font-size: 12px; line-height: 1.6; color: var(--accent2); margin-top: 8px; overflow-x: auto; white-space: pre; }
+  .key-points { background: rgba(124,106,247,0.06); border: 1px solid rgba(124,106,247,0.2); border-radius: 8px; padding: 12px 16px; margin-top: 12px; }
+  .key-points-title { font-size: 11px; font-weight: 500; letter-spacing: 0.8px; text-transform: uppercase; color: var(--accent1); margin-bottom: 8px; }
+  .key-points ul { padding-left: 16px; margin: 0; }
+  .key-points li { font-size: 13px; color: #c8c6d8; margin-bottom: 4px; }
+  .progress-section { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .mark-btn { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border2); background: transparent; font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; color: var(--muted); transition: all 0.15s; }
+  .mark-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+  .mark-btn.done { background: rgba(62,207,178,0.1); border-color: var(--accent2); color: var(--accent2); }
+  .progress-bar-wrap { height: 3px; background: var(--bg3); }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent1), var(--accent2)); transition: width 0.4s; }
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 14px; }
+  .section-wrap { margin-bottom: 40px; }
+  @media (max-width: 860px) {
+    .main { grid-template-columns: 1fr; }
+    .sidebar { position: static; height: auto; }
+    .controls, .header { padding: 16px 20px; }
+    .content { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <div class="header-title">Interview Prep Dashboard</div>
+    <div class="header-sub">Tech · System Design · Python · AI/ML · GenAI · Citibank / Data Engineer / SDE</div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat-chip"><strong id="totalCount">0</strong> questions</div>
+    <div class="stat-chip"><strong id="doneCount">0</strong> reviewed</div>
+    <div class="stat-chip"><strong id="pctCount">0%</strong> progress</div>
+  </div>
+</div>
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div>
+<div class="controls">
+  <button class="filter-btn active" onclick="filterAll(this)">All</button>
+  <button class="filter-btn" onclick="filterDiff('Easy',this)">Easy</button>
+  <button class="filter-btn" onclick="filterDiff('Medium',this)">Medium</button>
+  <button class="filter-btn" onclick="filterDiff('Hard',this)">Hard</button>
+  <button class="filter-btn" onclick="filterDone(this)">Reviewed</button>
+  <input class="search-box" type="text" placeholder="Search questions…" oninput="searchQ(this.value)" />
+</div>
+<div class="main">
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Categories</div>
+      <div class="nav-item active" onclick="showCat('all',this)">All Questions <span class="nav-count" id="nav-all">0</span></div>
+      <div class="nav-item" onclick="showCat('py',this)">Python <span class="nav-count" id="nav-py">0</span></div>
+      <div class="nav-item" onclick="showCat('ml',this)">Machine Learning <span class="nav-count" id="nav-ml">0</span></div>
+      <div class="nav-item" onclick="showCat('genai',this)">GenAI &amp; LLMs <span class="nav-count" id="nav-genai">0</span></div>
+      <div class="nav-item" onclick="showCat('sys',this)">System Design <span class="nav-count" id="nav-sys">0</span></div>
+      <div class="nav-item" onclick="showCat('code',this)">Coding / Algorithms <span class="nav-count" id="nav-code">0</span></div>
+      <div class="nav-item" onclick="showCat('db',this)">Databases &amp; SQL <span class="nav-count" id="nav-db">0</span></div>
+      <div class="nav-item" onclick="showCat('api',this)">APIs &amp; Web <span class="nav-count" id="nav-api">0</span></div>
+    </div>
+  </nav>
+  <div class="content" id="contentArea"><div id="allQuestions"></div></div>
+</div>
+<script>
+const QUESTIONS = [
+  // ===================== PYTHON =====================
+  {id:1,cat:'py',diff:'Medium',q:'Explain Python decorators.',
+  answer:`<p>A decorator is a higher-order function that wraps another function to add behavior without modifying it. Applied with the <code>@decorator</code> syntax, which is syntactic sugar for <code>func = decorator(func)</code>.</p>
+<pre class="code-block">import functools, time
+def timer(func):
+    @functools.wraps(func)   # preserves __name__, __doc__
+    def wrapper(*args, **kwargs):
+        t = time.time()
+        result = func(*args, **kwargs)
+        print(f"{func.__name__} took {time.time()-t:.3f}s")
+        return result
+    return wrapper
+
+@timer
+def slow(): time.sleep(1)</pre>
+  <p>Common built-ins: <code>@property</code>, <code>@staticmethod</code>, <code>@classmethod</code>, <code>@lru_cache</code>, <code>@dataclass</code>. Decorators stack bottom-up. Use <code>@functools.wraps</code> always to preserve metadata.</p>`,
+  keypoints:['Decorator = higher-order function wrapping another','@functools.wraps preserves __name__ and __doc__','Stacked decorators apply bottom-up','Use for: logging, timing, auth, caching, retry','Class-based decorators also possible via __call__']},
+
+  {id:2,cat:'py',diff:'Medium',q:'Explain Python context managers.',
+  answer:`<p>Context managers manage resource lifecycle via the <code>with</code> statement, ensuring cleanup even if exceptions occur. Implement via <code>__enter__</code>/<code>__exit__</code> or the <code>@contextmanager</code> decorator.</p>
+<pre class="code-block">from contextlib import contextmanager
+
+@contextmanager
+def db_transaction(conn):
+    try:
+        yield conn
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()   # always runs
+
+with db_transaction(get_conn()) as conn:
+    conn.execute("INSERT ...")</pre>
+  <p><code>__exit__</code> receives exc_type, exc_val, traceback. Returning <code>True</code> suppresses the exception. Common uses: file I/O (<code>open()</code>), locks, DB connections, temp directory.</p>`,
+  keypoints:['__enter__ / __exit__ protocol','@contextmanager + yield = clean one-function style','finally in __exit__ always runs','Return True in __exit__ to suppress exceptions','threading.Lock() is a context manager']},
+
+  {id:3,cat:'py',diff:'Medium',q:'Explain Python generators and yield.',
+  answer:`<p>Generators produce values lazily using <code>yield</code>, suspending execution and resuming on the next <code>next()</code> call. They are memory-efficient for large or infinite sequences.</p>
+<pre class="code-block">def chunked_reader(filepath, size=1024):
+    with open(filepath, 'rb') as f:
+        while chunk := f.read(size):
+            yield chunk    # suspends here
+
+# Generator expression — lazy, O(1) memory
+squares = (x**2 for x in range(10_000_000))
+
+# Two-way communication with send()
+def accumulator():
+    total = 0
+    while True:
+        val = yield total
+        total += val</pre>
+  <p>Generators underpin Python's async model. <code>yield from</code> delegates to a sub-generator. Bottom-up DP (tabulation) vs memoization maps to iter vs recursive style.</p>`,
+  keypoints:['yield suspends and resumes function state','O(1) memory regardless of sequence size','Generator expression: (x for x) vs [x for x]','yield from delegates to sub-generator','send() enables coroutine-style two-way communication']},
+
+  {id:4,cat:'py',diff:'Hard',q:'Explain the Python GIL (Global Interpreter Lock).',
+  answer:`<p>The GIL is a mutex in CPython ensuring only one thread executes Python bytecode at a time. It simplifies memory management (CPython reference counting is not thread-safe).</p>
+  <p><strong>Impact on CPU-bound work:</strong> Multiple threads don't achieve true parallelism — thread switching doesn't speed up computation. The GIL is released for I/O operations, so I/O-bound threads work fine.</p>
+  <p><strong>Workarounds:</strong></p>
+  <ul><li><code>multiprocessing</code>: separate processes, each has its own GIL — true parallelism</li>
+  <li><code>asyncio</code>: single-threaded concurrency for I/O-bound via cooperative event loop</li>
+  <li>C extensions (NumPy, SciPy) release the GIL for heavy numeric work</li>
+  <li>Python 3.13+ has an experimental no-GIL build (PEP 703)</li></ul>`,
+  keypoints:['GIL: one thread executes Python bytecode at a time','CPU-bound: use multiprocessing not threading','I/O-bound: threading works fine (GIL released during I/O)','NumPy/C extensions release GIL for compute','PEP 703: no-GIL build in Python 3.13+']},
+
+  {id:5,cat:'py',diff:'Medium',q:'What is the difference between deepcopy and shallow copy in Python?',
+  answer:`<p><strong>Shallow copy</strong> (<code>copy.copy()</code>, <code>list[:]</code>, <code>dict.copy()</code>): creates a new container but the elements are still references to the same objects. Mutating a nested object affects both copies.</p>
+  <p><strong>Deep copy</strong> (<code>copy.deepcopy()</code>): recursively copies all nested objects. Completely independent. Slower and uses more memory.</p>
+<pre class="code-block">import copy
+original = [[1, 2], [3, 4]]
+shallow = copy.copy(original)
+deep    = copy.deepcopy(original)
+
+original[0].append(99)
+print(shallow[0])   # [1, 2, 99]  — affected!
+print(deep[0])      # [1, 2]      — independent</pre>
+  <p>Use shallow copy when outer structure needs independence but inner objects are immutable (strings, numbers). Use deepcopy for nested mutable structures.</p>`,
+  keypoints:['Shallow: new container, same inner object references','Deep: full recursive copy, completely independent','copy.copy() vs copy.deepcopy()','Shallow fine when inner objects are immutable','deepcopy is slower + more memory']},
+
+  {id:6,cat:'py',diff:'Medium',q:'Explain *args and **kwargs in Python.',
+  answer:`<p><code>*args</code> collects extra positional arguments into a tuple. <code>**kwargs</code> collects extra keyword arguments into a dict.</p>
+<pre class="code-block">def log(level, *args, **kwargs):
+    # args = ('msg1', 'msg2')
+    # kwargs = {'user': 'alice', 'req_id': '123'}
+    print(f"[{level}]", *args, kwargs)
+
+log('INFO', 'Request received', user='alice', req_id='123')
+
+# Unpacking when calling:
+def add(a, b, c): return a + b + c
+nums = [1, 2, 3]
+add(*nums)         # positional unpack
+add(**{'a':1,'b':2,'c':3})  # keyword unpack</pre>
+  <p>Ordering rule: <code>def f(pos, /, normal, *, kw_only, **kwargs)</code>. The <code>/</code> marks positional-only params (Python 3.8+); <code>*</code> marks keyword-only.</p>`,
+  keypoints:['*args → tuple of extra positional args','**kwargs → dict of extra keyword args','Order: positional, *args, keyword, **kwargs','/ = positional-only (3.8+), * = keyword-only','Use for flexible wrapper/forwarding functions']},
+
+  {id:7,cat:'py',diff:'Medium',q:'How does Python\'s memory management and reference counting work?',
+  answer:`<p>CPython uses reference counting: every object has a <code>ob_refcnt</code>. When it hits 0, the object is immediately deallocated. The <code>sys.getrefcount()</code> function shows the count (adds 1 for the call itself).</p>
+  <p><strong>Cyclic garbage collector:</strong> Handles reference cycles (A → B → A never reach 0). Python's <code>gc</code> module periodically scans for cycles across 3 generations.</p>
+<pre class="code-block">import sys, gc
+a = []
+print(sys.getrefcount(a))   # 2 (a + call arg)
+b = a
+print(sys.getrefcount(a))   # 3
+del b
+print(sys.getrefcount(a))   # 2 again
+
+gc.collect()   # force cycle collection</pre>
+  <p>Integer interning: CPython caches small integers (-5 to 256) and short strings. <code>a = 256; b = 256; a is b</code> → True. <code>a = 257; b = 257; a is b</code> → False (may vary).</p>`,
+  keypoints:['Reference counting: ob_refcnt, freed at 0','Cyclic GC handles A→B→A cycles','3 generations: young objects collected more often','Integer interning: -5 to 256 cached','Use is for identity, == for equality']},
+
+  {id:8,cat:'py',diff:'Medium',q:'What are Python list comprehensions, dict comprehensions, and when should you use them vs a for loop?',
+  answer:`<p>Comprehensions are concise, readable, and typically faster than equivalent for-loops because they're optimized at the bytecode level.</p>
+<pre class="code-block"># List comprehension
+squares = [x**2 for x in range(10) if x % 2 == 0]
+
+# Dict comprehension
+word_len = {w: len(w) for w in words}
+
+# Set comprehension
+unique_domains = {email.split('@')[1] for email in emails}
+
+# Nested (read left to right = outer to inner loop)
+flat = [x for row in matrix for x in row]
+
+# When NOT to use: side effects, complex logic, debugging
+# Use a for loop when the body has multiple statements
+# or when readability suffers</pre>
+  <p>Generator expression <code>(x for x in ...)</code> is lazy — prefer over list comp when you only need to iterate once (saves memory).</p>`,
+  keypoints:['Comprehensions are faster than equivalent for-loops','Nested: left-to-right = outer to inner loop','Generator expression is lazy (no list built)','Avoid comprehensions for side effects or complex logic','Dict/set comprehensions follow same pattern']},
+
+  {id:9,cat:'py',diff:'Hard',q:'Explain Python\'s asyncio, event loop, and async/await.',
+  answer:`<p>asyncio provides single-threaded concurrency via an event loop that multiplexes I/O operations. Coroutines (<code>async def</code>) are cooperative — they yield control at <code>await</code> points, allowing other coroutines to run.</p>
+<pre class="code-block">import asyncio, aiohttp
+
+async def fetch(session, url):
+    async with session.get(url) as resp:
+        return await resp.text()
+
+async def main():
+    async with aiohttp.ClientSession() as session:
+        results = await asyncio.gather(
+            fetch(session, 'https://api1.com'),
+            fetch(session, 'https://api2.com'),
+        )
+    return results
+
+asyncio.run(main())</pre>
+  <p><code>asyncio.gather()</code> runs coroutines concurrently. <code>asyncio.create_task()</code> schedules without waiting. Use <code>asyncio.Queue</code> for producer-consumer. Never call blocking code (requests, time.sleep) in async — use <code>asyncio.to_thread()</code> or <code>loop.run_in_executor()</code>.</p>`,
+  keypoints:['async def = coroutine, await = yield control','Single-threaded; no race conditions on shared state','gather() for concurrent coroutines','Never use blocking I/O in async (use aiohttp, asyncpg)','asyncio.to_thread() for blocking code in async context']},
+
+  {id:10,cat:'py',diff:'Medium',q:'What are Python dataclasses and how do they compare to namedtuples and Pydantic?',
+  answer:`<p><strong>dataclass</strong> (Python 3.7+): auto-generates <code>__init__</code>, <code>__repr__</code>, <code>__eq__</code>. Mutable by default. Supports default values, <code>field()</code>, <code>__post_init__</code> for validation, <code>frozen=True</code> for immutability.</p>
+<pre class="code-block">from dataclasses import dataclass, field
+
+@dataclass(frozen=True)
+class Point:
+    x: float
+    y: float
+    tags: list = field(default_factory=list)
+
+    def distance(self):
+        return (self.x**2 + self.y**2)**0.5</pre>
+  <p><strong>namedtuple:</strong> Immutable, tuple-based, no type validation, lighter memory. Good for simple value objects.</p>
+  <p><strong>Pydantic BaseModel:</strong> Runtime type validation, JSON serialization, settings management. Best for API request/response models and config. Heavier than dataclass but safer for data ingestion.</p>`,
+  keypoints:['dataclass: mutable, auto __init__/__repr__/__eq__','frozen=True for immutability','namedtuple: immutable, lighter, no validation','Pydantic: runtime type validation, JSON I/O','Use Pydantic for API models; dataclass for internal domain objects']},
+
+  {id:11,cat:'py',diff:'Medium',q:'How does Python\'s import system work? Explain modules, packages, and __init__.py.',
+  answer:`<p>When you <code>import foo</code>, Python searches <code>sys.modules</code> cache first, then <code>sys.path</code> directories in order. Once found, the module file is compiled to bytecode (.pyc in __pycache__) and executed.</p>
+  <p>A <strong>package</strong> is a directory with an <code>__init__.py</code> (can be empty). It defines the package namespace. <code>__init__.py</code> runs on import and can expose public API.</p>
+<pre class="code-block">mypackage/
+  __init__.py       # import mypackage runs this
+  utils.py
+  models/
+    __init__.py
+    user.py
+
+# Relative import
+from .utils import helper
+from ..models.user import User</pre>
+  <p><code>__all__</code> in a module controls what <code>from module import *</code> exports. Circular imports: restructure code or use local imports inside functions to break cycles.</p>`,
+  keypoints:['sys.modules cache checked first','sys.path defines search order','__init__.py makes a directory a package','Bytecode cached in __pycache__ (.pyc)','Circular imports: use local imports or restructure']},
+
+  {id:12,cat:'py',diff:'Hard',q:'Explain Python metaclasses.',
+  answer:`<p>A metaclass is the class of a class — it controls how classes are created. Every class in Python is an instance of <code>type</code> (or a subclass of it). You can intercept class creation by defining a metaclass.</p>
+<pre class="code-block">class SingletonMeta(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super().__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+class Config(metaclass=SingletonMeta):
+    def __init__(self):
+        self.value = 42
+
+a = Config(); b = Config()
+assert a is b   # True — same instance</pre>
+  <p><code>__new__</code> creates the class object; <code>__init__</code> initializes it; <code>__call__</code> intercepts instantiation. Modern alternatives: <code>__init_subclass__</code>, class decorators, and <code>dataclasses</code> often replace metaclasses for common patterns.</p>`,
+  keypoints:['Metaclass = class of a class, controls class creation','type is the default metaclass','__new__ creates, __init__ initializes the class object','Use for: Singleton, ORMs (SQLAlchemy), API registration','Prefer __init_subclass__ or class decorators for simpler cases']},
+
+  {id:13,cat:'py',diff:'Medium',q:'What are Python\'s dunder (magic) methods? Give important examples.',
+  answer:`<p>Dunder methods (<code>__method__</code>) define how objects behave with Python operators and built-in functions.</p>
+<pre class="code-block">class Vector:
+    def __init__(self, x, y): self.x, self.y = x, y
+    def __repr__(self): return f"Vector({self.x}, {self.y})"
+    def __add__(self, other): return Vector(self.x+other.x, self.y+other.y)
+    def __len__(self): return 2
+    def __getitem__(self, i): return (self.x, self.y)[i]
+    def __iter__(self): yield self.x; yield self.y
+    def __eq__(self, other): return self.x==other.x and self.y==other.y
+    def __hash__(self): return hash((self.x, self.y))
+    def __bool__(self): return bool(self.x or self.y)
+    def __enter__(self): return self
+    def __exit__(self, *_): pass</pre>
+  <p>Key categories: representation (<code>__repr__</code>, <code>__str__</code>), numeric ops, comparison, containers (<code>__len__</code>, <code>__getitem__</code>, <code>__contains__</code>), context manager, callable (<code>__call__</code>), attribute access (<code>__getattr__</code>, <code>__setattr__</code>).</p>`,
+  keypoints:['__repr__ for unambiguous, __str__ for readable string','__eq__ + __hash__ must be consistent','__getitem__ enables indexing and slicing','__call__ makes an instance callable like a function','__slots__ to prevent dynamic attribute creation + save memory']},
+
+  {id:14,cat:'py',diff:'Medium',q:'Explain Python\'s functools module — lru_cache, partial, reduce.',
+  answer:`<p><code>functools</code> provides higher-order function utilities:</p>
+<pre class="code-block">from functools import lru_cache, partial, reduce
+
+# lru_cache: memoize last N calls
+@lru_cache(maxsize=128)
+def fib(n):
+    return n if n < 2 else fib(n-1) + fib(n-2)
+
+# partial: pre-fill arguments
+def power(base, exp): return base ** exp
+square = partial(power, exp=2)
+cube   = partial(power, exp=3)
+print(square(5))   # 25
+
+# reduce: fold a sequence
+from operator import add
+total = reduce(add, [1,2,3,4,5])   # 15
+
+# cache (3.9+): unbounded lru_cache
+from functools import cache
+@cache
+def expensive(n): ...</pre>`,
+  keypoints:['lru_cache(maxsize=None) = unbounded cache','cache() is cleaner shorthand (3.9+)','partial freezes positional or keyword args','reduce: left-fold over a sequence','wraps() copies __name__, __doc__ to wrapper']},
+
+  {id:15,cat:'py',diff:'Medium',q:'Explain exception handling best practices in Python.',
+  answer:`<p>Catch specific exceptions, not bare <code>except:</code> which silences everything including KeyboardInterrupt.</p>
+<pre class="code-block">try:
+    result = risky_operation()
+except ValueError as e:
+    logger.warning("Bad input: %s", e)
+    raise   # re-raise after logging
+except (IOError, OSError) as e:
+    raise RuntimeError("I/O failed") from e   # chaining
+else:
+    process(result)   # runs only if no exception
+finally:
+    cleanup()         # always runs
+
+# Custom exceptions
+class PaymentError(Exception):
+    def __init__(self, msg, code):
+        super().__init__(msg)
+        self.code = code</pre>
+  <p><strong>Best practices:</strong> Use <code>else</code> for code that runs only on success. Use <code>raise X from Y</code> to preserve exception chain. Create custom exception hierarchy for your domain. Never pass silently: <code>except Exception: pass</code> is an anti-pattern.</p>`,
+  keypoints:['Catch specific exceptions, never bare except','raise X from Y preserves exception chain','else block runs only when no exception raised','finally always runs — use for cleanup','Custom exceptions: extend Exception, not BaseException']},
+
+  {id:16,cat:'py',diff:'Medium',q:'What are Python type hints and how does mypy use them?',
+  answer:`<p>Type hints (PEP 484, Python 3.5+) add optional static type annotations. They are not enforced at runtime but enable static analysis tools like <code>mypy</code> and IDE autocomplete.</p>
+<pre class="code-block">from typing import Optional, Union, TypeVar, Generic
+from collections.abc import Sequence
+
+def process(items: list[str], limit: int = 10) -> dict[str, int]:
+    return {item: len(item) for item in items[:limit]}
+
+# Optional = Union[X, None]
+def find(name: str) -> Optional[str]:
+    return name if name else None
+
+# TypeVar for generics
+T = TypeVar('T')
+def first(seq: Sequence[T]) -> T:
+    return seq[0]
+
+# Protocol for structural subtyping (duck typing)
+from typing import Protocol
+class Drawable(Protocol):
+    def draw(self) -> None: ...</pre>
+  <p>Run mypy: <code>mypy --strict myfile.py</code>. Use <code>reveal_type(x)</code> to inspect inferred types. <code>cast()</code> for unavoidable type overrides.</p>`,
+  keypoints:['Type hints are optional, not runtime-enforced','mypy/pyright for static analysis','Optional[X] = Union[X, None]','Protocol enables structural subtyping (duck typing)','--strict flag for maximum mypy checking']},
+
+  {id:17,cat:'py',diff:'Hard',q:'How do you write unit tests in Python? Explain pytest, mocking, and fixtures.',
+  answer:`<p>pytest is the standard testing framework. Tests are functions/classes prefixed with <code>test_</code>. No boilerplate needed.</p>
+<pre class="code-block">import pytest
+from unittest.mock import MagicMock, patch
+
+# Fixture: reusable setup
+@pytest.fixture
+def db():
+    conn = create_test_db()
+    yield conn
+    conn.close()   # teardown
+
+def test_user_creation(db):
+    user = User.create(db, name="Alice")
+    assert user.id is not None
+
+# Parametrize
+@pytest.mark.parametrize("inp,expected", [
+    ("hello", 5), ("", 0), ("abc", 3)
+])
+def test_length(inp, expected):
+    assert len(inp) == expected
+
+# Mocking
+@patch('mymodule.requests.get')
+def test_api(mock_get):
+    mock_get.return_value.json.return_value = {'status': 'ok'}
+    result = call_api()
+    assert result == 'ok'
+    mock_get.assert_called_once()</pre>`,
+  keypoints:['pytest: no boilerplate, test_ prefix','Fixtures: @pytest.fixture with yield for teardown','@pytest.mark.parametrize for data-driven tests','unittest.mock.patch for mocking external dependencies','pytest-cov for coverage; conftest.py for shared fixtures']},
+
+  // ===================== MACHINE LEARNING =====================
+  {id:18,cat:'ml',diff:'Hard',q:'How would you design a machine learning model to detect fraudulent transactions in real-time for Citibank?',
+  answer:`<p>Classic imbalanced classification problem with strict latency SLA (typically &lt;100ms).</p>
+  <p><strong>Feature Engineering:</strong> Transaction amount, merchant category, time-of-day, velocity (# txns in last 5/30 min), geo-distance from previous txn, device fingerprint, historical spend patterns.</p>
+  <p><strong>Model Selection:</strong> Two-stage — fast rule engine (block obvious fraud) + gradient boosting (XGBoost/LightGBM) or small neural net for borderline cases. Online learning via River for streaming updates.</p>
+  <p><strong>Handling Imbalance:</strong> SMOTE, class weighting, focal loss. Optimize AUC-PR / F2 (not accuracy). F2 weights recall higher than precision.</p>
+  <p><strong>Real-time Pipeline:</strong> Kafka → Feature Store (Redis real-time, Hive batch) → Model server (Triton/TorchServe) → Decision engine → &lt;50ms response.</p>`,
+  keypoints:['Two-stage: rules + ML model','Feature velocity windows (5m, 30m, 24h)','Kafka + Redis for real-time features','Optimize AUC-PR / F2, not accuracy','Monitor drift with PSI/KL-div']},
+
+  {id:19,cat:'ml',diff:'Hard',q:'Describe optimizing a deep learning algorithm for performance and scalability.',
+  answer:`<p>Key techniques: mixed precision training (FP16), gradient checkpointing to reduce memory, model distillation for inference, ONNX export + TensorRT.</p>
+  <p><strong>Distributed Training:</strong> Data parallelism (DDP in PyTorch) vs model parallelism for large models. Gradient accumulation to simulate large batches on limited GPU memory.</p>
+  <p><strong>Inference Optimization:</strong> Batch inference, dynamic batching (Triton), INT8 quantization, operator fusion, KV-cache for transformers.</p>
+  <p><strong>Scalability:</strong> Kubernetes + model server replicas. Profile with PyTorch Profiler / NVIDIA Nsight.</p>`,
+  keypoints:['Mixed precision FP16, INT8 quantization','DDP for distributed training','TensorRT / ONNX for inference','Profiling: PyTorch Profiler, Nsight','Distillation for lighter inference models']},
+
+  {id:20,cat:'ml',diff:'Medium',q:'Explain bias-variance tradeoff in machine learning.',
+  answer:`<p><strong>Bias:</strong> Error from wrong assumptions in the model — underfitting. High bias = model too simple (e.g., linear model on non-linear data). Consistent but wrong predictions.</p>
+  <p><strong>Variance:</strong> Error from sensitivity to small fluctuations in training data — overfitting. High variance = model too complex, memorizes training data. Good train score, poor test score.</p>
+  <p><strong>Tradeoff:</strong> Total Error = Bias² + Variance + Irreducible Noise. Increasing model complexity decreases bias but increases variance.</p>
+  <p><strong>Solutions for high variance:</strong> More training data, regularization (L1/L2, dropout), simpler model, cross-validation, ensemble (bagging reduces variance).</p>
+  <p><strong>Solutions for high bias:</strong> More features, more complex model, reduce regularization, boosting (reduces bias).</p>`,
+  keypoints:['Bias: underfitting — model too simple','Variance: overfitting — too sensitive to training data','Total error = Bias² + Variance + Noise','Bagging (Random Forest) reduces variance','Boosting (XGBoost) reduces bias']},
+
+  {id:21,cat:'ml',diff:'Medium',q:'What is regularization in ML? Explain L1 vs L2.',
+  answer:`<p>Regularization adds a penalty term to the loss function to prevent overfitting by discouraging large weights.</p>
+  <p><strong>L2 (Ridge):</strong> Adds λ·Σw² to loss. Penalizes large weights, pushes them toward zero but not exactly zero. Works well when all features matter. Closed-form solution exists.</p>
+  <p><strong>L1 (Lasso):</strong> Adds λ·Σ|w| to loss. Produces sparse solutions — drives irrelevant feature weights exactly to zero. Acts as built-in feature selection.</p>
+  <p><strong>Elastic Net:</strong> Combines L1 + L2 — good when you have many correlated features.</p>
+  <p><strong>Dropout (neural nets):</strong> Randomly zeroes out neurons during training — forces network to learn redundant representations. Acts as an ensemble of many networks.</p>`,
+  keypoints:['L2 (Ridge): weights → 0 but not zero','L1 (Lasso): exact zero weights = feature selection','Elastic Net: L1+L2 combined','Dropout: randomly disable neurons during training','Lambda (α): hyperparameter controlling regularization strength']},
+
+  {id:22,cat:'ml',diff:'Medium',q:'Explain cross-validation and hyperparameter tuning strategies.',
+  answer:`<p><strong>k-Fold CV:</strong> Split data into k folds; train on k-1, validate on 1; rotate. Average metric across k runs. Reduces overfitting to validation split. Stratified k-fold preserves class distribution.</p>
+<pre class="code-block">from sklearn.model_selection import cross_val_score, StratifiedKFold
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+scores = cross_val_score(model, X, y, cv=cv, scoring='roc_auc')
+print(scores.mean(), scores.std())</pre>
+  <p><strong>Hyperparameter Tuning:</strong></p>
+  <ul><li>Grid Search: exhaustive, O(n^k) combinations — only for small search space</li>
+  <li>Random Search: sample random combos — often 3× faster than grid for same quality</li>
+  <li>Bayesian Optimization (Optuna, Hyperopt): use past results to guide search — most efficient</li></ul>`,
+  keypoints:['k-Fold CV: k=5 or 10 is standard','Stratified for imbalanced classes','Random search: better than grid for most cases','Optuna: state-of-art Bayesian HPO','Time series: TimeSeriesSplit (no future leakage)']},
+
+  {id:23,cat:'ml',diff:'Hard',q:'Explain gradient boosting — how XGBoost/LightGBM work.',
+  answer:`<p>Gradient boosting builds an ensemble of shallow trees sequentially. Each new tree corrects the errors of the ensemble so far by fitting the negative gradient (residuals) of the loss function.</p>
+  <p><strong>Algorithm:</strong> Initialize with constant prediction → compute pseudo-residuals → fit tree to residuals → update prediction with learning_rate × tree. Repeat.</p>
+  <p><strong>XGBoost improvements:</strong> Regularization (L1/L2 on leaf weights), second-order gradient (Newton step), column/row subsampling, approximate split finding, cache-aware computation.</p>
+  <p><strong>LightGBM improvements:</strong> Histogram-based splits (faster), Leaf-wise growth (vs level-wise in XGBoost — can overfit on small data), GOSS (sample weighting) and EFB (feature bundling) for speed.</p>`,
+  keypoints:['Each tree fits residuals (negative gradient)','XGBoost: L1/L2 reg + second-order gradient','LightGBM: leaf-wise growth + histograms (faster)','Key hyperparams: n_estimators, max_depth, learning_rate, subsample','Feature importance: gain (best), split count, permutation']},
+
+  {id:24,cat:'ml',diff:'Medium',q:'What metrics would you use to evaluate a classification model on imbalanced data?',
+  answer:`<p>Accuracy is misleading on imbalanced data (predicting majority class always gives high accuracy).</p>
+  <p><strong>Preferred metrics:</strong></p>
+  <ul><li><strong>AUC-ROC:</strong> Area under ROC curve — measures ranking quality. Invariant to class imbalance. Range [0.5, 1.0].</li>
+  <li><strong>AUC-PR (Precision-Recall):</strong> More informative than ROC when positives are rare. Focus on minority class performance.</li>
+  <li><strong>F1 Score:</strong> Harmonic mean of precision and recall. F-beta score lets you weight recall (β&gt;1) or precision (β&lt;1).</li>
+  <li><strong>MCC (Matthews Correlation Coefficient):</strong> Single score considering all 4 quadrants of confusion matrix. Best single metric for imbalanced binary classification.</li></ul>
+  <p>Always report confusion matrix. Set threshold based on business cost of FP vs FN.</p>`,
+  keypoints:['AUC-PR better than AUC-ROC for rare positives','F2 score when recall matters more (fraud, cancer)','MCC: most informative single metric for imbalanced','Threshold tuning: balance precision vs recall','Report confusion matrix, not just aggregate metric']},
+
+  {id:25,cat:'ml',diff:'Medium',q:'Explain feature engineering and feature selection techniques.',
+  answer:`<p><strong>Feature Engineering:</strong> Creating new meaningful features from raw data. Techniques: polynomial features, log/sqrt transforms for skewed distributions, binning/quantization, date decomposition (hour, day, month), text TF-IDF/embeddings, interaction features, lag features for time series.</p>
+  <p><strong>Feature Selection methods:</strong></p>
+  <ul><li><strong>Filter:</strong> Statistical tests — correlation, chi-squared, mutual information. Fast, model-agnostic. Remove correlated features (Pearson &gt;0.95).</li>
+  <li><strong>Wrapper:</strong> RFE (Recursive Feature Elimination) — iteratively removes least important features. Expensive.</li>
+  <li><strong>Embedded:</strong> L1 regularization, tree feature importance (gain-based). Model learns which features matter during training.</li></ul>
+  <p><strong>Dimensionality reduction:</strong> PCA (linear), UMAP/t-SNE (non-linear, visualization), autoencoders.</p>`,
+  keypoints:['Log transform for right-skewed distributions','Lag features for time series (t-1, t-7, t-30)','L1 (Lasso) for embedded feature selection','RFE for wrapper selection','PCA for linear dimensionality reduction']},
+
+  {id:26,cat:'ml',diff:'Medium',q:'What is model drift and how do you monitor ML models in production?',
+  answer:`<p><strong>Data drift:</strong> Input feature distribution shifts over time (e.g., user demographics change). Detect with PSI (Population Stability Index), KL divergence, KS test.</p>
+  <p><strong>Concept drift:</strong> The relationship between features and target changes (e.g., fraud patterns evolve). Requires model retraining.</p>
+  <p><strong>Monitoring stack:</strong></p>
+  <ul><li>Data quality: null rate, outlier rate, schema validation (Great Expectations)</li>
+  <li>Feature drift: PSI per feature, sliding window comparison vs training baseline</li>
+  <li>Prediction drift: output distribution changes</li>
+  <li>Business metrics: precision/recall on labeled data (shadow mode), revenue impact</li></ul>
+  <p><strong>Tools:</strong> Evidently AI, Arize, Whylogs, MLflow for tracking. Retrain triggers: scheduled (weekly), drift-triggered, or performance-threshold-triggered.</p>`,
+  keypoints:['Data drift: input distribution shifts','Concept drift: feature→target relationship changes','PSI > 0.2 = significant shift (trigger retraining)','Shadow mode: run new model alongside old, compare','Evidently / Arize for production ML monitoring']},
+
+  {id:27,cat:'ml',diff:'Medium',q:'Explain the ML model lifecycle — from data to production deployment.',
+  answer:`<p><strong>1. Problem Definition:</strong> Define success metric, baseline, business KPI mapping, label availability.</p>
+  <p><strong>2. Data Collection &amp; EDA:</strong> Data sources, quality checks, class distribution, feature correlations, leakage detection.</p>
+  <p><strong>3. Feature Engineering + Preprocessing:</strong> Imputation, scaling (StandardScaler, MinMax), encoding (OHE, target encoding), feature store.</p>
+  <p><strong>4. Training + Validation:</strong> Baseline model first, then iterate. Cross-validation, hyperparameter tuning, tracking with MLflow/W&amp;B.</p>
+  <p><strong>5. Deployment:</strong> Model packaging (ONNX/pickle), serving (FastAPI + Triton, SageMaker), A/B test or canary rollout, shadow mode.</p>
+  <p><strong>6. Monitoring:</strong> Data drift, prediction drift, business metrics, retraining pipeline trigger.</p>`,
+  keypoints:['Always start with a strong baseline','MLflow/W&B for experiment tracking','Feature store for consistent train/serve features','Shadow mode before full rollout','Feedback loop: production labels → retrain pipeline']},
+
+  // ===================== GENAI & LLMs =====================
+  {id:28,cat:'genai',diff:'Hard',q:'Explain how transformer architecture works — attention, positional encoding, and why it replaced RNNs.',
+  answer:`<p><strong>Self-Attention:</strong> For each token, compute Query (Q), Key (K), Value (V) projections. Attention score = softmax(QK^T / √d_k) × V. This allows every token to attend to every other token in O(n²) — captures long-range dependencies that RNNs struggle with.</p>
+  <p><strong>Multi-Head Attention:</strong> Run h attention heads in parallel with different projections, concatenate and project. Each head learns different relationship types.</p>
+  <p><strong>Positional Encoding:</strong> Attention is permutation-invariant (no notion of position). Add sinusoidal or learned positional embeddings to token embeddings before the encoder.</p>
+  <p><strong>Why replace RNNs?</strong> RNNs process sequentially (can't parallelize during training), suffer from vanishing gradients on long sequences, poor long-range dependency capture. Transformers train in parallel, scale with hardware.</p>`,
+  keypoints:['QKV attention: score = softmax(QK^T/√d_k)·V','Multi-head: h parallel attention heads','Positional encoding: required because attention is permutation-invariant','RNNs: sequential, vanishing gradient, slow training','Transformer: parallelizable, scales with compute']},
+
+  {id:29,cat:'genai',diff:'Hard',q:'What is RAG (Retrieval-Augmented Generation)? How would you design a RAG pipeline?',
+  answer:`<p>RAG combines a retrieval system with an LLM. Instead of relying solely on parametric knowledge baked into model weights, it retrieves relevant documents from an external corpus at inference time, then passes them as context to the LLM.</p>
+  <p><strong>Pipeline:</strong></p>
+  <ul><li><strong>Ingestion:</strong> Chunk documents → generate embeddings (text-embedding-3-large, sentence-transformers) → store in vector DB (Pinecone, Weaviate, pgvector)</li>
+  <li><strong>Retrieval:</strong> Embed user query → ANN search (HNSW/FAISS) → retrieve top-k chunks → optional reranking (cross-encoder)</li>
+  <li><strong>Generation:</strong> Stuff retrieved chunks into LLM context → generate grounded response with citations</li></ul>
+  <p><strong>Advanced patterns:</strong> HyDE (generate hypothetical doc first, then retrieve), multi-query retrieval, parent-child chunk retrieval, hybrid search (BM25 + vector), self-RAG (model decides when to retrieve).</p>`,
+  keypoints:['Chunk → embed → store in vector DB','ANN search: HNSW or FAISS (cosine similarity)','Reranking: cross-encoder improves top-k precision','Hybrid search: BM25 + vector beats either alone','Evaluate with RAGAS: faithfulness, answer relevancy, context precision']},
+
+  {id:30,cat:'genai',diff:'Hard',q:'Explain fine-tuning vs prompt engineering vs RAG — when to use each.',
+  answer:`<p><strong>Prompt Engineering:</strong> Zero-shot, few-shot, chain-of-thought. No training cost. Best for: well-defined tasks, fast iteration, when base model has the knowledge. Limitations: context window constraint, prompt sensitivity.</p>
+  <p><strong>RAG:</strong> Retrieval + generation with external knowledge. Best for: knowledge-intensive tasks, up-to-date information, domain documents, when knowledge changes frequently. Limitations: retrieval quality, latency, chunk design complexity.</p>
+  <p><strong>Fine-tuning:</strong> Update model weights on domain data (full fine-tune, LoRA, QLoRA). Best for: specific output format/style, domain vocabulary, when few-shot examples don't fit in context, latency-sensitive (smaller tuned model). Limitations: costly, requires labeled data, can forget general knowledge (catastrophic forgetting).</p>
+  <p><strong>Decision tree:</strong> Try prompting first → add RAG if knowledge gaps → fine-tune if format/style/speed issues persist.</p>`,
+  keypoints:['Try prompting first (cheapest, fastest iteration)','RAG for knowledge-intensive or frequently changing info','Fine-tune for style, format, or domain vocabulary','LoRA/QLoRA: parameter-efficient fine-tuning','Fine-tuning + RAG can be combined']},
+
+  {id:31,cat:'genai',diff:'Medium',q:'What is LoRA / QLoRA and how does parameter-efficient fine-tuning work?',
+  answer:`<p><strong>LoRA (Low-Rank Adaptation):</strong> Instead of updating all weights W, train low-rank decomposition matrices A and B such that ΔW = A·B (where rank r &lt;&lt; d). Only A and B are trained (~0.1-1% of parameters). At inference, merge: W' = W + αAB/r. No additional latency.</p>
+<pre class="code-block">from peft import LoraConfig, get_peft_model
+config = LoraConfig(
+    r=16,           # rank
+    lora_alpha=32,  # scaling
+    target_modules=["q_proj", "v_proj"],  # which layers
+    lora_dropout=0.05,
+)
+model = get_peft_model(base_model, config)
+model.print_trainable_parameters()
+# trainable params: 4,194,304 (0.32%)</pre>
+  <p><strong>QLoRA:</strong> Fine-tune in 4-bit quantized base model + LoRA adapters. 65B parameter model fits on 48GB GPU. Uses NF4 quantization + double quantization.</p>`,
+  keypoints:['LoRA: ΔW = AB where rank r << d (0.1-1% params)','No added latency: merge at inference time','Target q_proj, v_proj (attention projections) typically','QLoRA: 4-bit quantization + LoRA (65B on one GPU)','PEFT library (HuggingFace) for easy LoRA implementation']},
+
+  {id:32,cat:'genai',diff:'Medium',q:'Explain prompt engineering techniques — chain-of-thought, few-shot, system prompts.',
+  answer:`<p><strong>Zero-shot:</strong> Directly ask the model without examples. Works on tasks well-represented in training data.</p>
+  <p><strong>Few-shot:</strong> Provide 2-5 input-output examples before the actual query. Demonstrates format, tone, and reasoning pattern. Works well for classification, extraction, transformation.</p>
+  <p><strong>Chain-of-Thought (CoT):</strong> "Let's think step by step" or show step-by-step reasoning examples. Significantly improves reasoning on math, logic, multi-step problems. Works best with large models (>70B).</p>
+  <p><strong>System Prompt:</strong> Sets persona, constraints, output format, tone at the conversation level. Most effective for consistent behavior in production apps.</p>
+  <p><strong>Advanced:</strong> ReAct (Reasoning + Acting — interleave reasoning and tool calls), Tree-of-Thought (explore multiple reasoning paths), Self-Consistency (sample multiple completions, vote), meta-prompting.</p>`,
+  keypoints:['Few-shot: 2-5 examples beats zero-shot on complex tasks','CoT: "think step by step" on large models (>70B)','System prompt: persona + constraints + output format','ReAct: interleave reasoning + tool calls (agents)','Self-consistency: sample multiple, majority vote → higher accuracy']},
+
+  {id:33,cat:'genai',diff:'Hard',q:'How would you design a production LLM application with tool use (agents)?',
+  answer:`<p><strong>Core Architecture:</strong> LLM + tool registry + execution loop. Model decides which tools to call based on user intent; results feed back into context; model reasons and calls next tool or returns final answer.</p>
+  <p><strong>Components:</strong></p>
+  <ul><li>Tool definitions (JSON schema for function signatures + docstrings)</li>
+  <li>Tool executor (sandboxed code execution, API calls)</li>
+  <li>Memory: short-term (conversation window), long-term (vector DB), working (scratchpad)</li>
+  <li>Orchestration: LangChain, LlamaIndex, or custom loop</li></ul>
+  <p><strong>Production concerns:</strong> Prompt injection defense (tools returning adversarial instructions), cost control (token counting, caching), observability (LangSmith, Langfuse — trace every LLM call), max iterations to prevent loops, timeout per tool call, structured output (JSON mode/function calling) to prevent parsing failures.</p>`,
+  keypoints:['Tools defined as JSON schema with clear docstrings','Structured outputs (JSON mode) for reliable parsing','Prompt injection defense for agentic systems','LangSmith/Langfuse for full tracing and observability','Set max_iterations and per-tool timeout in production']},
+
+  {id:34,cat:'genai',diff:'Medium',q:'What are embeddings and vector databases? Explain similarity search.',
+  answer:`<p><strong>Embeddings:</strong> Dense numerical representations (vectors) of text, images, code, etc. Semantically similar content has vectors close in space. Generated by encoder models (text-embedding-3-large, sentence-transformers, BGE).</p>
+  <p><strong>Vector Databases:</strong> Optimized for Approximate Nearest Neighbor (ANN) search on high-dimensional vectors. Key operations: index vectors, query with a vector, return top-k most similar.</p>
+  <p><strong>ANN Algorithms:</strong> HNSW (Hierarchical Navigable Small World) — graph-based, best recall/speed tradeoff. FAISS (IVF + PQ) — inverted file index with product quantization. IVF-FLAT, IVFPQ, ScaNN.</p>
+  <p><strong>Similarity metrics:</strong> Cosine similarity (angle, ignores magnitude — common for text), dot product, L2/Euclidean distance.</p>
+  <p><strong>Vector DBs:</strong> Pinecone (managed), Weaviate, Qdrant, Milvus, pgvector (Postgres extension).</p>`,
+  keypoints:['Embeddings: semantic similarity → vector proximity','HNSW: best ANN tradeoff (recall vs speed)','Cosine similarity for text embeddings','pgvector: add vector search to existing Postgres','Hybrid search: vector + BM25 keyword for better recall']},
+
+  {id:35,cat:'genai',diff:'Medium',q:'Explain LLM evaluation — how do you measure quality of LLM outputs?',
+  answer:`<p><strong>Human Evaluation:</strong> Gold standard but expensive. A/B preference testing (which response is better), scoring rubrics (1-5 on helpfulness, accuracy, safety).</p>
+  <p><strong>Automated Metrics:</strong></p>
+  <ul><li>BLEU/ROUGE: n-gram overlap vs reference. Good for translation/summarization, poor for open-ended generation.</li>
+  <li>BERTScore: semantic similarity using BERT embeddings — better than n-gram overlap.</li>
+  <li>LLM-as-judge: GPT-4/Claude grades responses on criteria (G-Eval, MT-Bench). Scalable but has positional bias.</li></ul>
+  <p><strong>RAG-specific (RAGAS):</strong> Faithfulness (is answer grounded in retrieved docs?), Answer Relevancy, Context Precision, Context Recall.</p>
+  <p><strong>Safety evaluation:</strong> Refusal rate on harmful prompts, hallucination rate, PII leakage testing.</p>`,
+  keypoints:['LLM-as-judge (GPT-4) is scalable but has position bias','RAGAS for RAG pipeline: faithfulness + relevancy','BLEU/ROUGE: fast but n-gram overlap misses semantics','BERTScore: semantic similarity metric','Always include adversarial/red-team evaluation in production']},
+
+  {id:36,cat:'genai',diff:'Hard',q:'What is RLHF and how are LLMs aligned with human preferences?',
+  answer:`<p><strong>RLHF (Reinforcement Learning from Human Feedback):</strong></p>
+  <ul><li><strong>Step 1 — SFT:</strong> Fine-tune base LLM on high-quality human-written demonstrations (supervised fine-tuning).</li>
+  <li><strong>Step 2 — Reward Model:</strong> Train a reward model on human preference data (pairs of responses ranked by humans). Reward model outputs a scalar score.</li>
+  <li><strong>Step 3 — RL Optimization:</strong> Use PPO (Proximal Policy Optimization) to fine-tune the SFT model to maximize reward model score, with a KL-divergence penalty to prevent reward hacking.</li></ul>
+  <p><strong>RLHF alternatives:</strong></p>
+  <ul><li>DPO (Direct Preference Optimization): no reward model needed — directly optimize on preference pairs. More stable, simpler.</li>
+  <li>RLAIF: use AI feedback instead of human feedback (Constitutional AI approach — Anthropic).</li></ul>`,
+  keypoints:['RLHF: SFT → Reward Model → PPO optimization','KL penalty prevents reward hacking/model collapse','DPO: no reward model, direct preference optimization','Constitutional AI (Anthropic): model self-critiques via principles','RLHF is why ChatGPT follows instructions better than base GPT']},
+
+  {id:37,cat:'genai',diff:'Medium',q:'Explain hallucination in LLMs — causes and mitigation strategies.',
+  answer:`<p>Hallucination = LLM generating confident but factually incorrect or fabricated content. It's a fundamental probabilistic issue — LLMs predict likely next tokens, not facts.</p>
+  <p><strong>Causes:</strong> Distributional gap in training data, over-reliance on pattern completion, lack of grounding, long-tail fact scarcity, post-training alignment shifts.</p>
+  <p><strong>Mitigation strategies:</strong></p>
+  <ul><li><strong>RAG:</strong> Ground answers in retrieved documents; instruct model to cite sources</li>
+  <li><strong>Structured output + verification:</strong> Parse generated claims, verify against a knowledge base or search</li>
+  <li><strong>Temperature control:</strong> Lower temperature → more conservative, less creative hallucination</li>
+  <li><strong>Self-consistency:</strong> Sample multiple answers, take majority</li>
+  <li><strong>Fine-tuning on refusal:</strong> Train model to say "I don't know" when uncertain</li>
+  <li><strong>Factual grounding prompts:</strong> "Only answer based on the provided context"</li></ul>`,
+  keypoints:['LLMs predict likely tokens, not verifiable facts','RAG: most practical grounding strategy','Lower temperature reduces but doesn\'t eliminate hallucination','Self-consistency: sample N, take majority vote','Never use LLMs for safety-critical facts without verification']},
+
+  {id:38,cat:'genai',diff:'Medium',q:'What is the context window? How do you handle documents longer than the context limit?',
+  answer:`<p>The context window is the maximum number of tokens an LLM can process in a single pass (input + output). Examples: GPT-4o = 128k, Claude 3 = 200k, Gemini 1.5 = 1M tokens.</p>
+  <p><strong>Strategies for long documents:</strong></p>
+  <ul><li><strong>Chunking + RAG:</strong> Split document into chunks, retrieve relevant ones per query — most robust</li>
+  <li><strong>Map-Reduce:</strong> LLM processes each chunk independently (map), then summarizes/aggregates results (reduce)</li>
+  <li><strong>Sliding window:</strong> Process with overlap, merge results — good for sequential tasks</li>
+  <li><strong>Hierarchical summarization:</strong> Summarize chunks → summarize summaries → answer from summary tree</li>
+  <li><strong>Long-context models:</strong> Use models with large context windows when cost/latency is acceptable</li></ul>
+  <p>Token counting: use <code>tiktoken</code> (OpenAI) or <code>transformers.AutoTokenizer</code> to measure before sending.</p>`,
+  keypoints:['Context window = max tokens (input+output) in one call','Chunking + RAG: most scalable approach','Map-reduce: process chunks independently then aggregate','tiktoken for counting OpenAI tokens pre-request','Long context ≠ infinite: quality degrades at extremes (lost in the middle effect)']},
+
+  {id:39,cat:'genai',diff:'Medium',q:'How would you build a secure, production-grade LLM API service?',
+  answer:`<p><strong>API Layer:</strong> FastAPI + Pydantic for request validation. Rate limiting per user/tier (Redis token bucket). API key management + JWT auth. Request/response logging with PII masking.</p>
+  <p><strong>LLM Integration:</strong> Abstract provider behind interface for swap-ability (OpenAI / Anthropic / local). Async calls with aiohttp/httpx. Retry with exponential backoff on 429/500. Token budget enforcement before calling.</p>
+  <p><strong>Prompt Safety:</strong> Input validation (block prompt injection patterns). Output filtering (PII, harmful content). Guardrails (NeMo Guardrails, Llama Guard for safety classification).</p>
+  <p><strong>Cost Control:</strong> Token counting pre-call, streaming responses, result caching (semantic cache with GPTCache), model routing (cheap model for simple queries, expensive for complex).</p>
+  <p><strong>Observability:</strong> LangSmith / Langfuse for every LLM call trace. Latency p50/p95/p99, token usage, cost, error rate dashboards.</p>`,
+  keypoints:['Abstract LLM provider behind interface','Async + retry with exponential backoff','Semantic caching (GPTCache) reduces cost','Guardrails for input/output safety filtering','LangSmith/Langfuse: full trace every LLM call']},
+
+  {id:40,cat:'genai',diff:'Medium',q:'What is the difference between encoder-only, decoder-only, and encoder-decoder transformer models?',
+  answer:`<p><strong>Encoder-only (e.g., BERT):</strong> Bidirectional — each token attends to all others. Best for understanding tasks: classification, NER, sentence embeddings, semantic similarity. Not generative.</p>
+  <p><strong>Decoder-only (e.g., GPT, LLaMA, Claude):</strong> Causal/autoregressive — each token only attends to previous tokens. Best for generation: text completion, chat, code generation. The dominant LLM architecture.</p>
+  <p><strong>Encoder-Decoder (e.g., T5, BART, mT5):</strong> Encoder processes input bidirectionally; decoder generates output autoregressively. Best for seq2seq tasks: translation, summarization, Q&A with source. More parameters for same task vs decoder-only.</p>
+  <p><strong>Trend:</strong> Decoder-only models (GPT, LLaMA) have largely won for general-purpose LLMs due to scalability and in-context learning. Encoder models remain dominant for embeddings.</p>`,
+  keypoints:['Encoder-only (BERT): bidirectional, for understanding/embeddings','Decoder-only (GPT): causal, for generation — dominant LLM architecture','Encoder-Decoder (T5): seq2seq tasks','Causal mask: lower triangular — each token sees only past tokens','BERT still king for embeddings; GPT family for generation']},
+
+  {id:41,cat:'genai',diff:'Medium',q:'Explain vector search index types — HNSW, IVF, Flat. How do you choose?',
+  answer:`<p><strong>Flat (brute force):</strong> Compare query against every vector. 100% recall. O(n·d) per query — only feasible for small datasets (&lt;100k vectors). Use for ground truth benchmarking.</p>
+  <p><strong>IVF (Inverted File Index):</strong> Cluster vectors into Voronoi cells (k-means). At query time, search only nprobe nearest clusters. 10-100× speedup vs flat. Recall degrades as nprobe decreases. Needs training step.</p>
+  <p><strong>HNSW (Hierarchical Navigable Small World):</strong> Graph-based. Build layered graph; greedy search from top layer down. Best recall/speed tradeoff. No training. O(log n) search. High memory (graph structure). Default choice for production.</p>
+  <p><strong>IVF + PQ (Product Quantization):</strong> Compress vectors (reduce memory 4-32×) at cost of recall. Good for billion-scale.</p>`,
+  keypoints:['Flat: 100% recall, only for small datasets','HNSW: best recall/speed, high memory, no training — default choice','IVF: good speed, needs training, tune nprobe for recall','IVF+PQ: billion-scale with compression','ef_construction and M hyperparams for HNSW quality/build-time']},
+
+  {id:42,cat:'genai',diff:'Hard',q:'What is quantization in the context of LLMs? Explain INT8, INT4, GPTQ, and AWQ.',
+  answer:`<p>Quantization reduces model precision from FP32/FP16 to lower bit-widths, reducing memory and increasing inference speed at small accuracy cost.</p>
+  <p><strong>INT8:</strong> 8-bit integers. ~2× memory reduction vs FP16. LLM.int8() (bitsandbytes) applies mixed-precision: INT8 for 99.9% of weights, FP16 for outlier channels. Minimal quality loss.</p>
+  <p><strong>INT4 / NF4 (QLoRA):</strong> 4-bit. 4× memory reduction vs FP16. 65B model fits on 48GB GPU. NF4 (Normal Float 4) better than standard INT4 for LLMs (designed for normally-distributed weights).</p>
+  <p><strong>GPTQ:</strong> Post-training quantization to INT4/INT3. One-shot — uses calibration data to find optimal quantization per layer. Good quality, requires calibration step.</p>
+  <p><strong>AWQ (Activation-aware Weight Quantization):</strong> Identifies and preserves the 1% of weights that matter most for activations. Often higher quality than GPTQ at same bit-width. Supported by vLLM.</p>`,
+  keypoints:['INT8: 2× compression, minimal quality loss','NF4 (QLoRA): 4-bit, fits 65B on 48GB GPU','GPTQ: post-training quantization with calibration data','AWQ: activation-aware, often better quality than GPTQ','vLLM supports AWQ + GPTQ for fast inference serving']},
+
+  {id:43,cat:'genai',diff:'Hard',q:'Design an LLM-powered data extraction pipeline for unstructured documents (invoices, contracts, reports).',
+  answer:`<p><strong>Pipeline stages:</strong></p>
+  <ul><li><strong>Document ingestion:</strong> PDF parsing (pdfplumber, pypdf2, or Unstructured.io), OCR for scanned docs (Tesseract, AWS Textract), layout analysis for tables/images</li>
+  <li><strong>Chunking:</strong> Semantic chunks (sentence-transformers), preserve section headers, table-aware chunking</li>
+  <li><strong>Extraction:</strong> Structured extraction via function calling / JSON mode — define Pydantic schema, LLM fills it in</li>
+  <li><strong>Validation:</strong> Pydantic validation on output, confidence scoring, flag for human review if uncertain</li>
+  <li><strong>Storage:</strong> Extracted fields → structured DB; raw + chunks → document store + vector DB for search</li></ul>
+<pre class="code-block">from pydantic import BaseModel
+class Invoice(BaseModel):
+    vendor: str
+    amount: float
+    date: str
+    line_items: list[dict]
+
+# Use function calling / structured output
+# to reliably extract Invoice from raw text</pre>`,
+  keypoints:['Unstructured.io for PDF/HTML/image ingestion','JSON mode / function calling for structured extraction','Pydantic schema validation on LLM output','Confidence scoring + human-in-the-loop for uncertain extractions','Textract for scanned/complex PDFs']},
+
+  // ===================== SYSTEM DESIGN =====================
+  {id:44,cat:'sys',diff:'Hard',q:'How would you design a photo-sharing app? Consider latency, throughput, and user scale.',
+  answer:`<p><strong>Capacity:</strong> 100M DAU, 10% upload = 10M uploads/day = ~115/sec. Average photo 3MB → 345MB/s write. Read:Write ~10:1 → 1150 reads/sec.</p>
+  <p><strong>Storage:</strong> 10M × 3MB = 30TB/day. S3 + CloudFront CDN. Async thumbnail generation via Kafka worker queue.</p>
+  <p><strong>Architecture:</strong> Upload → presigned S3 URL → Kafka event → worker (resize/tag) → Postgres metadata + Elasticsearch → CDN.</p>
+  <p><strong>Database:</strong> Postgres for metadata, Redis for feed cache/session, Cassandra for activity timeline.</p>`,
+  keypoints:['Presigned S3 URL (bypass app servers)','Async thumbnail via Kafka','Cassandra for timeline (write-heavy)','CDN for read latency','100M DAU → 115 uploads/sec']},
+
+  {id:45,cat:'sys',diff:'Hard',q:'Design a comment system for a large website.',
+  answer:`<p><strong>API:</strong> POST /comments, GET /comments?articleId= (paginated), DELETE /comments/:id, PATCH /comments/:id.</p>
+  <p><strong>Data Model:</strong> id, article_id, user_id, parent_id (threading), content, created_at, status. Index on (article_id, created_at). Adjacency list for threading.</p>
+  <p><strong>DB:</strong> Postgres, partitioned by article_id. Redis cache for hot articles (TTL 5min). CQRS for read/write separation. Kafka for notification fan-out.</p>
+  <p><strong>Content Moderation:</strong> Async ML classifier → hold/approve/reject. Rate limiting per user. Media in comments via S3 + CDN.</p>`,
+  keypoints:['Adjacency list for threading','Redis cache for hot article comments','Async content moderation pipeline','CQRS read/write separation','Kafka for notification fan-out']},
+
+  {id:46,cat:'sys',diff:'Hard',q:'A music streaming service distributes songs across servers. What are the potential problems?',
+  answer:`<p><strong>Hot Partition:</strong> Popular songs hammered on same shard. Fix: replicate hot content to multiple nodes, CDN for popular tracks, consistent hashing with virtual nodes.</p>
+  <p><strong>No Redundancy:</strong> Shard failure makes songs unavailable. Fix: replication factor ≥ 3, async replication, failover routing.</p>
+  <p><strong>Geographic Latency:</strong> Distant servers → buffering. Fix: CDN edge nodes, geo-aware routing, adaptive bitrate streaming (HLS/DASH).</p>
+  <p><strong>License Compliance:</strong> Regional restrictions must be enforced at CDN/routing layer.</p>`,
+  keypoints:['Hot partition: replicate + CDN','Replication factor ≥ 3','Consistent hashing with virtual nodes','ABR streaming (HLS/DASH)','Regional licensing at CDN layer']},
+
+  {id:47,cat:'sys',diff:'Medium',q:'Puzzle app — trade-offs between online fetching vs offline storage of media.',
+  answer:`<p><strong>Online:</strong> Dynamic updates, no app size issue, DRM easier, backend cost, latency, offline unusable.</p>
+  <p><strong>Offline:</strong> Zero runtime latency, no backend cost, large app size, stale content, device storage constraints.</p>
+  <p><strong>Hybrid (recommended):</strong> Bundle critical minimal assets, stream supplemental/large media, progressive download in background, cache recently-used content locally.</p>`,
+  keypoints:['Hybrid: bundle critical, stream supplemental','App size vs latency tradeoff','ABR/progressive download for large media','DRM easier with streaming','Consider low-end device storage limits']},
+
+  {id:48,cat:'sys',diff:'Medium',q:'A huge XML file exceeds RAM. How do you process it?',
+  answer:`<p><strong>Streaming Parse (SAX/iterparse):</strong> Event-driven, O(1) memory. Process element-by-element.</p>
+<pre class="code-block">import xml.etree.ElementTree as ET
+for event, elem in ET.iterparse('huge.xml', events=('end',)):
+    if elem.tag == 'record':
+        process(elem)
+        elem.clear()   # free memory</pre>
+  <p><strong>DB Staging:</strong> Stream records into SQLite/Postgres COPY, then aggregate with SQL.</p>
+  <p><strong>Map-Reduce:</strong> Split file into chunks, process in parallel workers, aggregate results. Spark for TB-scale.</p>`,
+  keypoints:['SAX/iterparse: event-driven, O(1) memory','elem.clear() frees parsed elements','DB staging + SQL aggregation','Map-Reduce for parallelism','Spark streaming XML for TB-scale']},
+
+  {id:49,cat:'sys',diff:'Hard',q:'Social media app expanding from US to international. What must you consider?',
+  answer:`<p><strong>Compliance:</strong> GDPR (EU), PDPA (Thailand), PIPL (China) — data residency requirements.</p>
+  <p><strong>i18n/L10n:</strong> Translation pipeline, RTL support (Arabic/Hebrew), date/number/currency formatting.</p>
+  <p><strong>Infrastructure:</strong> Multi-region deploy, DNS geo-routing, CDN for static assets, Cassandra multi-DC replication.</p>
+  <p><strong>Content Moderation:</strong> Country-specific rules and blocklists. Local payment methods (UPI, Alipay). VAT/GST handling.</p>`,
+  keypoints:['GDPR/PDPA/PIPL data residency compliance','i18n: RTL, date formats, currencies','Multi-region + DNS geo-routing','Cassandra multi-DC replication','Country-specific content moderation']},
+
+  {id:50,cat:'sys',diff:'Medium',q:'Describe load balancing, caching, sharding, CAP theorem, replication, monitoring.',
+  answer:`<p><strong>Load Balancing:</strong> Round-robin, least-connections, IP-hash. L4 vs L7. Health checks + circuit breaker.</p>
+  <p><strong>Caching:</strong> Cache-aside, write-through, write-back. Redis. TTL vs LRU. Stampede prevention.</p>
+  <p><strong>Sharding:</strong> Range vs hash. Consistent hashing for dynamic clusters. Hot shard mitigation.</p>
+  <p><strong>CAP:</strong> CP = Zookeeper/HBase, AP = Cassandra/Dynamo. Must tolerate partitions → CP vs AP is the real choice.</p>
+  <p><strong>Monitoring:</strong> RED (Rate, Errors, Duration) for services. USE (Utilization, Saturation, Errors) for resources. OpenTelemetry + Prometheus + Grafana.</p>`,
+  keypoints:['CAP: CP vs AP — partitions unavoidable','Cache-aside most common pattern','Consistent hashing for shard rebalancing','RED method for service monitoring','PACELC extends CAP with latency tradeoff']},
+
+  {id:51,cat:'sys',diff:'Hard',q:'Design a URL shortening service.',
+  answer:`<p><strong>Encoding:</strong> Auto-increment ID → base62 encode (62^6 = 56B unique codes).</p>
+  <p><strong>Data Model:</strong> short_code (PK), original_url, user_id, created_at, expires_at.</p>
+  <p><strong>Storage:</strong> Postgres for mappings. Redis cache for hot codes. Read replicas (reads >> writes).</p>
+  <p><strong>Redirect:</strong> 302 (analytics hit server every time) vs 301 (browser caches, fewer hits). Use 302 for analytics.</p>
+  <p><strong>Scale:</strong> ~100M URLs/day. Multiple app servers + LB. Rate limit creation per IP.</p>`,
+  keypoints:['Base62 encoding of auto-increment ID','302 for analytics, 301 for CDN efficiency','Redis cache for hot short codes','Read replicas (reads >> writes)','Rate limit creation endpoint']},
+
+  {id:52,cat:'sys',diff:'Medium',q:'Design 4 CRUD API methods for a social media post — include error handling.',
+  answer:`<p><strong>POST /posts</strong> — 201 Created. Errors: 400, 401, 413, 429.</p>
+  <p><strong>GET /posts/:id</strong> — 200 OK. Errors: 404, 403.</p>
+  <p><strong>PATCH /posts/:id</strong> — 200 OK. Errors: 401, 403, 404.</p>
+  <p><strong>DELETE /posts/:id</strong> — 204 No Content. Soft-delete recommended. Errors: 401, 403, 404.</p>
+  <p><strong>HTTP codes:</strong> 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 409 Conflict, 422 Unprocessable, 429 Rate Limit, 500 Server Error.</p>`,
+  keypoints:['201 for create, 204 for delete','Soft delete: mark deleted, async purge','403 vs 401: auth\'d but no permission vs not auth\'d','429 rate limiting on write endpoints','PATCH for partial update, PUT for full replace']},
+
+  {id:53,cat:'sys',diff:'Medium',q:'Explain the trade-offs between RESTful API and GraphQL.',
+  answer:`<p><strong>REST:</strong> Resource-oriented, HTTP caching by URL, simple, well-understood. Problems: over-fetching (get full object for 2 fields) and under-fetching (multiple trips for related data).</p>
+  <p><strong>GraphQL:</strong> Single endpoint, query exactly what you need. Reduces round trips. Harder caching (POST requests by default), N+1 problem (DataLoader needed), steeper learning curve.</p>
+  <p><strong>When REST:</strong> Public APIs, simple CRUD, when HTTP caching matters. <strong>When GraphQL:</strong> Complex UIs, multiple clients (mobile vs web), rapidly evolving product.</p>`,
+  keypoints:['REST: simple caching, over/under-fetching problem','GraphQL: precise fetching, N+1 (use DataLoader)','GraphQL caching is harder (use persisted queries)','REST for public APIs and microservices','GraphQL for complex multi-client UIs']},
+
+  {id:54,cat:'sys',diff:'Medium',q:'How do cookies work?',
+  answer:`<p>Cookies are key-value pairs set by the server via <code>Set-Cookie</code> header. Browser automatically sends matching cookies in <code>Cookie</code> header on subsequent requests.</p>
+  <p><strong>Security attributes:</strong> <code>HttpOnly</code> (no JS access — prevents XSS token theft), <code>Secure</code> (HTTPS only), <code>SameSite=Strict/Lax</code> (CSRF protection), <code>Expires/Max-Age</code>, <code>Domain</code>, <code>Path</code>.</p>
+  <p><strong>Best practices:</strong> Always set HttpOnly + Secure for auth cookies. SameSite=Strict for CSRF. Never store sensitive data in cookies (visible in browser devtools).</p>`,
+  keypoints:['Set-Cookie response header, Cookie request header','HttpOnly: no JS access (prevents XSS theft)','Secure: HTTPS only','SameSite=Strict: prevents CSRF','Never store sensitive data in cookies']},
+
+  {id:55,cat:'sys',diff:'Medium',q:'Toll booth system — bug fix (timestamp as float) and counting complete journeys.',
+  answer:`<p><strong>Bug Fix:</strong> Timestamps stored as strings cause lexicographic comparison errors. Fix: <code>float(timestamp_str)</code>. Always store Unix timestamps as numeric types.</p>
+<pre class="code-block">journeys = {}
+count = 0
+for event in events:
+    vid = event['vehicle_id']
+    ts = float(event['timestamp'])   # KEY FIX
+    if event['type'] == 'entry':
+        journeys[vid] = ts
+    elif event['type'] == 'exit' and vid in journeys:
+        count += 1
+        del journeys[vid]
+return count   # incomplete journeys = entries with no exit</pre>`,
+  keypoints:['Always store timestamps as numeric (float/int)','Hash map: vehicle_id → entry_time','Complete journey = entry + matching exit','Incomplete journeys = entries without exit','O(n) time, O(k) space (k = simultaneous vehicles)']},
+
+  {id:56,cat:'sys',diff:'Hard',q:'Architecture review: identify 10+ issues in a legacy system diagram.',
+  answer:`<p>Walk through categories systematically:</p>
+  <ul>
+  <li><strong>SPOF:</strong> Single DB? Single LB? No redundancy on critical path?</li>
+  <li><strong>Scalability:</strong> Vertical-only? Stateful services that can't scale out?</li>
+  <li><strong>Performance:</strong> No cache layer? Sync calls where async suffices? No CDN?</li>
+  <li><strong>Security:</strong> Services exposed to internet? No API gateway? HTTP not HTTPS? Secrets in config?</li>
+  <li><strong>Observability:</strong> No centralized logging? No distributed tracing? No alerting?</li>
+  <li><strong>Data:</strong> No backups? No replication? Mixed OLAP/OLTP on same DB?</li>
+  <li><strong>Operational:</strong> No CI/CD? No blue-green? No feature flags?</li>
+  <li><strong>Networking:</strong> No rate limiting? No DDoS protection? Open ports?</li></ul>`,
+  keypoints:['Go category by category: SPOF, scale, perf, security, obs, data, ops','~10 issues in 20 mins = 1 per 2 minutes','Name concrete fix for each issue','Prioritize by severity × blast radius','Draw attention to cascading failure paths']},
+
+  {id:57,cat:'sys',diff:'Medium',q:'Describe OLAP vs OLTP databases.',
+  answer:`<p><strong>OLTP:</strong> Optimized for many small fast reads/writes. Normalized (3NF). Row-oriented storage. Postgres, MySQL, Oracle. Use: banking transactions, e-commerce orders.</p>
+  <p><strong>OLAP:</strong> Complex analytical queries on large data. Denormalized (star/snowflake schema). Columnar storage (Redshift, BigQuery, ClickHouse). Read-heavy, batch updates. Use: BI dashboards, reporting.</p>
+  <p><strong>Key difference:</strong> OLTP = many concurrent short transactions; OLAP = few long aggregation queries. ETL/ELT pipeline moves data from OLTP → OLAP data warehouse.</p>`,
+  keypoints:['OLTP: row-oriented, normalized, many small transactions','OLAP: columnar, denormalized, few complex queries','Star/snowflake schema for OLAP','HTAP (ClickHouse, TiDB) bridges both','ETL pipeline: OLTP → data warehouse (OLAP)']},
+
+  // ===================== CODING / ALGORITHMS =====================
+  {id:58,cat:'code',diff:'Easy',q:'Explain the difference between a linked list and an array.',
+  answer:`<p><strong>Array:</strong> Contiguous memory. O(1) random access by index. O(n) insert/delete in middle (shift). Cache-friendly.</p>
+  <p><strong>Linked List:</strong> Non-contiguous nodes with pointers. O(n) access by index. O(1) insert/delete at known node. Extra memory for pointers. Not cache-friendly.</p>
+  <p><strong>When to use list:</strong> Frequent head/middle inserts, unknown size. <strong>Array:</strong> Frequent random access, cache locality matters.</p>`,
+  keypoints:['Array: O(1) access, O(n) insert/delete','Linked list: O(n) access, O(1) insert/delete at known node','Arrays cache-friendly (contiguous memory)','Doubly-linked: O(1) delete without finding prev','Deque: double-ended queue (Python collections.deque)']},
+
+  {id:59,cat:'code',diff:'Medium',q:'How do you detect a cycle in a linked list?',
+  answer:`<p><strong>Floyd\'s Algorithm (Tortoise & Hare):</strong> Slow moves 1 step, fast moves 2. If they meet → cycle. O(n) time, O(1) space.</p>
+<pre class="code-block">def has_cycle(head):
+    slow, fast = head, head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow == fast:
+            return True
+    return False</pre>
+  <p>To find cycle start: reset one pointer to head, advance both 1 step until they meet again.</p>`,
+  keypoints:["Floyd's: O(n) time, O(1) space",'Hash set alternative: O(n) space','To find start: reset to head, advance both by 1','fast reaching null = no cycle']},
+
+  {id:60,cat:'code',diff:'Medium',q:'Quicksort time complexity and worst case.',
+  answer:`<p><strong>Average:</strong> O(n log n). <strong>Worst:</strong> O(n²) — sorted/reverse-sorted with first-element pivot (always smallest/largest). <strong>Space:</strong> O(log n) stack depth average.</p>
+  <p><strong>Mitigations:</strong> Random pivot, median-of-3, 3-way partition for duplicates.</p>
+  <p><strong>Why quicksort in practice?</strong> Better cache locality than mergesort (in-place). Python uses Timsort; Java uses dual-pivot quicksort.</p>`,
+  keypoints:['O(n log n) average, O(n²) worst','Worst: sorted array + first-element pivot','Random pivot prevents worst case','In-place, cache-friendly','3-way partition for many duplicates']},
+
+  {id:61,cat:'code',diff:'Hard',q:'Implement a function to reverse a binary tree.',
+  answer:`<pre class="code-block">def invert_tree(root):
+    if not root: return None
+    root.left, root.right = (
+        invert_tree(root.right),
+        invert_tree(root.left)
+    )
+    return root
+
+# Iterative BFS
+from collections import deque
+def invert_bfs(root):
+    if not root: return None
+    q = deque([root])
+    while q:
+        node = q.popleft()
+        node.left, node.right = node.right, node.left
+        if node.left: q.append(node.left)
+        if node.right: q.append(node.right)
+    return root</pre>`,
+  keypoints:['O(n) time, O(h) space (h = height)','Recursive: swap + recurse both children','BFS iterative: level-order + swap','O(n) space for BFS queue worst case']},
+
+  {id:62,cat:'code',diff:'Medium',q:'What is a race condition? How do you prevent it?',
+  answer:`<p>Race condition: two threads access shared data concurrently; final result depends on execution order — non-deterministic behavior.</p>
+  <p><strong>Prevention:</strong> Mutex/lock (one thread in critical section), atomic operations (CAS), immutable shared data, message passing (channels — Go model), DB optimistic/pessimistic locking.</p>`,
+  keypoints:['Race = non-deterministic from concurrent access','Mutex: only one thread in critical section','Atomic CAS: hardware-level indivisible ops','Immutability eliminates races entirely','DB: optimistic (version column) vs pessimistic (SELECT FOR UPDATE)']},
+
+  {id:63,cat:'code',diff:'Medium',q:'Explain memoization and give an example.',
+  answer:`<pre class="code-block">from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fib(n):
+    if n < 2: return n
+    return fib(n-1) + fib(n-2)
+# Without memoization: O(2^n)
+# With memoization:    O(n) time, O(n) space</pre>
+  <p>Memoization = top-down DP. Only works for pure functions (same inputs → same output). Bottom-up DP (tabulation) is often more space-efficient.</p>`,
+  keypoints:['Cache results by input arguments','Trade memory for time','@lru_cache in Python','Top-down DP = memoization; bottom-up = tabulation','Only for pure (deterministic, side-effect-free) functions']},
+
+  {id:64,cat:'code',diff:'Medium',q:'Find the kth largest element in an unsorted array.',
+  answer:`<pre class="code-block">import heapq
+def kth_largest(nums, k):
+    # Min-heap of size k: O(n log k)
+    heap = []
+    for n in nums:
+        heapq.heappush(heap, n)
+        if len(heap) > k:
+            heapq.heappop(heap)
+    return heap[0]
+
+# Quickselect: O(n) average, O(n^2) worst
+import random
+def quickselect(nums, k):
+    if len(nums) == 1: return nums[0]
+    pivot = random.choice(nums)
+    gt = [x for x in nums if x > pivot]
+    eq = [x for x in nums if x == pivot]
+    lt = [x for x in nums if x < pivot]
+    if k <= len(gt):   return quickselect(gt, k)
+    if k <= len(gt)+len(eq): return pivot
+    return quickselect(lt, k - len(gt) - len(eq))</pre>`,
+  keypoints:['Min-heap size k: O(n log k)','Quickselect: O(n) average','heapq in Python is min-heap','For streaming, heap approach is ideal','numpy.partition for non-interview use']},
+
+  {id:65,cat:'code',diff:'Medium',q:'Describe dynamic programming.',
+  answer:`<p>DP solves problems by breaking them into overlapping subproblems, solving each once, storing results. Requires: optimal substructure + overlapping subproblems.</p>
+  <p><strong>Top-down (memoization):</strong> Recursive + cache. Natural, but stack overhead.</p>
+  <p><strong>Bottom-up (tabulation):</strong> Iterative table fill. More space-efficient.</p>
+  <p><strong>Classic problems:</strong> Fibonacci, 0/1 Knapsack, LCS, Edit Distance, Coin Change.</p>`,
+  keypoints:['Optimal substructure + overlapping subproblems','Top-down = memoization, bottom-up = tabulation','Identify: state, transition, base case','Rolling array for O(1) space optimization','DP on trees, graphs, strings, intervals']},
+
+  {id:66,cat:'code',diff:'Hard',q:'Largest square of 1s in a binary matrix.',
+  answer:`<pre class="code-block">def maximal_square(matrix):
+    if not matrix: return 0
+    m, n = len(matrix), len(matrix[0])
+    dp = [[0]*n for _ in range(m)]
+    max_side = 0
+    for i in range(m):
+        for j in range(n):
+            if matrix[i][j] == '1':
+                if i == 0 or j == 0:
+                    dp[i][j] = 1
+                else:
+                    dp[i][j] = min(dp[i-1][j],
+                                   dp[i][j-1],
+                                   dp[i-1][j-1]) + 1
+                max_side = max(max_side, dp[i][j])
+    return max_side * max_side</pre>`,
+  keypoints:['dp[i][j] = min(3 neighbors) + 1','O(m×n) time and space','Rolling array reduces to O(n) space','Return max_side² for area']},
+
+  {id:67,cat:'code',diff:'Medium',q:'What are hash tables and how do they work?',
+  answer:`<p>Hash table maps keys to values via hash function → array index. O(1) average lookup/insert/delete.</p>
+  <p><strong>Collision handling:</strong> Chaining (linked list per bucket) or open addressing (linear probing). Load factor (n/buckets) above 0.75 triggers resize + rehash.</p>
+  <p>Python dicts use open addressing. Key must be hashable (immutable).</p>`,
+  keypoints:['Hash function → array index','Chaining vs open addressing for collisions','O(1) average, O(n) worst','Load factor 0.75 triggers resize','Python dict: open addressing, load factor 0.67']},
+
+  {id:68,cat:'code',diff:'Medium',q:'Implement BFS in a graph.',
+  answer:`<pre class="code-block">from collections import deque
+
+def bfs(graph, start):
+    visited = {start}
+    queue = deque([start])
+    order = []
+    while queue:
+        node = queue.popleft()
+        order.append(node)
+        for nbr in graph[node]:
+            if nbr not in visited:
+                visited.add(nbr)
+                queue.append(nbr)
+    return order
+# O(V+E) time and space
+# Finds shortest path in unweighted graph</pre>`,
+  keypoints:['deque for O(1) popleft','visited set to avoid revisiting','O(V+E) time and space','BFS = shortest path in unweighted graph','DFS uses stack/recursion instead']},
+
+  {id:69,cat:'code',diff:'Hard',q:'Merge two sorted linked lists.',
+  answer:`<pre class="code-block">def merge_sorted(l1, l2):
+    dummy = ListNode(0)
+    curr = dummy
+    while l1 and l2:
+        if l1.val <= l2.val:
+            curr.next = l1; l1 = l1.next
+        else:
+            curr.next = l2; l2 = l2.next
+        curr = curr.next
+    curr.next = l1 or l2
+    return dummy.next
+# O(n+m) time, O(1) space</pre>`,
+  keypoints:['Dummy head simplifies edge cases','O(n+m) time, O(1) space','curr.next = l1 or l2 attaches remainder','Recursive solution: O(n+m) call stack space']},
+
+  {id:70,cat:'code',diff:'Hard',q:'What is a deadlock? How is it prevented?',
+  answer:`<p><strong>Four Coffman conditions (all must hold):</strong> Mutual exclusion, Hold-and-wait, No preemption, Circular wait.</p>
+  <p><strong>Prevention (break one):</strong> Consistent lock ordering (breaks circular wait), tryLock with timeout (breaks hold-and-wait), lock-free algorithms (CAS), Banker\'s algorithm for avoidance.</p>`,
+  keypoints:['4 conditions: mutual exclusion, hold+wait, no preemption, circular wait','Fix: consistent lock ordering','tryLock with timeout','Banker\'s algorithm for avoidance','Lock-free/wait-free algorithms avoid locks entirely']},
+
+  {id:71,cat:'code',diff:'Medium',q:'Describe SOLID principles.',
+  answer:`<p><strong>S</strong> — Single Responsibility: one reason to change. <strong>O</strong> — Open/Closed: extend without modifying. <strong>L</strong> — Liskov Substitution: subtypes must be substitutable. <strong>I</strong> — Interface Segregation: specific interfaces over fat ones. <strong>D</strong> — Dependency Inversion: depend on abstractions not concretions.</p>`,
+  keypoints:['S: one reason to change','O: extend without modifying','L: subtypes substitutable (Square/Rectangle violation)','I: specific interfaces > fat interfaces','D: depend on abstractions → enables DI/IoC']},
+
+  {id:72,cat:'code',diff:'Medium',q:'Find the first non-repeated character in a string.',
+  answer:`<pre class="code-block">from collections import Counter
+def first_non_repeat(s):
+    counts = Counter(s)
+    for c in s:
+        if counts[c] == 1:
+            return c
+    return None
+# O(n) time, O(k) space (k = alphabet size)</pre>`,
+  keypoints:['Counter is O(n) time','Two passes: count then find first unique','Ask: case-sensitive? Unicode?','OrderedDict for single-pass while preserving order']},
+
+  {id:73,cat:'code',diff:'Medium',q:'Check if a string has all unique characters.',
+  answer:`<pre class="code-block"># O(n) time, O(n) space
+def all_unique(s): return len(s) == len(set(s))
+
+# O(n) time, O(1) space — ASCII bitset
+def all_unique_bitset(s):
+    seen = 0
+    for c in s:
+        bit = 1 << ord(c)
+        if seen & bit: return False
+        seen |= bit
+    return True</pre>`,
+  keypoints:['set approach: cleanest, O(n)','Bitset: O(1) space for ASCII','Sort+compare: O(n log n), O(1) space','Clarify: case-sensitive? Unicode or ASCII?']},
+
+  {id:74,cat:'code',diff:'Hard',q:'What is polymorphism in OOP?',
+  answer:`<p>Polymorphism: one interface, multiple implementations. Runtime polymorphism via method overriding (subclass). Python uses duck typing — no inheritance required; just implement the interface method.</p>
+<pre class="code-block">class Shape:
+    def area(self): raise NotImplementedError
+
+class Circle(Shape):
+    def area(self): return 3.14 * self.r**2
+
+class Square(Shape):
+    def area(self): return self.side**2
+
+# Duck typing — no inheritance needed:
+class Triangle:
+    def area(self): return 0.5 * self.b * self.h
+
+for shape in [Circle(), Square(), Triangle()]:
+    print(shape.area())   # polymorphic dispatch</pre>`,
+  keypoints:['Runtime: method overriding in subclass','Python: duck typing enables implicit polymorphism','ABC (Abstract Base Class) enforces interface','Enables open/closed principle','Liskov Substitution must hold for subtype polymorphism']},
+
+  // ===================== DATABASES / SQL =====================
+  {id:75,cat:'db',diff:'Medium',q:'How would you optimize a slow SQL query?',
+  answer:`<p><strong>1. Diagnose:</strong> EXPLAIN ANALYZE — look for sequential scans, high row estimates, expensive joins.</p>
+  <p><strong>2. Indexing:</strong> Add index on WHERE/JOIN/ORDER BY columns. Composite index: equality columns first, then range. Partial/covering indexes.</p>
+  <p><strong>3. Query rewrite:</strong> Avoid SELECT *, avoid functions on indexed columns in WHERE, use EXISTS over IN for large sets, avoid N+1 (use JOINs), use CTEs for readability.</p>
+  <p><strong>4. Schema:</strong> Partition large tables, materialize expensive aggregations, read replicas for analytical queries.</p>`,
+  keypoints:['EXPLAIN ANALYZE first','Composite: equality before range cols','Avoid functions on indexed cols in WHERE','EXISTS faster than IN for large subqueries','Covering index: no heap access needed']},
+
+  {id:76,cat:'db',diff:'Medium',q:'SQL live coding — window functions, CTEs, self-joins.',
+  answer:`<pre class="code-block">-- Row number per group
+SELECT name, salary,
+  ROW_NUMBER() OVER (PARTITION BY dept ORDER BY salary DESC) as rn
+FROM employees;
+
+-- Running total
+SELECT date, amount,
+  SUM(amount) OVER (ORDER BY date) as running_total
+FROM sales;
+
+-- Self-join: employees earning more than manager
+SELECT e1.name
+FROM emp e1 JOIN emp e2 ON e1.manager_id = e2.id
+WHERE e1.salary > e2.salary;
+
+-- CTE for readability
+WITH top_customers AS (
+  SELECT customer_id, COUNT(*) as orders
+  FROM orders GROUP BY 1 HAVING COUNT(*) > 5
+)
+SELECT c.name, t.orders
+FROM customers c JOIN top_customers t USING(customer_id);</pre>`,
+  keypoints:['Window functions: ROW_NUMBER, RANK, DENSE_RANK, LAG/LEAD','HAVING filters after GROUP BY','Self-join for hierarchical/manager queries','CTE (WITH) for readable complex queries','Practice: LeetCode SQL 50']},
+
+  {id:77,cat:'db',diff:'Medium',q:'Describe the CAP theorem.',
+  answer:`<p>In a distributed system, during a network partition (P), you can guarantee either Consistency (C) or Availability (A) — not both. Since partitions are unavoidable, the real choice is CP vs AP.</p>
+  <p><strong>CP:</strong> Zookeeper, HBase, MongoDB. Correct data or error. <strong>AP:</strong> Cassandra, DynamoDB — responds always, may return stale data (eventual consistency). PACELC extends CAP to include latency tradeoffs.</p>`,
+  keypoints:['P unavoidable → CP vs AP is real choice','CP: consistent data, may reject requests','AP: always responds, eventual consistency','Banking: CP. Social feed: AP OK.','PACELC: also models E(latency) vs C tradeoff']},
+
+  // ===================== APIS & WEB =====================
+  {id:78,cat:'api',diff:'Medium',q:'Explain how HTTPS/TLS works.',
+  answer:`<p><strong>TLS Handshake:</strong> Client Hello (cipher suites) → Server Hello + certificate → Client verifies cert against CA → ECDHE key exchange (both derive same session key) → symmetric AES-GCM encryption begins.</p>
+  <p>Asymmetric (RSA/ECDSA) for handshake only. Symmetric (AES-GCM) for data — much faster. TLS 1.3 reduced to 1-RTT. HSTS forces HTTPS. Certificate pinning in mobile apps.</p>`,
+  keypoints:['ECDHE: forward secrecy (each session unique key)','Asymmetric for handshake, symmetric for data','TLS 1.3: 1-RTT vs 2-RTT in TLS 1.2','HSTS prevents HTTP downgrade attacks','Certificate pinning in mobile apps']},
+
+  {id:79,cat:'api',diff:'Medium',q:'How would you test an API endpoint?',
+  answer:`<p>Test: happy path (valid input → correct status/body), validation (invalid input → 400), auth (unauthenticated → 401, unauthorized → 403), not found (404), edge cases (empty body, max size, injection payloads).</p>
+<pre class="code-block">from fastapi.testclient import TestClient
+from unittest.mock import patch
+
+def test_create_post(client):
+    resp = client.post("/posts", json={"content": "hello"}, headers={"Authorization": "Bearer valid-token"})
+    assert resp.status_code == 201
+    assert resp.json()["content"] == "hello"
+
+def test_create_post_unauthorized(client):
+    resp = client.post("/posts", json={"content": "hi"})
+    assert resp.status_code == 401</pre>`,
+  keypoints:['Test happy path + all error codes','Auth: 401 vs 403 distinction','pytest + FastAPI TestClient for integration tests','Mock external dependencies in unit tests','Load test with k6/Locust']},
+
+  {id:80,cat:'api',diff:'Medium',q:'Describe garbage collection in Python and the JVM.',
+  answer:`<p><strong>CPython:</strong> Reference counting (freed when refcount → 0) + cyclic GC for cycles (3 generations). <code>gc.collect()</code> forces collection.</p>
+  <p><strong>JVM:</strong> Mark-and-sweep with generational GC. Young gen (minor GC, frequent), Old gen (major GC, less frequent). G1GC/ZGC for low-pause production. <code>System.gc()</code> hints but doesn't guarantee.</p>
+  <p>Go uses tricolor marking with concurrent GC — very low pause times (&lt;1ms).</p>`,
+  keypoints:['Python: refcounting + cyclic GC (3 generations)','JVM: generational mark-and-sweep','G1GC/ZGC: low-latency JVM GC','Go: tricolor mark, concurrent, <1ms pauses','tracemalloc in Python for memory leak detection']}
+];
+
+const catInfo = {
+  py:    {label:'Python',                badgeClass:'badge-py',   color:'#e86a9b'},
+  ml:    {label:'Machine Learning',      badgeClass:'badge-ml',   color:'#a899ff'},
+  genai: {label:'GenAI & LLMs',          badgeClass:'badge-genai',color:'#6ab8f7'},
+  sys:   {label:'System Design',         badgeClass:'badge-sys',  color:'#3ecfb2'},
+  code:  {label:'Coding / Algorithms',   badgeClass:'badge-code', color:'#f7926a'},
+  db:    {label:'Databases & SQL',       badgeClass:'badge-db',   color:'#f7d06a'},
+  api:   {label:'APIs & Web',            badgeClass:'badge-api',  color:'#f7926a'},
+};
+
+let done = new Set();
+let currentCat = 'all';
+let currentDiff = null;
+let showOnlyDone = false;
+let searchTerm = '';
+
+function renderAll(qs) {
+  const container = document.getElementById('allQuestions');
+  if (!qs.length) { container.innerHTML = '<div class="empty-state">No questions match your filter.</div>'; return; }
+  const grouped = {};
+  qs.forEach(q => { if (!grouped[q.cat]) grouped[q.cat] = []; grouped[q.cat].push(q); });
+  const catOrder = ['py','ml','genai','sys','code','db','api'];
+  let html = '';
+  catOrder.forEach(cat => {
+    if (!grouped[cat]) return;
+    const info = catInfo[cat];
+    html += `<div class="section-wrap" id="section-${cat}">
+      <div class="category-header">
+        <div class="category-title">${info.label} <span class="category-badge ${info.badgeClass}">${grouped[cat].length} questions</span></div>
+      </div>
+      <div class="questions-grid">`;
+    grouped[cat].forEach(q => { html += buildCard(q); });
+    html += `</div></div>`;
+  });
+  container.innerHTML = html;
+}
+
+function buildCard(q) {
+  const isDone = done.has(q.id);
+  const tagClass = q.diff==='Hard'?'tag-hard':q.diff==='Medium'?'tag-med':'tag-easy';
+  const kp = q.keypoints ? `<div class="key-points"><div class="key-points-title">Key Points to Mention</div><ul>${q.keypoints.map(k=>`<li>${k}</li>`).join('')}</ul></div>` : '';
+  return `<div class="q-card" id="qcard-${q.id}">
+    <div class="q-header" onclick="toggleCard(${q.id})">
+      <span class="q-num">Q${String(q.id).padStart(2,'0')}</span>
+      <span class="q-text">${q.q}</span>
+      <div class="q-tags"><span class="tag ${tagClass}">${q.diff}</span></div>
+      <span class="q-expand-icon">▾</span>
+    </div>
+    <div class="q-body">
+      <div class="answer-section">
+        <div class="answer-label">Model Answer</div>
+        <div class="answer-content">${q.answer}</div>
+        ${kp}
+      </div>
+      <div class="progress-section">
+        <button class="mark-btn${isDone?' done':''}" onclick="toggleDone(event,${q.id})">${isDone?'✓ Reviewed':'Mark as Reviewed'}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleCard(id) { document.getElementById('qcard-'+id).classList.toggle('expanded'); }
+
+function toggleDone(e, id) {
+  e.stopPropagation();
+  if (done.has(id)) done.delete(id); else done.add(id);
+  const btn = document.querySelector(`#qcard-${id} .mark-btn`);
+  if (done.has(id)) { btn.classList.add('done'); btn.textContent = '✓ Reviewed'; }
+  else { btn.classList.remove('done'); btn.textContent = 'Mark as Reviewed'; }
+  updateStats();
+}
+
+function getFiltered() {
+  return QUESTIONS.filter(q => {
+    if (currentCat !== 'all' && q.cat !== currentCat) return false;
+    if (currentDiff && q.diff !== currentDiff) return false;
+    if (showOnlyDone && !done.has(q.id)) return false;
+    if (searchTerm) {
+      const s = searchTerm.toLowerCase();
+      if (!q.q.toLowerCase().includes(s) && !(q.answer||'').toLowerCase().includes(s)) return false;
+    }
+    return true;
+  });
+}
+
+function refresh() { renderAll(getFiltered()); updateStats(); }
+
+function showCat(cat, el) {
+  currentCat = cat;
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  refresh();
+}
+function filterAll(btn) { currentDiff=null; showOnlyDone=false; setActiveBtn(btn); refresh(); }
+function filterDiff(diff, btn) { currentDiff=diff; showOnlyDone=false; setActiveBtn(btn); refresh(); }
+function filterDone(btn) { showOnlyDone=true; currentDiff=null; setActiveBtn(btn); refresh(); }
+function searchQ(val) { searchTerm=val; refresh(); }
+function setActiveBtn(btn) { document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+
+function updateStats() {
+  const total = QUESTIONS.length;
+  document.getElementById('totalCount').textContent = total;
+  document.getElementById('doneCount').textContent = done.size;
+  document.getElementById('pctCount').textContent = Math.round(done.size/total*100)+'%';
+  document.getElementById('progressBar').style.width = Math.round(done.size/total*100)+'%';
+  document.getElementById('nav-all').textContent = total;
+  ['py','ml','genai','sys','code','db','api'].forEach(cat => {
+    const el = document.getElementById('nav-'+cat);
+    if (el) el.textContent = QUESTIONS.filter(q=>q.cat===cat).length;
+  });
+}
+
+refresh();
+</script>
+</body>
+</html>
