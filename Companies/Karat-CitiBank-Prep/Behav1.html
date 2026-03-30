@@ -1,0 +1,2083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supraja — Citi Gen AI Interview Prep</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+
+  :root {
+    --bg: #0c0e14;
+    --bg2: #12151e;
+    --bg3: #191d28;
+    --border: #252a38;
+    --border2: #2f3649;
+    --text: #e2e6f0;
+    --text2: #8a92a8;
+    --text3: #555e75;
+    --teal: #2dd4bf;
+    --teal-dim: #1a4f49;
+    --blue: #60a5fa;
+    --blue-dim: #1e3a5f;
+    --amber: #fbbf24;
+    --amber-dim: #4a3300;
+    --rose: #fb7185;
+    --rose-dim: #4a1020;
+    --purple: #a78bfa;
+    --purple-dim: #2d1a5f;
+    --green: #34d399;
+    --green-dim: #0d3d2a;
+    --font: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 28px 32px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+  .header-left h1 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .header-left p {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 2px;
+  }
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .progress-label { font-size: 12px; color: var(--text2); }
+  .progress-bar {
+    width: 140px;
+    height: 6px;
+    background: var(--border2);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--blue));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+  .progress-count {
+    font-size: 12px;
+    color: var(--teal);
+    font-weight: 500;
+    font-family: var(--mono);
+    min-width: 40px;
+    text-align: right;
+  }
+
+  /* LAYOUT */
+  .layout {
+    display: flex;
+    min-height: calc(100vh - 73px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 220px;
+    min-width: 220px;
+    border-right: 1px solid var(--border);
+    padding: 20px 0;
+    position: sticky;
+    top: 73px;
+    height: calc(100vh - 73px);
+    overflow-y: auto;
+  }
+  .sidebar-section {
+    padding: 6px 16px 10px;
+  }
+  .sidebar-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 6px;
+    padding-left: 4px;
+  }
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text2);
+    font-family: var(--font);
+    font-size: 13px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+  .nav-btn:hover { background: var(--bg3); color: var(--text); }
+  .nav-btn.active { background: var(--bg3); color: var(--text); font-weight: 500; }
+  .nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .nav-count {
+    margin-left: auto;
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text3);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    padding: 1px 6px;
+  }
+
+  /* MAIN */
+  .main {
+    flex: 1;
+    padding: 24px 32px;
+    overflow-y: auto;
+    max-width: 900px;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .section-header p {
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  /* FILTERS */
+  .filters {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .filter-btn {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    font-family: var(--font);
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .filter-btn.active { background: var(--teal-dim); border-color: var(--teal); color: var(--teal); font-weight: 500; }
+
+  /* Q&A CARD */
+  .qa-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .qa-card:hover { border-color: var(--border2); }
+  .qa-card.done { border-color: var(--green-dim); }
+
+  .qa-question {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .qa-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 99px;
+    letter-spacing: 0.3px;
+  }
+  .tag-hot { background: rgba(251,113,133,0.15); color: var(--rose); }
+  .tag-med { background: rgba(251,191,36,0.12); color: var(--amber); }
+  .tag-low { background: rgba(52,211,153,0.12); color: var(--green); }
+  .tag-blue { background: rgba(96,165,250,0.12); color: var(--blue); }
+  .tag-purple { background: rgba(167,139,250,0.12); color: var(--purple); }
+
+  .q-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    flex: 1;
+    line-height: 1.5;
+  }
+  .q-sub {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 3px;
+    font-style: italic;
+  }
+
+  .qa-toggle {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .chevron {
+    color: var(--text3);
+    font-size: 12px;
+    transition: transform 0.2s;
+  }
+  .qa-card.open .chevron { transform: rotate(180deg); }
+
+  .check-btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border2);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: transparent;
+    transition: all 0.15s;
+  }
+  .check-btn:hover { border-color: var(--green); }
+  .check-btn.checked { background: var(--green); border-color: var(--green); color: #0c0e14; }
+
+  .qa-answer {
+    display: none;
+    padding: 0 16px 16px;
+    border-top: 1px solid var(--border);
+    animation: fadeIn 0.15s ease;
+  }
+  .qa-card.open .qa-answer { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .answer-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--teal);
+    padding: 12px 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .answer-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--teal-dim);
+  }
+
+  .answer-body {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.75;
+  }
+  .answer-body p { margin-bottom: 8px; }
+  .answer-body p:last-child { margin-bottom: 0; }
+
+  .highlight {
+    background: rgba(45,212,191,0.08);
+    border-left: 2px solid var(--teal);
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    margin: 10px 0;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .highlight strong { color: var(--teal); font-weight: 500; }
+
+  .tip-box {
+    background: rgba(251,191,36,0.06);
+    border: 1px solid rgba(251,191,36,0.2);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--amber);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .tip-icon { flex-shrink: 0; font-size: 13px; margin-top: 1px; }
+
+  .star-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 10px 0;
+  }
+  .star-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .star-item .star-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 4px;
+  }
+  .star-item .star-text {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: var(--teal);
+  }
+
+  ul.answer-list {
+    list-style: none;
+    margin: 8px 0;
+  }
+  ul.answer-list li {
+    font-size: 13px;
+    color: var(--text2);
+    padding: 3px 0;
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.6;
+  }
+  ul.answer-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--teal);
+    font-size: 11px;
+  }
+
+  /* RESUME STRIP */
+  .resume-strip {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .resume-pill {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+  }
+  .resume-pill.highlight-pill {
+    background: var(--teal-dim);
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+  .resume-strip-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 4px;
+  }
+
+  /* EMPTY / INTRO */
+  .intro-card {
+    background: linear-gradient(135deg, rgba(45,212,191,0.06), rgba(96,165,250,0.06));
+    border: 1px solid rgba(45,212,191,0.2);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+  .intro-card strong { color: var(--teal); font-weight: 500; }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Supraja Aravamudhan — Citi Gen AI Developer · Round 2 Prep</h1>
+    <p>Controls Technology · Managerial + Technical Round · All answers tailored to your resume</p>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Practiced</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="progress-count" id="progressCount">0 / 0</div>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Technical</div>
+      <button class="nav-btn active" onclick="showSection('rag')" id="nav-rag">
+        <span class="nav-dot" style="background:var(--rose)"></span>
+        RAG Systems
+        <span class="nav-count">7</span>
+      </button>
+      <button class="nav-btn" onclick="showSection('llm')" id="nav-llm">
+        <span class="nav-dot" style="background:var(--amber)"></span>
+        LLMs & Fine-tuning
+        <span class="nav-count">6</span>
+      </button>
+      <button class="nav-btn" onclick="showSection('deployment')" id="nav-deployment">
+        <span class="nav-dot" style="background:var(--blue)"></span>
+        Deployment & MLOps
+        <span class="nav-count">5</span>
+      </button>
+      <button class="nav-btn" onclick="showSection('python')" id="nav-python">
+        <span class="nav-dot" style="background:var(--teal)"></span>
+        Python & APIs
+        <span class="nav-count">5</span>
+      </button>
+      <button class="nav-btn" onclick="showSection('compliance')" id="nav-compliance">
+        <span class="nav-dot" style="background:var(--purple)"></span>
+        AI Compliance
+        <span class="nav-count">4</span>
+      </button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Behavioral</div>
+      <button class="nav-btn" onclick="showSection('behavioral')" id="nav-behavioral">
+        <span class="nav-dot" style="background:var(--green)"></span>
+        STAR Questions
+        <span class="nav-count">7</span>
+      </button>
+      <button class="nav-btn" onclick="showSection('scenario')" id="nav-scenario">
+        <span class="nav-dot" style="background:var(--amber)"></span>
+        Scenario-Based
+        <span class="nav-count">7</span>
+      </button>
+      <button class="nav-btn" onclick="showSection('situational')" id="nav-situational">
+        <span class="nav-dot" style="background:var(--rose)"></span>
+        Situational
+        <span class="nav-count">6</span>
+      </button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Fit</div>
+      <button class="nav-btn" onclick="showSection('citi')" id="nav-citi">
+        <span class="nav-dot" style="background:var(--blue)"></span>
+        Why Citi
+        <span class="nav-count">4</span>
+      </button>
+      <button class="nav-btn" onclick="showSection('closing')" id="nav-closing">
+        <span class="nav-dot" style="background:var(--teal)"></span>
+        Your Questions for Them
+        <span class="nav-count">5</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- RAG SECTION -->
+    <div class="section active" id="sec-rag">
+      <div class="section-header">
+        <h2>RAG Systems</h2>
+        <p>Most likely to be drilled heavily — every Citi Gen AI JD lists RAG as critical.</p>
+      </div>
+      <div class="resume-strip">
+        <span class="resume-strip-label">Your experience</span>
+        <span class="resume-pill highlight-pill">RAG at Citadel</span>
+        <span class="resume-pill highlight-pill">LangChain + Vector DB + OpenAI</span>
+        <span class="resume-pill highlight-pill">Agentic Medical Intelligence project</span>
+        <span class="resume-pill">Enterprise knowledge retrieval</span>
+        <span class="resume-pill">Agentic multi-tool workflows</span>
+      </div>
+
+      <div class="qa-card" data-section="rag">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Walk me through how you built a RAG system end-to-end.</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span><span class="tag tag-blue">Core Question</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <div class="highlight">
+              <strong>At Citadel</strong>, I prototyped a Conversational AI system using RAG — my pipeline had five stages: document ingestion → chunking → embedding → vector indexing → retrieval + generation.
+            </div>
+            <p>For <strong>document ingestion</strong>, I loaded internal enterprise documents (PDFs, internal wikis) using document loaders in LangChain. I cleaned the text — removed headers, footers, irrelevant boilerplate — before processing.</p>
+            <p>For <strong>chunking</strong>, I used a recursive character text splitter with ~512 token chunks and 50 token overlap so context wasn't lost across chunk boundaries.</p>
+            <p>For <strong>embedding</strong>, I used OpenAI's text-embedding-ada-002 model to convert each chunk into a dense vector representation.</p>
+            <p>I stored the vectors in a <strong>Vector DB</strong> — the similarity search returned the top-k most relevant chunks when a user query came in. Those chunks were then injected into the LLM prompt as context, and <code>OpenAI GPT</code> generated the final response grounded in the retrieved documents.</p>
+            <div class="tip-box"><span class="tip-icon">💡</span> Add: "The main business value was that employees could ask natural-language questions over internal documents and get sourced, accurate answers — instead of manually searching through hundreds of pages."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="rag">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">What is hybrid search and when would you use it over pure vector search?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span><span class="tag tag-purple">Citi JD Specific</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>Hybrid search combines <strong>dense vector search</strong> (semantic similarity using embeddings) with <strong>sparse keyword search</strong> (like BM25) and merges results — typically using a technique like Reciprocal Rank Fusion (RRF).</p>
+            <div class="highlight">
+              <strong>When I'd use it:</strong> For the enterprise knowledge retrieval at Citadel, purely semantic search could miss exact document codes, product names, or compliance policy numbers. Hybrid search would catch both "what is the data retention policy" (semantic) AND "Policy-2024-DRP-003" (keyword match).
+            </div>
+            <p>In a financial/banking context like Citi Controls Technology, this matters a lot — policy documents and controls frameworks have specific IDs and terminology that semantic search alone misses. I'd add BM25 keyword retrieval alongside vector search and merge with RRF before passing to the LLM.</p>
+            <div class="tip-box"><span class="tip-icon">💡</span> Say: "I've studied this pattern through NVIDIA's RAG Agent training and applied conceptually in the Agentic Medical Intelligence project where medical codes needed exact matching."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="rag">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How do you handle hallucinations in a RAG system?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>Hallucinations in RAG can come from two places: <strong>retrieval failure</strong> (wrong chunks retrieved) or <strong>generation drift</strong> (LLM ignores the context). I address both:</p>
+            <ul class="answer-list">
+              <li><strong>Better retrieval:</strong> Check similarity scores — only pass chunks above a confidence threshold. If no good chunk exists, the system should say "I don't have information on that" rather than hallucinate.</li>
+              <li><strong>Strict prompt constraints:</strong> In my Citadel system, I used system prompts like "Answer ONLY based on the context provided. If the answer isn't in the context, say so explicitly."</li>
+              <li><strong>Re-ranking:</strong> Use a cross-encoder re-ranker to pick the most relevant retrieved chunk before injecting into the prompt.</li>
+              <li><strong>Evaluation:</strong> Track faithfulness metrics — does the answer contain claims that can be traced back to the retrieved chunks?</li>
+            </ul>
+            <div class="tip-box"><span class="tip-icon">💡</span> For Citi specifically, add: "In a banking compliance context, hallucinations are especially dangerous — I'd add an output validation layer that checks if key claims in the response are grounded in the retrieved chunks before serving to users."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="rag">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How do you evaluate a RAG system's quality?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>I evaluate RAG across three dimensions: <strong>retrieval quality, answer quality, and end-to-end pipeline health</strong>.</p>
+            <ul class="answer-list">
+              <li><strong>Retrieval precision/recall:</strong> Are the right chunks being returned? Test with a golden dataset of query → expected chunk pairs.</li>
+              <li><strong>Faithfulness:</strong> Does the answer stick to the retrieved context without adding facts not in the chunks? (Can use LLM-as-judge for this.)</li>
+              <li><strong>Answer relevance:</strong> Does the answer actually address what the user asked?</li>
+              <li><strong>Latency:</strong> End-to-end response time — I monitored this using Prometheus and Grafana at Citadel for our API pipelines.</li>
+            </ul>
+            <div class="tip-box"><span class="tip-icon">💡</span> Mention RAGAS framework if asked for tools — it automates faithfulness, answer relevance, and context recall metrics.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="rag">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">What chunking strategy do you use and why does it matter?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>Chunking is how you break documents into pieces before embedding them. Poor chunking is one of the top reasons RAG systems fail.</p>
+            <div class="highlight">In my Citadel system, I used <strong>recursive character text splitting</strong> with 512-token chunks and 50-token overlap. The overlap is important — it prevents cutting off a sentence mid-thought across chunk boundaries.</div>
+            <p>Other strategies I know: <strong>semantic chunking</strong> (chunk by topic/semantic coherence rather than fixed size — better for varied documents), <strong>document-structure chunking</strong> (split by headers/sections — great for PDFs with clear structure like policy documents at a bank), and <strong>sentence-level chunking</strong> for Q&A over dense technical content.</p>
+            <div class="tip-box"><span class="tip-icon">💡</span> For Citi: "For controls and compliance documents which have hierarchical structure — sections, sub-sections — I'd use document-structure chunking to preserve policy context."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="rag">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Walk me through your Agentic Medical Intelligence project.</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span><span class="tag tag-blue">Resume Deep-Dive</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <div class="highlight">I built an <strong>Agentic RAG system</strong> that orchestrated multi-tool workflows — Google Search for real-time lookups and Vector Databases for static medical document retrieval — to automate medical report analysis.</div>
+            <p>The "agentic" part means the LLM could <strong>decide which tool to use</strong> based on the query. For factual questions about recent medical research, it called Google Search. For questions about specific patient report formats or medical procedures from the knowledge base, it searched the Vector DB.</p>
+            <p>I used LangChain's agent framework to orchestrate the tool decisions. The key challenge was <strong>tool routing accuracy</strong> — I had to carefully design the tool descriptions so the agent picked the right one, and add retry logic for cases where the agent chose incorrectly.</p>
+            <div class="tip-box"><span class="tip-icon">💡</span> Relate to Citi: "This kind of agentic pattern is valuable for a Controls Technology team — imagine an agent that can query policy documents via Vector DB AND look up real-time regulatory updates simultaneously."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="rag">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">What vector databases have you used? How do you choose between them?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>At Citadel I worked with a Vector DB integrated through LangChain — the specific implementation aligned with our Azure cloud stack. Here's how I think about the choice:</p>
+            <ul class="answer-list">
+              <li><strong>Pinecone:</strong> Managed, easy to set up, good for cloud-native projects. Great starting point for prototypes.</li>
+              <li><strong>Weaviate / Qdrant:</strong> Self-hosted, more control, hybrid search built-in. Better for enterprise where data can't leave the VPC.</li>
+              <li><strong>FAISS:</strong> In-memory, no infrastructure overhead, great for prototyping or small-scale use cases.</li>
+              <li><strong>Azure AI Search:</strong> Since Citadel uses Azure (AKS, Azure Blob), this integrates cleanly and supports hybrid search natively — relevant for Citi's likely Azure stack.</li>
+            </ul>
+            <div class="tip-box"><span class="tip-icon">💡</span> Key criteria: data volume, latency SLA, hybrid search needs, cloud provider alignment, and data sovereignty requirements (important for banking).</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LLM SECTION -->
+    <div class="section" id="sec-llm">
+      <div class="section-header">
+        <h2>LLMs & Fine-Tuning</h2>
+        <p>LoRA, QLoRA, prompt engineering, RAG vs fine-tuning tradeoffs.</p>
+      </div>
+      <div class="resume-strip">
+        <span class="resume-strip-label">Your experience</span>
+        <span class="resume-pill highlight-pill">LLMs via OpenAI at Citadel</span>
+        <span class="resume-pill highlight-pill">Prompt Engineering</span>
+        <span class="resume-pill highlight-pill">NVIDIA RAG Agents Cert.</span>
+        <span class="resume-pill">Hugging Face, Transformers</span>
+        <span class="resume-pill">PyTorch, TensorFlow</span>
+      </div>
+
+      <div class="qa-card" data-section="llm">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">When would you choose fine-tuning over RAG?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span><span class="tag tag-purple">Citi JD Specific</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <div class="highlight">
+              For the Citadel enterprise knowledge system, I chose <strong>RAG over fine-tuning</strong> — and here's my reasoning framework for that decision.
+            </div>
+            <p><strong>Use RAG when:</strong> the knowledge base changes frequently (internal policies, market data), you need source citations, the data is sensitive and can't be baked into model weights, and you want lower cost (no training).</p>
+            <p><strong>Use fine-tuning when:</strong> you need to teach the model a specific output format or writing style (e.g., always generate in JSON, always respond in compliance-approved language), domain vocabulary isn't in the base model's training, or you're doing tasks RAG can't help with (classification, sentiment that needs consistent calibration).</p>
+            <p><strong>LoRA/QLoRA</strong> makes fine-tuning practical — instead of retraining all 7B+ parameters, LoRA adds small adapter matrices (~1% of parameters) to frozen layers. QLoRA adds 4-bit quantization on top, so you can fine-tune a 7B model on a single A100 GPU instead of needing a cluster.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="llm">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Explain LoRA and QLoRA — what problem do they solve?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>Full fine-tuning of an LLM like LLaMA-2-7B requires updating all 7 billion parameters — that's extremely GPU-intensive and expensive. <strong>LoRA (Low-Rank Adaptation)</strong> solves this by adding small, trainable low-rank matrices to specific transformer layers while keeping the original weights frozen.</p>
+            <div class="highlight">
+              Think of it like adding sticky notes to a textbook instead of rewriting the whole book. The original knowledge stays intact; you just add domain-specific adjustments on top.
+            </div>
+            <p><strong>QLoRA</strong> goes further — it quantizes the frozen base model weights to 4-bit precision, dramatically reducing memory footprint. This lets you fine-tune a 7B parameter model on a single GPU that would otherwise need 4+ GPUs for standard LoRA.</p>
+            <p>In a banking context, you'd use QLoRA to fine-tune a base LLM on controls compliance language — so responses consistently use the right regulatory terminology and output format without RAG retrieval overhead.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="llm">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">What prompt engineering techniques do you use in practice?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <div class="highlight">
+              At Citadel, I designed prompts for the Conversational AI system — the system prompt defined the LLM's role, constraints, and output format. The user prompt injected retrieved document chunks as context.
+            </div>
+            <p><strong>Techniques I use:</strong></p>
+            <ul class="answer-list">
+              <li><strong>System role prompting:</strong> "You are a knowledgeable assistant for enterprise policy questions. Answer only from the provided context."</li>
+              <li><strong>Few-shot examples:</strong> Provide 2-3 input/output examples to guide the format of the response.</li>
+              <li><strong>Chain-of-thought:</strong> Add "Think step by step" for complex reasoning tasks — noticeably improves accuracy.</li>
+              <li><strong>Constraint prompting:</strong> "Do not include any information not present in the context. If unsure, say I don't know."</li>
+              <li><strong>ReAct pattern:</strong> For agentic systems — the LLM reasons about which tool to use, acts, observes the result, then reasons again.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="llm">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How do you stay current with fast-moving LLM developments?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>I actively invest in structured learning — my NVIDIA "Building RAG Agents with LLMs" certification is a recent example. I follow papers on ArXiv (particularly the Hugging Face blog summarizing key papers), track LangChain and LlamaIndex release notes since I use them in production, and experiment with new techniques in personal projects like my Agentic Medical Intelligence system.</p>
+            <p>At Citadel, I also participated in team knowledge-sharing sessions — I found that explaining new concepts to others is one of the best ways to solidify understanding. I'd bring that same habit to Citi's Controls Technology team.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="llm">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">What ML frameworks have you used hands-on and what did you build?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <ul class="answer-list">
+              <li><strong>PyTorch & TensorFlow:</strong> Used for building and training neural networks during my MS in AI at University of South Dakota. Applied in the End-to-End Financial Analysis Pipeline project using transformer-based architectures for sentiment extraction from financial text.</li>
+              <li><strong>Scikit-learn:</strong> Classical ML pipelines — feature engineering, model evaluation, cross-validation. Used extensively for ML model development supporting analytics pipelines at Citadel.</li>
+              <li><strong>Hugging Face Transformers:</strong> For loading pre-trained models, fine-tuning BERT-style models for text classification tasks. Also used for embedding generation in RAG pipelines.</li>
+              <li><strong>MLflow:</strong> Experiment tracking — logging parameters, metrics, and artifacts across training runs. Used at Citadel for managing model versions.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="llm">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Describe your End-to-End Financial Analysis Pipeline project.</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span><span class="tag tag-blue">Resume Deep-Dive</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <div class="highlight">
+              I architected a pipeline that <strong>fused ML-driven sentiment scores with historical time-series features</strong> to automate financial analysis. This is directly relevant to Citi's domain.
+            </div>
+            <p>The pipeline had two tracks running in parallel: a <strong>sentiment track</strong> that used NLP/transformer models to extract bullish/bearish signals from financial news and earnings call transcripts, and a <strong>time-series track</strong> that processed historical price and volume data with feature engineering (moving averages, volatility indicators).</p>
+            <p>I then fused these features and trained a model to generate analysis signals. The automation piece was orchestrating this with Airflow-style scheduling so it ran on fresh data daily.</p>
+            <div class="tip-box"><span class="tip-icon">💡</span> Relate to Citi: "This experience of building production-grade financial ML pipelines is directly applicable to Controls Technology — where automating analysis of trading controls data or compliance signals would follow a similar architecture."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEPLOYMENT SECTION -->
+    <div class="section" id="sec-deployment">
+      <div class="section-header">
+        <h2>Deployment & MLOps</h2>
+        <p>Docker, Kubernetes, CI/CD, monitoring — your strongest technical proof points.</p>
+      </div>
+      <div class="resume-strip">
+        <span class="resume-strip-label">Your experience</span>
+        <span class="resume-pill highlight-pill">Kubernetes (AKS) at Citadel</span>
+        <span class="resume-pill highlight-pill">GitHub Actions CI/CD</span>
+        <span class="resume-pill highlight-pill">80% deployment downtime reduction</span>
+        <span class="resume-pill">Prometheus + Grafana</span>
+        <span class="resume-pill">Docker, Azure ML</span>
+      </div>
+
+      <div class="qa-card" data-section="deployment">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How do you containerize and deploy an LLM-based service?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <div class="highlight">
+              At Citadel, I set up the full deployment pipeline: <strong>Docker → Azure Container Registry (ACR) → Kubernetes (AKS)</strong> with GitHub Actions automating the entire flow. This reduced deployment downtime by 80%.
+            </div>
+            <p>For an LLM-based service specifically:</p>
+            <ul class="answer-list">
+              <li><strong>Dockerfile:</strong> Package the FastAPI app, LangChain dependencies, and model configs. Use multi-stage builds to keep the image lean.</li>
+              <li><strong>Kubernetes deployment:</strong> Deploy as a Kubernetes Deployment with replica sets for high availability. Use ConfigMaps for environment variables (API keys via Azure Key Vault, not hardcoded).</li>
+              <li><strong>Health checks:</strong> Liveness and readiness probes so Kubernetes restarts unhealthy pods automatically.</li>
+              <li><strong>Horizontal Pod Autoscaler:</strong> Scale replicas based on CPU/memory when LLM inference spikes — important for production LLM APIs.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="deployment">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How do you monitor an AI/LLM system in production?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>At Citadel I set up <strong>Prometheus and Grafana</strong> for monitoring our ML APIs and pipelines. Here's how I'd monitor an LLM system specifically:</p>
+            <ul class="answer-list">
+              <li><strong>Infrastructure metrics (Prometheus/Grafana):</strong> API latency, throughput, error rates, pod CPU/memory, queue depth.</li>
+              <li><strong>LLM-specific metrics:</strong> Token usage per request, average response time, LLM API call success/failure rate, cost per request.</li>
+              <li><strong>Quality metrics:</strong> Hallucination rate (sampled, using LLM-as-judge), user feedback signals (thumbs up/down), RAG retrieval quality over time.</li>
+              <li><strong>Data drift:</strong> Monitor if the distribution of incoming queries shifts — a sudden spike in out-of-domain queries might indicate a need to update the knowledge base.</li>
+            </ul>
+            <div class="tip-box"><span class="tip-icon">💡</span> For Citi: "In a compliance context, I'd also add audit logging — every LLM request/response logged with timestamp, user ID, and retrieved sources for regulatory traceability."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="deployment">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Walk me through your CI/CD setup at Citadel.</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span><span class="tag tag-blue">Resume Specific</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <div class="highlight">
+              I streamlined CI/CD workflows using <strong>GitHub Actions</strong> and <strong>Kubernetes (AKS)</strong>, reducing deployment downtime by <strong>80%</strong>.
+            </div>
+            <p>The pipeline: code push to GitHub → GitHub Actions triggers → runs unit tests and linting → builds Docker image → pushes to Azure Container Registry → updates Kubernetes deployment manifest → rolls out to AKS with zero-downtime rolling update strategy.</p>
+            <p>For model-specific pipelines, I also included model validation steps — running a quick smoke test against a sample dataset before promoting to production to catch model regressions early.</p>
+            <div class="tip-box"><span class="tip-icon">💡</span> Mention: At EY I also worked with Jenkins for CI/CD in the clinical data pipelines — so I have experience with both GitHub Actions and Jenkins-based setups.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="deployment">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How did you achieve a 60% latency reduction with Airflow and Spark?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span><span class="tag tag-blue">Resume Deep-Dive</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <div class="highlight">
+              At Citadel, our data ingestion and processing pipelines were bottlenecked on single-threaded Python scripts. I re-engineered them using <strong>Apache Spark for distributed processing</strong> and <strong>Apache Airflow for orchestration</strong>.
+            </div>
+            <p>Key changes that drove the 60% latency reduction:</p>
+            <ul class="answer-list">
+              <li><strong>Parallelism:</strong> Spark distributed workloads across the cluster instead of running sequentially — especially impactful for large dataset joins and aggregations.</li>
+              <li><strong>Airflow DAG optimization:</strong> Restructured pipeline DAGs to maximize parallel task execution — tasks that were previously sequential ran concurrently where dependencies allowed.</li>
+              <li><strong>Delta Lake:</strong> Using Delta tables (ACID transactions + optimized Parquet) over raw CSV reduced I/O overhead significantly for re-read operations.</li>
+              <li><strong>Partitioning:</strong> Partitioned data by date in Delta tables so downstream tasks only scanned the relevant partition rather than full datasets.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="deployment">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">What is your experience with cloud-based ML environments?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>My primary cloud experience is with <strong>Azure</strong> — I've worked with Azure ML for model training and experiment tracking, AKS (Azure Kubernetes Service) for model deployment, ACR (Azure Container Registry) for storing Docker images, Azure Databricks for PySpark-based data processing, and Azure Blob Storage for large dataset storage.</p>
+            <p>At Citadel, this was my primary cloud stack — all six analytics pipelines and the Conversational AI prototype ran on Azure infrastructure. I'm comfortable navigating Azure's RBAC, Key Vault for secrets management, and Monitor for infrastructure observability.</p>
+            <div class="tip-box"><span class="tip-icon">💡</span> If asked about AWS/GCP: "I've studied AWS SageMaker and GCP Vertex AI concepts — the patterns (managed training, model registry, endpoint deployment) are similar to Azure ML, so I can ramp up quickly."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PYTHON & APIs SECTION -->
+    <div class="section" id="sec-python">
+      <div class="section-header">
+        <h2>Python & APIs</h2>
+        <p>Data preprocessing, FastAPI, async — core to the Gen AI Developer role.</p>
+      </div>
+      <div class="resume-strip">
+        <span class="resume-strip-label">Your experience</span>
+        <span class="resume-pill highlight-pill">FastAPI at EY</span>
+        <span class="resume-pill highlight-pill">50% API latency reduction at Citadel</span>
+        <span class="resume-pill highlight-pill">PySpark data pipelines</span>
+        <span class="resume-pill">RESTful API design</span>
+        <span class="resume-pill">SQLAlchemy, PostgreSQL</span>
+      </div>
+
+      <div class="qa-card" data-section="python">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How would you design a FastAPI endpoint for an LLM-powered service?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <div class="highlight">
+              At EY I built production FastAPI microservices for clinical data processing. At Citadel I optimized existing APIs reducing latency by 50%. Here's how I'd design an LLM endpoint:
+            </div>
+            <ul class="answer-list">
+              <li><strong>Async endpoints:</strong> LLM calls are slow — using <code>async def</code> prevents blocking the event loop for other requests.</li>
+              <li><strong>Pydantic models:</strong> Input validation with Pydantic ensures malformed requests fail fast with clear error messages.</li>
+              <li><strong>Rate limiting:</strong> Add rate limiting middleware — critical when calling paid LLM APIs to prevent cost overruns.</li>
+              <li><strong>Streaming responses:</strong> Use <code>StreamingResponse</code> to start returning tokens as they're generated — better UX for long responses.</li>
+              <li><strong>Error handling:</strong> Catch LLM API timeouts, rate limit errors (429), and model errors separately — return appropriate HTTP status codes with clear messages.</li>
+              <li><strong>Auth middleware:</strong> JWT token validation at the middleware layer before the request reaches the LLM logic.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="python">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How do you handle data preprocessing for AI applications?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>I have deep experience here across multiple domains: clinical data at EY, financial data at Citadel, and FMCG data at Infosys.</p>
+            <p>My standard approach for Gen AI preprocessing:</p>
+            <ul class="answer-list">
+              <li><strong>Data ingestion:</strong> Load from various sources — PDFs, databases, APIs. Use structured schemas (Pydantic) to validate incoming data shapes.</li>
+              <li><strong>Text cleaning:</strong> Remove special characters, normalize whitespace, handle encoding issues. For financial documents, preserve numbers and dates carefully.</li>
+              <li><strong>Feature engineering for ML:</strong> At Citadel, I engineered temporal features (rolling averages, lag features) for time-series models. For NLP, TF-IDF features, sentence embeddings.</li>
+              <li><strong>PySpark for scale:</strong> At EY, I migrated Python scripts to PySpark — reducing execution latency by 40% for high-volume clinical datasets. The same applies to large document ingestion for RAG.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="python">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How did you reduce API latency by 50% at Citadel?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span><span class="tag tag-blue">Resume Specific</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <div class="highlight">
+              I implemented and optimized business logic updates to existing APIs by processing complex datasets — reducing latency by <strong>50%</strong>.
+            </div>
+            <p>Specific optimizations I applied:</p>
+            <ul class="answer-list">
+              <li><strong>Query optimization:</strong> Identified N+1 query patterns in the database layer and replaced with batch queries using SQLAlchemy's relationship loading strategies.</li>
+              <li><strong>Caching:</strong> Added Redis-style caching for frequently requested, slowly-changing data so repeated API calls didn't hit the database every time.</li>
+              <li><strong>Async I/O:</strong> Converted synchronous database calls to async using SQLAlchemy async session — so concurrent requests didn't block each other.</li>
+              <li><strong>Data shape optimization:</strong> Reduced the payload size by returning only required fields (not entire table rows) — smaller payloads serialize and transfer faster.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="python">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">What's your approach to code quality — testing, reviews, documentation?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>At EY I mentored junior developers on API design best practices and clean code standards — so code quality has been a deliberate focus for me throughout my career.</p>
+            <ul class="answer-list">
+              <li><strong>Unit testing:</strong> At Infosys, I reduced critical bugs by 30% through systematic unit testing and logging. I write tests alongside code — especially for data transformation logic where edge cases are common.</li>
+              <li><strong>Type hints + Pydantic:</strong> Strong typing in Python catches errors at dev time rather than production. FastAPI's Pydantic integration makes this natural.</li>
+              <li><strong>Code reviews:</strong> I participate actively in reviews, both giving and receiving feedback. At EY, I found code reviews were the fastest way to learn codebase conventions.</li>
+              <li><strong>Documentation:</strong> FastAPI auto-generates OpenAPI docs from code — I structure endpoints and Pydantic schemas so the auto-generated docs are immediately useful to consumers.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="python">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">What is your experience with LangChain or LlamaIndex?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <div class="highlight">
+              I've used <strong>LangChain</strong> in production at Citadel for the Conversational AI RAG system, and in my Agentic Medical Intelligence project for multi-tool agent orchestration.
+            </div>
+            <p>With LangChain specifically I've worked with: <strong>document loaders</strong> (PDF, web), <strong>text splitters</strong> for chunking, <strong>vector store integrations</strong>, <strong>chains</strong> for composing retrieval + generation, and <strong>agents with tool calling</strong> for the agentic patterns (Google Search + Vector DB routing).</p>
+            <p>I understand LlamaIndex's positioning — it's more focused on data connectors and indexing strategies for RAG, while LangChain is broader (chains, agents, memory). I've studied LlamaIndex patterns through the NVIDIA RAG certification and would be comfortable building with it.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI COMPLIANCE SECTION -->
+    <div class="section" id="sec-compliance">
+      <div class="section-header">
+        <h2>AI Compliance & Responsible AI</h2>
+        <p>Citi-specific critical area — banking regulations make this a differentiator.</p>
+      </div>
+
+      <div class="qa-card" data-section="compliance">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How do you ensure responsible AI in your work? What does it mean in practice?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely — Citi Specific</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <div class="highlight">
+              At Citadel, my data ingestion workflows were explicitly designed to <strong>"ensure responsible AI adoption"</strong> — validating and cleansing data before it fed into model training to prevent garbage-in-garbage-out issues that could lead to biased model behavior.
+            </div>
+            <p>In practice, responsible AI means:</p>
+            <ul class="answer-list">
+              <li><strong>Data validation:</strong> Checking for biased samples, missing demographic slices, or data leakage before training.</li>
+              <li><strong>Output monitoring:</strong> At EY, working in healthcare made this real — clinical data errors had patient impact. I built validation layers that caught anomalies in generated outputs.</li>
+              <li><strong>PII protection:</strong> In my healthcare API work at EY, I handled sensitive patient data under strict access controls — same discipline applies to LLMs.</li>
+              <li><strong>Auditability:</strong> Logging every model decision with the input, context used, and output so it can be reviewed — critical in a regulated financial environment.</li>
+              <li><strong>Guardrails:</strong> Implementing output filtering to prevent the LLM from producing harmful or non-compliant content.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="compliance">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How would you prevent an LLM from exposing sensitive customer data?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely — Banking Context</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>Multiple defense layers:</p>
+            <ul class="answer-list">
+              <li><strong>Pre-processing:</strong> PII detection and redaction before sending data to the LLM — libraries like Presidio can identify names, account numbers, SSNs in text and mask them.</li>
+              <li><strong>Private LLM deployment:</strong> Use an on-premises or Azure-hosted LLM (e.g., Azure OpenAI with private endpoints) so customer data never leaves the bank's network boundary.</li>
+              <li><strong>Post-processing output filter:</strong> Run the LLM output through a second PII scan before returning to the user — catch anything the model might have "invented" that looks like real PII.</li>
+              <li><strong>Role-based access:</strong> The RAG knowledge base should only surface documents the requesting user is authorized to see — apply the same RBAC policies to AI retrieval as to direct document access.</li>
+              <li><strong>Audit logs:</strong> Every query + response logged with user ID, timestamp, and retrieved source for compliance traceability.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="compliance">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">What are AI guardrails and how would you implement them?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>AI guardrails are constraints that prevent an LLM from generating harmful, non-compliant, or out-of-scope responses. In a banking context this is critical.</p>
+            <p>I'd implement them at multiple levels:</p>
+            <ul class="answer-list">
+              <li><strong>System prompt constraints:</strong> "You are a Controls assistant. Only answer questions about internal controls documentation. Do not provide investment advice, personal opinions, or information outside your knowledge base."</li>
+              <li><strong>Input validation:</strong> Classify incoming queries — block or re-route queries that are off-topic or potentially adversarial (prompt injection attempts).</li>
+              <li><strong>Output classification:</strong> Run a secondary classifier or LLM check on outputs before returning — flag anything containing financial advice, PII patterns, or compliance red flags for human review.</li>
+              <li><strong>NVIDIA NeMo Guardrails / LangChain guardrails:</strong> Framework-level tools for defining rules-based constraints on LLM behavior.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="compliance">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How do you think about model governance for LLMs in production?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>Model governance means having clear processes around: <strong>who approves models for production, how they're versioned, how changes are tracked, and how performance is monitored over time</strong>.</p>
+            <p>At Citadel, I used MLflow for experiment tracking and model versioning — every model had a registered version with its parameters, metrics, and training data reference. That creates an audit trail.</p>
+            <p>For LLMs at a bank like Citi, I'd add: model cards documenting intended use, known limitations, and bias evaluations; change management processes for prompt updates (since prompt changes can significantly alter model behavior); and periodic red-teaming to check for jailbreaks or policy violations.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEHAVIORAL SECTION -->
+    <div class="section" id="sec-behavioral">
+      <div class="section-header">
+        <h2>STAR Behavioral Questions</h2>
+        <p>Answers framed around your actual projects and experiences.</p>
+      </div>
+      <div class="intro-card">
+        <strong>STAR format reminder:</strong> Situation → Task → Action → Result. Keep each story 2–3 minutes. Have numbers ready (60% latency, 80% downtime, 50% API improvement). Citi values: Common Purpose, Responsible Finance, Leadership, Ingenuity.
+      </div>
+
+      <div class="qa-card" data-section="behavioral">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Tell me about your most complex Gen AI project. Walk me through it in detail.</div>
+            <div class="qa-meta"><span class="tag tag-hot">Always Asked — Opens the Session</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your STAR Answer</div>
+          <div class="answer-body">
+            <div class="star-grid">
+              <div class="star-item"><div class="star-label">Situation</div><div class="star-text">At Citadel, we needed a way for employees to query internal enterprise knowledge — policies, procedures, reports — without manually searching through hundreds of documents.</div></div>
+              <div class="star-item"><div class="star-label">Task</div><div class="star-text">I was tasked with prototyping a Conversational AI system that could answer natural-language questions grounded in internal documents.</div></div>
+              <div class="star-item"><div class="star-label">Action</div><div class="star-text">I built a RAG pipeline: document ingestion via LangChain loaders → recursive chunking → OpenAI embeddings → Vector DB indexing → retrieval → GPT generation. Constrained the LLM with strict system prompts to prevent hallucination.</div></div>
+              <div class="star-item"><div class="star-label">Result</div><div class="star-text">The prototype enabled accurate knowledge retrieval over internal documents. Employees could get sourced, contextual answers in seconds instead of manually searching. Validated the Gen AI use case for the enterprise team.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="behavioral">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Tell me about a time you made a significant technical tradeoff. What did you choose and why?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your STAR Answer</div>
+          <div class="answer-body">
+            <div class="star-grid">
+              <div class="star-item"><div class="star-label">Situation</div><div class="star-text">At Citadel, when building the enterprise knowledge system, I had to decide: fine-tune a domain-specific LLM or build a RAG system over existing models.</div></div>
+              <div class="star-item"><div class="star-label">Task</div><div class="star-text">Evaluate both approaches and make a recommendation that balanced accuracy, cost, maintainability, and speed to production.</div></div>
+              <div class="star-item"><div class="star-label">Action</div><div class="star-text">I prototyped both: RAG with OpenAI embeddings vs fine-tuning a smaller open-source model. RAG was 3x faster to iterate, didn't require retraining when documents updated, and provided source citations — critical for auditability.</div></div>
+              <div class="star-item"><div class="star-label">Result</div><div class="star-text">Chose RAG. It went to prototype in 2 weeks vs an estimated 6+ weeks for fine-tuning. The source citation feature was especially valued by stakeholders who needed to verify AI responses.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="behavioral">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Describe a time you collaborated with data scientists or non-technical stakeholders on an AI project.</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your STAR Answer</div>
+          <div class="answer-body">
+            <div class="star-grid">
+              <div class="star-item"><div class="star-label">Situation</div><div class="star-text">At Citadel, data scientists had research models they'd validated in notebooks but couldn't deploy — there was no production-ready serving infrastructure.</div></div>
+              <div class="star-item"><div class="star-label">Task</div><div class="star-text">Collaborate with data scientists to translate their research models into production-ready batch inference pipelines.</div></div>
+              <div class="star-item"><div class="star-label">Action</div><div class="star-text">I held sessions with the data science team to understand the model's assumptions, required inputs, and expected output format. Then I re-implemented the inference logic in a production-grade Python module with proper error handling, logging, and containerization. Created clear interface contracts (Pydantic schemas) so both teams could work independently.</div></div>
+              <div class="star-item"><div class="star-label">Result</div><div class="star-text">Achieved 20% reduction in inference latency compared to the notebook-based prototype. Data scientists could now deploy research iterations without engineering bottlenecks — improving iteration speed significantly.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="behavioral">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Tell me about a time you had to learn a new technology quickly to solve a problem.</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your STAR Answer</div>
+          <div class="answer-body">
+            <div class="star-grid">
+              <div class="star-item"><div class="star-label">Situation</div><div class="star-text">At EY, our legacy Python-based data processing scripts for clinical data were hitting scaling limits — they couldn't handle growing data volumes without significantly increasing processing time.</div></div>
+              <div class="star-item"><div class="star-label">Task</div><div class="star-text">Migrate the data pipeline to Apache Spark (PySpark) — a technology I hadn't used in production before.</div></div>
+              <div class="star-item"><div class="star-label">Action</div><div class="star-text">I self-taught PySpark through the official documentation, online courses, and small proof-of-concepts. I started by rewriting the simplest transformation jobs first to validate the approach, then progressively migrated more complex logic. Validated outputs against the original scripts to ensure correctness.</div></div>
+              <div class="star-item"><div class="star-label">Result</div><div class="star-text">Reduced execution latency by 40% for high-volume datasets, enabling near-real-time processing for downstream clinical diagnostic pipelines. Ramped from zero to production Spark in 3 weeks.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="behavioral">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Tell me about a time you identified and fixed a problem before it impacted production.</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your STAR Answer</div>
+          <div class="answer-body">
+            <div class="star-grid">
+              <div class="star-item"><div class="star-label">Situation</div><div class="star-text">At Infosys on the Hershey project, our nightly data sync workflows ran scheduled Python jobs for data integrity checks across 5K+ planned orders weekly.</div></div>
+              <div class="star-item"><div class="star-label">Task</div><div class="star-text">Maintain SLA compliance for data availability — any delay in nightly sync would cascade into the next day's analytics and reporting.</div></div>
+              <div class="star-item"><div class="star-label">Action</div><div class="star-text">During routine log analysis I noticed a growing trend in data validation failures for a specific supplier category — not yet at failure threshold but trending upward. I traced it to an upstream schema change that hadn't been communicated. Patched the extraction logic and added alerting for schema drift.</div></div>
+              <div class="star-item"><div class="star-label">Result</div><div class="star-text">Caught it before it hit the 30% critical bug threshold. Added schema validation checks that reduced similar incidents — contributing to the 30% reduction in critical bugs reported for that project period.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="behavioral">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Tell me about a time you received critical feedback. How did you respond?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your STAR Answer</div>
+          <div class="answer-body">
+            <div class="star-grid">
+              <div class="star-item"><div class="star-label">Situation</div><div class="star-text">At EY, early in my role, a senior developer flagged during a code review that my API error handling was inconsistent — some endpoints returned generic 500 errors instead of meaningful, actionable messages.</div></div>
+              <div class="star-item"><div class="star-label">Task</div><div class="star-text">Address the feedback and improve the consistency of error handling across the clinical data processing APIs.</div></div>
+              <div class="star-item"><div class="star-label">Action</div><div class="star-text">I didn't just fix my code — I first asked the senior developer to walk me through best practices they'd seen work well in production APIs. Then I created a shared error handling module that standardized error codes, messages, and HTTP status codes across all endpoints. Documented it so other junior devs could follow the same pattern.</div></div>
+              <div class="star-item"><div class="star-label">Result</div><div class="star-text">The reviewer specifically mentioned this in my next review cycle as an example of good initiative. The module was adopted by the broader team and reduced inconsistencies across the service layer. That experience shaped how I mentor junior developers today.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="behavioral">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Describe a time you worked under pressure with a tight deadline.</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your STAR Answer</div>
+          <div class="answer-body">
+            <div class="star-grid">
+              <div class="star-item"><div class="star-label">Situation</div><div class="star-text">At EY on the Sysmex project, a downstream clinical diagnostic pipeline was blocked because a critical data processing API was failing under higher-than-expected load from a sudden increase in lab samples.</div></div>
+              <div class="star-item"><div class="star-label">Task</div><div class="star-text">Identify and fix the bottleneck within a tight window — lab operations were impacted and escalation was in progress.</div></div>
+              <div class="star-item"><div class="star-label">Action</div><div class="star-text">I used structured debugging — first checked logs to identify the failure point (a database connection pool exhaustion under load), then tested a connection pool size increase in staging, validated it held, then deployed. All done in parallel while communicating status to the team every 30 minutes.</div></div>
+              <div class="star-item"><div class="star-label">Result</div><div class="star-text">Resolved within 4 hours. Post-incident, I implemented Prometheus alerting on connection pool utilization so we'd catch it before exhaustion in the future — preventing recurrence.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCENARIO-BASED SECTION -->
+    <div class="section" id="sec-scenario">
+      <div class="section-header">
+        <h2>Scenario-Based & Issue Handling</h2>
+        <p>Real problems you might face in the Controls Technology Gen AI role — mapped to your experience.</p>
+      </div>
+
+      <div class="qa-card" data-section="scenario">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">The RAG system you deployed is returning irrelevant answers. Walk me through how you debug it.</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span><span class="tag tag-rose">Issue Handling</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Approach</div>
+          <div class="answer-body">
+            <p>I follow a structured debugging approach — isolate whether the problem is in <strong>retrieval</strong> or <strong>generation</strong> first.</p>
+            <ul class="answer-list">
+              <li><strong>Step 1 — Check what's being retrieved:</strong> Log the top-k chunks returned for the failing query. If the chunks are irrelevant, the retrieval layer is the problem. If they're relevant but the answer is wrong, generation is the issue.</li>
+              <li><strong>Step 2 — If retrieval problem:</strong> Check similarity scores — are the scores low, suggesting no good match? Try the query in the vector store directly. Test different chunking sizes or embedding models. Check if the documents were properly ingested.</li>
+              <li><strong>Step 3 — If generation problem:</strong> Check the prompt — is the injected context being ignored? Add stronger constraints: "Use ONLY the context below." Check if the LLM is hallucinating beyond the context or misinterpreting it.</li>
+              <li><strong>Step 4 — Add hybrid search:</strong> If exact terminology is being missed, augment with BM25 keyword search — I'd implement this immediately as a fix.</li>
+              <li><strong>Step 5 — Re-ranking:</strong> Add a cross-encoder re-ranker between retrieval and generation to improve chunk selection quality.</li>
+            </ul>
+            <div class="tip-box"><span class="tip-icon">💡</span> "At Citadel I used Prometheus/Grafana to log retrieval quality metrics — having that visibility proactively would have shortened this debug cycle significantly."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="scenario">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">An LLM in production starts generating responses that include sensitive information from other users' documents. What do you do?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely — Banking Scenario</span><span class="tag tag-rose">Critical Issue</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Approach</div>
+          <div class="answer-body">
+            <p>This is a <strong>security incident</strong> — I treat it with urgency, not just as a bug fix.</p>
+            <ul class="answer-list">
+              <li><strong>Immediate:</strong> Escalate to the security/compliance team. Disable the affected endpoint or add a circuit breaker to stop active exposure. Preserve all logs for the incident review.</li>
+              <li><strong>Root cause investigation:</strong> Is it the vector store returning documents from other users' namespaces (missing isolation)? Or is the LLM surfacing cached context from previous sessions? Or a prompt injection that forced the model to reveal training data?</li>
+              <li><strong>Fix — most likely cause:</strong> Missing user-level namespace isolation in the Vector DB. Each user's documents should be indexed in a separate namespace/collection so a similarity search only queries that user's data. Implement this + test thoroughly in staging before re-enabling.</li>
+              <li><strong>Post-fix:</strong> Add output PII scanning as a second defense layer. Update the incident log. Notify affected users per the compliance team's guidance. Add this scenario to the threat model for future systems.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="scenario">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Your ML pipeline runs perfectly in dev but fails silently in production with different results. How do you investigate?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span><span class="tag tag-rose">Issue Handling</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Approach</div>
+          <div class="answer-body">
+            <p>Classic environment parity issue. At Citadel I dealt with this in our data ingestion pipelines — my structured approach:</p>
+            <ul class="answer-list">
+              <li><strong>Check environment differences:</strong> Library version mismatches (requirements.txt vs installed), Python version differences, environment variables missing in prod (API keys, config values). Docker containers help eliminate this — same image, same environment.</li>
+              <li><strong>Check data differences:</strong> Is the production data schema slightly different from dev? Missing fields, different date formats, encoding differences? At Citadel I added data validation steps to catch schema drift.</li>
+              <li><strong>Add comprehensive logging:</strong> Log input shapes, intermediate outputs, and final predictions at each pipeline stage. "Silent failure" means insufficient logging — add it immediately.</li>
+              <li><strong>Canary deployment:</strong> Route 5% of traffic to the new model while keeping 95% on the old one — compare output distributions to spot anomalies without full exposure.</li>
+              <li><strong>Determinism check:</strong> If the model involves randomness (sampling temperature, dropout), fix seeds to ensure reproducibility across environments.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="scenario">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">A business stakeholder wants an LLM feature shipped in 2 days. It realistically needs 3 weeks. How do you handle it?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span><span class="tag tag-amber">Stakeholder Scenario</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Approach</div>
+          <div class="answer-body">
+            <div class="highlight">
+              At EY I managed this frequently with clinical stakeholders who needed features on aggressive timelines. My approach is <strong>transparency + scoped MVP</strong>.
+            </div>
+            <ul class="answer-list">
+              <li><strong>Understand the underlying need:</strong> "What problem are you trying to solve by Friday?" Often the full feature isn't needed — a simpler version that addresses 80% of the value can be delivered faster.</li>
+              <li><strong>Define a realistic MVP:</strong> Break the feature into phases. Phase 1 (2 days): a working prototype that demonstrates the core value — even if it lacks polish, monitoring, or edge case handling. Phase 2 (remaining weeks): production-ready version.</li>
+              <li><strong>Be transparent about tradeoffs:</strong> "I can have a working demo in 2 days, but without error handling, rate limiting, and compliance review — we wouldn't want to expose that to end users without those. Here's the full timeline for a production-safe version."</li>
+              <li><strong>Escalate if needed:</strong> If the stakeholder insists on production deployment of something unsafe, involve the team lead or tech lead — this is a quality and compliance decision, not just a timeline one.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="scenario">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How would you design a Gen AI solution to automate controls monitoring at a bank like Citi?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely — Citi Specific</span><span class="tag tag-purple">System Design</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Approach</div>
+          <div class="answer-body">
+            <div class="highlight">
+              This is squarely in my experience — I've built financial ML pipelines at Citadel and clinical data automation at EY. Here's how I'd design it:
+            </div>
+            <ul class="answer-list">
+              <li><strong>Data ingestion:</strong> Pull controls data from audit logs, policy documents, transaction monitoring systems — using structured pipelines (Airflow + Spark, as I've done at Citadel) to cleanse and validate.</li>
+              <li><strong>RAG knowledge base:</strong> Index all controls policies, regulatory documents, and historical audit findings in a Vector DB. This gives the LLM grounded, citable answers about what controls should look like.</li>
+              <li><strong>Anomaly detection layer:</strong> ML models (trained on historical controls data) flag deviations from expected patterns. This surfaces potential control failures for LLM analysis.</li>
+              <li><strong>LLM analysis layer:</strong> For flagged items, the LLM retrieves relevant policy context from the RAG system and generates a plain-English summary: what control was flagged, what policy it relates to, recommended remediation.</li>
+              <li><strong>Human review + audit trail:</strong> All LLM outputs go to a compliance reviewer — not automated decisions. Full audit log of every AI-generated assessment with the context and sources used.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="scenario">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Your team's Airflow pipeline starts failing mid-run every night. Walk me through your debugging process.</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span><span class="tag tag-rose">Issue Handling</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Approach</div>
+          <div class="answer-body">
+            <p>I've managed production Airflow pipelines at Citadel — nightly failures are a specific category I have experience with.</p>
+            <ul class="answer-list">
+              <li><strong>Check Airflow task logs:</strong> Identify which specific task is failing and what the error is. Airflow logs the exact exception — this narrows the search immediately.</li>
+              <li><strong>"Mid-run" + "every night" pattern:</strong> This pattern suggests a data volume or time-based issue — maybe the nightly dataset is larger than earlier runs, or a downstream dependency (API, database) starts throttling after midnight.</li>
+              <li><strong>Check upstream dependencies:</strong> Is a database connection timing out? Is an external API rate-limiting nightly batch calls? Is disk space filling up during the run?</li>
+              <li><strong>Check for data drift:</strong> New data arriving overnight with unexpected format/schema? Add validation tasks at the start of the DAG to catch this early.</li>
+              <li><strong>Add retries and alerting:</strong> Configure task-level retries in Airflow for transient failures. Set up Slack/email alerts on DAG failure so issues are caught immediately, not discovered the next morning.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="scenario">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How would you approach migrating a legacy rule-based compliance system to a Gen AI solution?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely — Controls Tech Context</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Approach</div>
+          <div class="answer-body">
+            <div class="highlight">
+              I have direct experience with this — at Infosys I replaced a manual validation process with an automated Python-based logic engine. I'd apply the same gradual migration philosophy to a Gen AI replacement.
+            </div>
+            <ul class="answer-list">
+              <li><strong>Understand the current system deeply:</strong> Document all existing rules. This becomes the evaluation benchmark AND the knowledge that informs the Gen AI solution.</li>
+              <li><strong>Shadow mode first:</strong> Run the Gen AI system in parallel with the existing rule-based system. Compare outputs — don't replace anything until accuracy is proven.</li>
+              <li><strong>Start with low-risk tasks:</strong> Use Gen AI for document summarization and context lookup first — not decision-making. Humans review all AI outputs initially.</li>
+              <li><strong>Gradual handoff:</strong> As confidence builds (tracked by accuracy metrics against the golden rule set), progressively expand the Gen AI system's scope.</li>
+              <li><strong>Compliance sign-off at each phase:</strong> In a banking context, each expansion phase needs sign-off from compliance — build that into the project plan, not as an afterthought.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SITUATIONAL SECTION -->
+    <div class="section" id="sec-situational">
+      <div class="section-header">
+        <h2>Situational & "What Would You Do" Questions</h2>
+        <p>Hypothetical scenarios that test judgment, values, and how you'd behave in the role.</p>
+      </div>
+
+      <div class="qa-card" data-section="situational">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">What would you do if you discovered the LLM you deployed was producing subtly biased outputs for certain groups?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span><span class="tag tag-purple">Ethics / Responsible AI</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <div class="highlight">
+              This goes beyond a technical problem — it's an <strong>ethical and regulatory issue</strong> that requires immediate escalation, not just a code fix.
+            </div>
+            <ul class="answer-list">
+              <li><strong>Immediately scope and document:</strong> Characterize exactly what bias was found, for which groups, in what types of responses, and with what frequency.</li>
+              <li><strong>Escalate to compliance and leadership:</strong> Don't try to quietly fix it — at Citi this would have regulatory implications. Inform the team lead, compliance, and risk teams.</li>
+              <li><strong>Mitigate actively:</strong> Add filtering/guardrails to catch the biased outputs while the root cause is investigated. If the bias is severe, consider taking the system offline temporarily.</li>
+              <li><strong>Root cause analysis:</strong> Is it training data bias? Retrieval bias (certain groups underrepresented in the knowledge base)? Prompt design that inadvertently reinforces stereotypes?</li>
+              <li><strong>Systematic fix + re-evaluation:</strong> Fix at the source, re-evaluate with a diverse test set, and get sign-off from the ethics/compliance team before re-deploying.</li>
+            </ul>
+            <div class="tip-box"><span class="tip-icon">💡</span> "In healthcare at EY I experienced similar situations — data quality issues affecting certain patient subgroups. The principle is the same: patient safety (or in this case customer fairness) takes priority over feature velocity."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="situational">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">What would you do if a senior engineer on the team gave you feedback you strongly disagreed with?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>I'd start by genuinely trying to understand their perspective — senior engineers often have context I don't yet have about the codebase, past failures, or production constraints.</p>
+            <p>I'd ask them to explain their reasoning: "Can you help me understand the concern here? I want to make sure I'm not missing something." Usually this either changes my mind (I learn something) or gives me the context to present my counter-reasoning more precisely.</p>
+            <p>If I still disagreed after understanding their view, I'd present my case with data — benchmarks, test results, or concrete tradeoff analysis. At EY, I proposed an alternative approach to API error handling based on what I'd seen work in production — I backed it with examples rather than just opinion.</p>
+            <div class="tip-box"><span class="tip-icon">💡</span> Always end with: "Ultimately, if we still disagree, I'm happy to defer to the team's convention — consistency across the codebase matters more than my individual preference on most things."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="situational">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How would you approach implementing a new Gen AI feature you've never built before?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>This is exactly how I've built most of my Gen AI experience — through deliberate learning on novel problems.</p>
+            <ul class="answer-list">
+              <li><strong>Understand the requirement deeply:</strong> What problem is it solving? What does success look like? What are the constraints (latency, data sensitivity, cost)?</li>
+              <li><strong>Research the pattern:</strong> Look for existing implementations, papers, or frameworks. For LangChain/LlamaIndex features I start with official docs + GitHub examples, then the broader community for edge cases.</li>
+              <li><strong>Build a small proof-of-concept:</strong> Get something working end-to-end quickly, even if it's not optimized. This reveals the real challenges faster than more research would.</li>
+              <li><strong>Iterate with feedback:</strong> Share early POC with the team. Get their input on correctness and edge cases before investing in full implementation.</li>
+              <li><strong>Ask for guidance proactively:</strong> I'm not afraid to ask senior engineers or AI architects — as the JD says, this role works closely with senior team members, and I see that as a strength, not a limitation.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="situational">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How would you handle a colleague who isn't following code quality or documentation standards?</div>
+            <div class="qa-meta"><span class="tag tag-low">Good to Have</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>I've been on both sides of this — at EY I mentored junior developers on standards, and at Infosys I was the one learning best practices from more senior engineers.</p>
+            <p>My approach: address it constructively, not judgmentally. In a code review I'd comment specifically: "This function is missing docstring — here's the format we use across the codebase" with a concrete example. That's more actionable than general feedback.</p>
+            <p>If it's a recurring pattern, I'd have a direct 1:1 conversation — not to criticize, but to understand if they're unclear on the standards, don't have time, or have a different perspective on the value. Often it's the first one.</p>
+            <div class="tip-box"><span class="tip-icon">💡</span> "At EY I created shared modules and documentation templates that made it easier to follow standards — removing friction is often more effective than repeated correction."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="situational">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">If you were given a new Gen AI task with unclear requirements, how would you start?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>Ambiguity is normal in AI projects — the requirement is often "make this better with AI" without clarity on what "better" means.</p>
+            <ul class="answer-list">
+              <li><strong>Ask the 5 key questions:</strong> Who are the users? What specific problem are they experiencing? What does success look like (and how do we measure it)? What data do we have? What are the constraints (latency, cost, compliance)?</li>
+              <li><strong>Write a brief spec:</strong> Document my understanding and share it for alignment before writing any code. At EY this prevented a lot of rework — a one-page spec saved weeks of development misalignment.</li>
+              <li><strong>Start with the simplest viable approach:</strong> Build the most basic version that could work, evaluate it against the success criteria, then iterate. Don't over-engineer before validating the direction.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="situational">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">How would you balance moving fast on a Gen AI feature vs ensuring it's safe to deploy in a banking environment?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely — Citi Values</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <div class="highlight">
+              Speed and safety aren't always in opposition — it depends on <strong>what stage of the pipeline</strong> you're talking about.
+            </div>
+            <p>I move fast on prototypes and proofs-of-concept — get something working quickly, learn what the real challenges are, validate the value. I build safety into the design from the start, not as an afterthought. Adding guardrails, audit logging, and PII filtering early doesn't slow you down much — adding them after a production incident does.</p>
+            <p>My personal standard at Citadel: anything that touches real user data or makes externally visible decisions needs compliance review before going live, no matter the timeline pressure. I'd apply that same discipline at Citi Controls Technology.</p>
+            <div class="tip-box"><span class="tip-icon">💡</span> Reference: "Citi's CTO mentioned 'scale when ready' as a guiding principle — I believe in that. Move fast in a sandboxed environment, then scale with confidence once safety is validated."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHY CITI SECTION -->
+    <div class="section" id="sec-citi">
+      <div class="section-header">
+        <h2>Why Citi & Banking Fit</h2>
+        <p>The manager round almost always opens or closes with this. Be genuine and specific.</p>
+      </div>
+
+      <div class="qa-card" data-section="citi">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Why Citi specifically? Why Controls Technology?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Always Asked</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>My career has spanned multiple domains — FMCG at Infosys, healthcare at EY, financial markets at Citadel — and financial services is where I find the AI problems most meaningful and technically interesting. The stakes are high, the data is rich, and the constraints (regulatory compliance, auditability, latency) make the engineering more interesting, not less.</p>
+            <div class="highlight">
+              Controls Technology specifically is compelling because it sits at the intersection of <strong>AI capability and regulatory discipline</strong> — that's exactly the environment my experience has prepared me for. At Citadel I built responsible AI workflows; at EY I built compliant data systems in a regulated healthcare environment. Those two threads come together here.
+            </div>
+            <p>And Citi's scale is genuinely exciting — the Gen AI Summit in 2025, the launch of Citi Assist and Citi Stylus, CTO David Griffiths' emphasis on scaling thoughtfully — this is an organization that's serious about Gen AI, not just experimenting. I want to be part of building that infrastructure.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="citi">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">What do you know about Citi's Gen AI strategy and initiatives?</div>
+            <div class="qa-meta"><span class="tag tag-hot">Very Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <ul class="answer-list">
+              <li>Citi launched its suite of Gen AI-powered internal tools in late 2024 — including <strong>Citi Assist</strong> (internal Q&A and knowledge retrieval) and <strong>Citi Stylus</strong> (helping colleagues tailor client interactions). These are exactly the RAG and LLM patterns I've been building.</li>
+              <li>Citi held its <strong>3rd annual Gen AI Summit in 2025</strong> — CTO David Griffiths outlined a "scale when ready" philosophy: identify clear use cases, start small, incorporate user feedback, then scale. That aligns with how I've approached AI development.</li>
+              <li>The <strong>Controls Technology team</strong> is building Gen AI into risk and compliance workflows — automating analysis, enhancing operational efficiency, and supporting regulatory adherence. Given my work at EY with clinical compliance data and at Citadel with financial AI pipelines, I see a direct connection.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="citi">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Where do you see Gen AI having the biggest impact in financial services?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>Three areas I find most compelling, all supported by my experience:</p>
+            <ul class="answer-list">
+              <li><strong>Controls & compliance automation:</strong> LLMs can read policy documents, monitor for deviations in audit data, and surface findings in plain English — replacing manual review of hundreds of pages. This is directly what Controls Technology is building.</li>
+              <li><strong>Analyst productivity:</strong> Financial analysts spend hours aggregating reports and writing summaries. RAG + LLMs can surface relevant data, generate drafts, and let analysts focus on judgment and client interaction — exactly what Citi Assist targets.</li>
+              <li><strong>Risk monitoring:</strong> ML models (like my Financial Analysis Pipeline project) can fuse sentiment signals with market data to give risk teams faster signals on emerging exposures — shifting from reactive to proactive risk management.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="citi">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">Where do you see yourself in 2–3 years in AI/ML?</div>
+            <div class="qa-meta"><span class="tag tag-med">Likely</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Your Answer</div>
+          <div class="answer-body">
+            <p>In 2–3 years I want to be the person who can take a Gen AI use case from whiteboard to production reliably — with full ownership of the technical design, the compliance considerations, and the stakeholder communication.</p>
+            <p>I'm particularly interested in advancing in the agentic AI space — autonomous systems that can orchestrate multi-step workflows over enterprise data, like my Agentic Medical Intelligence project but at much larger scale. In a banking context, that means agents that can independently monitor controls data, retrieve relevant policies, draft compliance assessments, and flag items for human review.</p>
+            <p>At Citi, specifically, I'd want to grow into the kind of senior developer who bridges the gap between AI research and what's actually deployable in a regulated environment — which requires deep technical depth plus domain knowledge I'd build here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLOSING QUESTIONS -->
+    <div class="section" id="sec-closing">
+      <div class="section-header">
+        <h2>Your Questions for the Manager</h2>
+        <p>Always have 3–4 ready. Asking smart questions signals engagement and banking-aware maturity.</p>
+      </div>
+      <div class="intro-card">
+        Asking about <strong>model governance</strong> and <strong>compliance review processes</strong> in the same breath as technical questions is a strong differentiator — most candidates only ask about tech stack or team size. The best questions show you're already thinking like someone in the role.
+      </div>
+
+      <div class="qa-card" data-section="closing">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">"What does the Gen AI roadmap for Controls Technology look like over the next 12 months?"</div>
+            <div class="qa-meta"><span class="tag tag-hot">Ask This</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Why This Question Works</div>
+          <div class="answer-body">
+            <p>Shows you're thinking beyond the immediate role to the team's strategic direction. The answer also tells you what you'll actually be building — giving you material for the offer discussion and more informed follow-up questions.</p>
+            <div class="tip-box"><span class="tip-icon">💡</span> If they mention agentic AI or autonomous workflows, connect it to your Agentic Medical Intelligence project: "That's really interesting — I've been exploring that pattern in a personal project..."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="closing">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">"How does the team handle model governance and compliance review before an LLM goes to production?"</div>
+            <div class="qa-meta"><span class="tag tag-hot">Ask This — Differentiator</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Why This Question Works</div>
+          <div class="answer-body">
+            <p>Most candidates don't ask this. It signals that you think like someone who's worked in regulated environments — you understand that shipping fast without compliance sign-off isn't actually fast at Citi. This question demonstrates banking-aware maturity immediately.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="closing">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">"What are the biggest technical challenges the Controls Technology Gen AI team is working through right now?"</div>
+            <div class="qa-meta"><span class="tag tag-hot">Ask This</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Why This Question Works</div>
+          <div class="answer-body">
+            <p>Two benefits: you learn what you're actually walking into (important for your decision), and if the challenge aligns with something you've solved before, you can naturally connect it to your experience. "That's interesting — at Citadel we hit a similar issue with [X] and solved it by..."</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="closing">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">"What does success look like for someone in this role at the 6-month mark?"</div>
+            <div class="qa-meta"><span class="tag tag-med">Good to Ask</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Why This Question Works</div>
+          <div class="answer-body">
+            <p>Signals you're result-oriented and thinking about impact from day one, not just about the job title. The answer also gives you the manager's actual expectations, which you can reference if an offer comes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-card" data-section="closing">
+        <div class="qa-question" onclick="toggleCard(this)">
+          <div style="flex:1">
+            <div class="q-text">"How does the team balance using external LLM APIs (like OpenAI) vs deploying private models given the sensitivity of controls data?"</div>
+            <div class="qa-meta"><span class="tag tag-hot">Ask This — Deep Signal</span></div>
+          </div>
+          <div class="qa-toggle">
+            <button class="check-btn" onclick="markDone(event, this)">✓</button>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">Why This Question Works</div>
+          <div class="answer-body">
+            <p>This is the question a thoughtful Gen AI developer with banking context would ask — and it demonstrates you've thought about data sovereignty, which is a real concern in financial services. Very few candidates will ask this. The answer also tells you what technical stack you'll be working with.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<script>
+  const total = document.querySelectorAll('.qa-card').length;
+
+  function updateProgress() {
+    const done = document.querySelectorAll('.check-btn.checked').length;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressCount').textContent = done + ' / ' + total;
+  }
+
+  function toggleCard(el) {
+    const card = el.closest('.qa-card');
+    card.classList.toggle('open');
+  }
+
+  function markDone(event, btn) {
+    event.stopPropagation();
+    btn.classList.toggle('checked');
+    const card = btn.closest('.qa-card');
+    if (btn.classList.contains('checked')) {
+      card.classList.add('done');
+    } else {
+      card.classList.remove('done');
+    }
+    updateProgress();
+  }
+
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('sec-' + id).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('nav-' + id).classList.add('active');
+    window.scrollTo({ top: 0 });
+  }
+
+  updateProgress();
+</script>
+
+</body>
+</html>
